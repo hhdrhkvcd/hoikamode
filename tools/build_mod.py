@@ -654,16 +654,29 @@ BALKAN_PORTRAITS = {
 }
 
 
-def scenario_portraits(md_repo, leaders):
+def scenario_portraits(md_repo, leaders, root=None):
     """{tag: portrait file} for the leaders of one scenario."""
     md_leaders = os.path.join(md_repo, 'gfx', 'leaders')
     out = {}
     for tag, spec in leaders.items():
         name, ide, patterns, dkey = spec
-        f = world_content.find_portrait(md_leaders, tag, patterns)
+        f = world_content.find_extra_portrait(root, tag, name) if root else None
+        if not f:
+            f = world_content.find_portrait(md_leaders, tag, patterns)
         if f:
             out[tag] = f
     return out
+
+
+def copy_extra_portraits(root, out, extra):
+    """Portraits the user put into assets/extra_portraits/<TAG>/."""
+    for tag, f in extra.items():
+        src = os.path.join(world_content.extra_portrait_dir(root, tag), f)
+        if not os.path.exists(src):
+            continue
+        dst_dir = os.path.join(out, 'gfx', 'leaders', tag)
+        os.makedirs(dst_dir, exist_ok=True)
+        shutil.copy2(src, os.path.join(dst_dir, f))
 
 
 def copy_portraits(md_repo, out, wanted):
@@ -795,16 +808,16 @@ def country_icon_sprites(out, copied):
     return lines
 
 
-def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en):
+def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en, root=None):
     """Writes the three bookmarks (1980 / 1995 / 2026) and the extra localisation."""
     md_owner_of = {s['id']: s['md_owner'] for s in states.values()}
 
     # ---- portraits -------------------------------------------------------
     wanted = {k: list(v) for k, v in BALKAN_PORTRAITS.items()}
-    p1995 = scenario_portraits(md_repo, world_content.LEADERS_1995)
+    p1995 = scenario_portraits(md_repo, world_content.LEADERS_1995, root)
     p1995['SOV_GORBACHEV'] = world_content.find_portrait(
         os.path.join(md_repo, 'gfx', 'leaders'), 'SOV', ['mikhail_gorbachev', 'gorbachev'])
-    p2026 = scenario_portraits(md_repo, world_content.LEADERS_2026)
+    p2026 = scenario_portraits(md_repo, world_content.LEADERS_2026, root)
     for mapping in (p1995, p2026):
         for tag, f in mapping.items():
             if tag == 'SOV_GORBACHEV':
@@ -821,6 +834,20 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en):
             if f not in wanted[tag]:
                 wanted[tag].append(f)
     copy_portraits(md_repo, out, wanted)
+    extra = {}
+    leaders_1980 = [(tag, spec[0]) for tag, spec in LEADERS_1980.items()]
+    for tag, name in leaders_1980:
+        f = world_content.find_extra_portrait(root, tag, name) if root else None
+        if f and tag not in extra:
+            extra[tag] = f
+    for leaders in (world_content.LEADERS_1991,
+                    world_content.LEADERS_1995, world_content.LEADERS_2026):
+        for tag, spec in leaders.items():
+            name = spec[0]
+            f = world_content.find_extra_portrait(root, tag, name) if root else None
+            if f and (tag not in extra or extra[tag] != f):
+                extra[tag] = f
+    copy_extra_portraits(root, out, extra)
 
     # ---- focus art -------------------------------------------------------
     icon_tags = list(world_content.ICON_FOLDERS.keys())
@@ -985,6 +1012,11 @@ def main():
         f = world_content.find_portrait(md_leaders, tag, patterns)
         if f:
             portrait_1980[tag] = f
+    repo_root0 = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    for tag, (name, ide) in LEADERS_1980.items():
+        f = world_content.find_extra_portrait(repo_root0, tag, name)
+        if f:
+            portrait_1980[tag] = f
     capitals, owned = build_history(a.md_archive, out, states, tags, portrait_1980)
     missing = build_flags(a.md_repo, a.old_mod, out, set(owned) | set(balkan_content.BALKAN_TAGS)
                           | set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026))
@@ -992,8 +1024,9 @@ def main():
         print('flags without Millennium art:', len(missing), missing[:20])
     balkan_content.build(out, a.old_mod, states, capitals)
     names = country_names(a.md_repo, tags)
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     build_scenarios(out, a.md_repo, a.old_mod, states, tags,
-                    names['russian'], names['english'])
+                    names['russian'], names['english'], repo_root)
     write(os.path.join(a.out, 'Balkan_Collapse.mod'), balkan_content.descriptor(path='mod/Balkan_Collapse'))
     print('owners in 1980:', len(owned))
     print('done ->', out)

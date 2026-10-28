@@ -342,6 +342,38 @@ def sov_dissolve_effect(states_by_owner, leaders, md_owner_of):
 # --------------------------------------------------------------------------
 # copying of the Millennium Dawn art
 # --------------------------------------------------------------------------
+def surname(name):
+    """Last part of the name - used to match a portrait file to a leader."""
+    parts = [p for p in re.split(r'[\s-]+', name.strip()) if p]
+    return parts[-1] if parts else name
+
+
+def extra_portrait_dir(root, tag):
+    return os.path.join(root, 'assets', 'extra_portraits', tag)
+
+
+def find_extra_portrait(root, tag, name):
+    """Portrait that the user dropped into assets/extra_portraits/<TAG>/.
+
+    The file name has to contain the surname of the leader
+    (Tudjman.dds -> Franjo Tudjman). If the folder holds exactly one
+    picture and the name does not match, that picture is used as well.
+    """
+    d = extra_portrait_dir(root, tag)
+    if not os.path.isdir(d):
+        return None
+    files = sorted(f for f in os.listdir(d) if f.lower().endswith('.dds'))
+    if not files:
+        return None
+    want = norm(surname(name))
+    for f in files:
+        if want and want in norm(f):
+            return f
+    if len(files) == 1:
+        return files[0]
+    return None
+
+
 def copy_portraits(md_repo, out, leaders, extra_tags=()):
     """Copy the leader portraits into the mod. Returns {tag: file name}."""
     src_root = os.path.join(md_repo, 'gfx', 'leaders')
