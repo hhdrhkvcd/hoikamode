@@ -1,0 +1,131 @@
+﻿focus_tree = {
+
+    id = SRP_1992_tree
+
+    country = {
+
+        factor = 0
+
+        modifier = { add = 20 tag = SRP }
+
+    }
+
+    default = no
+
+    focus = {
+        id = SRP_proclamation
+        icon = GFX_goal_generic_political_reform
+        x = 4
+        y = 0
+        cost = 5
+        available = { has_country_flag = SRP_proclaimed }
+        completion_reward = {
+            add_political_power = 60
+            add_stability = 0.05
+        }
+    }
+
+    focus = {
+        id = SRP_constitution
+        icon = GFX_goal_generic_political_reform
+        x = 4
+        y = 1
+        cost = 5
+        prerequisite = { focus = SRP_proclamation }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.05
+        }
+    }
+
+    focus = {
+        id = SRP_industry
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 2
+        cost = 5
+        prerequisite = { focus = SRP_constitution }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = SRP_army
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 2
+        cost = 5
+        prerequisite = { focus = SRP_constitution }
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 15000
+        }
+    }
+
+    focus = {
+        id = SRP_trade
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 2
+        cost = 5
+        prerequisite = { focus = SRP_constitution }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = SRP_transport
+        icon = GFX_goal_generic_construct_infrastructure
+        x = 2
+        y = 3
+        cost = 5
+        prerequisite = { focus = SRP_industry }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = SRP_security
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 3
+        cost = 5
+        prerequisite = { focus = SRP_army }
+        completion_reward = {
+            army_experience = 10
+            add_war_support = 0.03
+        }
+    }
+
+    focus = {
+        id = SRP_diplomacy
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 3
+        cost = 5
+        prerequisite = { focus = SRP_trade }
+        completion_reward = {
+            add_political_power = 75
+        }
+    }
+
+    focus = {
+        id = SRP_sovereignty
+        icon = GFX_goal_generic_national_unity
+        x = 4
+        y = 4
+        cost = 5
+        prerequisite = { focus = SRP_diplomacy }
+        completion_reward = {
+            add_stability = 0.08
+            add_war_support = 0.03
+        }
+    }
+
+}
