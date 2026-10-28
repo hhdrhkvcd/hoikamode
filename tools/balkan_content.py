@@ -39,8 +39,10 @@ set_technology = {
 """
 
 
-def leader(name, ideology, desc):
-    return f'create_country_leader = {{\n\tname = "{name}"\n\tdesc = "{desc}"\n\tideology = {ideology}\n\ttraits = {{ }}\n}}\n'
+def leader(name, ideology, desc, picture=None):
+    pic = f'\n\tpicture = "{picture}"' if picture else ''
+    return (f'create_country_leader = {{\n\tname = "{name}"{pic}\n\tdesc = "{desc}"\n'
+            f'\tideology = {ideology}\n\ttraits = {{ }}\n}}\n')
 
 
 def politics(ruling, pops, elections='yes'):
@@ -53,11 +55,11 @@ HISTORY = {
     'SER': 'oob = "SER_1980"\n' + TECH + politics('communism', dict(democratic=6, fascism=2, communism=80, neutrality=12), 'no') +
            'set_stability = 0.7\nset_war_support = 0.3\nset_country_flag = SER_tito_alive\n'
            'add_ideas = { BC_tito_cult BC_jna BC_debt_crisis }\n' +
-           leader('Josip Broz Tito', 'marxism', 'SER_TITO_DESC'),
+           leader('Josip Broz Tito', 'marxism', 'SER_TITO_DESC', 'joska_broz.dds'),
     'CRO': TECH + politics('democratic', dict(democratic=60, fascism=8, communism=10, neutrality=22)) +
-           'set_stability = 0.55\nset_war_support = 0.5\n' + leader('Andrej Plenković', 'conservatism', 'CRO_LEADER_DESC'),
+           'set_stability = 0.55\nset_war_support = 0.5\n' + leader('Andrej Plenković', 'conservatism', 'CRO_LEADER_DESC', 'CRO_Andrej_Plenkovic.dds'),
     'SLV': TECH + politics('democratic', dict(democratic=68, fascism=4, communism=8, neutrality=20)) +
-           'set_stability = 0.65\nset_war_support = 0.3\n' + leader('Janez Janša', 'conservatism', 'SLV_LEADER_DESC'),
+           'set_stability = 0.65\nset_war_support = 0.3\n' + leader('Janez Janša', 'conservatism', 'SLV_LEADER_DESC', 'janez_jansa.dds'),
     'BOS': TECH + politics('democratic', dict(democratic=55, fascism=5, communism=10, neutrality=30)) +
            'set_stability = 0.4\nset_war_support = 0.5\n' + leader('Borjana Krišto', 'conservatism', 'BOS_LEADER_DESC'),
     'RSK': TECH + politics('neutrality', dict(democratic=25, fascism=10, communism=10, neutrality=55), 'yes') +
@@ -65,7 +67,7 @@ HISTORY = {
     'MNT': TECH + politics('democratic', dict(democratic=58, fascism=4, communism=8, neutrality=30)) +
            'set_stability = 0.6\nset_war_support = 0.2\n' + leader('Milojko Spajić', 'liberalism', 'MNT_LEADER_DESC'),
     'KOS': TECH + politics('democratic', dict(democratic=62, fascism=6, communism=4, neutrality=28)) +
-           'set_stability = 0.45\nset_war_support = 0.45\n' + leader('Albin Kurti', 'socialism', 'KOS_LEADER_DESC'),
+           'set_stability = 0.45\nset_war_support = 0.45\n' + leader('Albin Kurti', 'socialism', 'KOS_LEADER_DESC', 'albin_kurti.dds'),
     'FYR': TECH + politics('democratic', dict(democratic=57, fascism=5, communism=8, neutrality=30)) +
            'set_stability = 0.55\nset_war_support = 0.25\n' + leader('Hristijan Mickoski', 'conservatism', 'FYR_LEADER_DESC'),
 }
@@ -170,7 +172,7 @@ class Tree:
 
     def render(self):
         L = ['focus_tree = {', f'\tid = {self.id}', '\tcountry = {', '\t\tfactor = 0',
-             f'\t\tmodifier = {{ add = 20 tag = {self.tag} }}', '\t}', '\tdefault = no',
+             f'\t\tmodifier = {{ add = 20 tag = {self.tag} original_tag = {self.tag} }}', '\t}', '\tdefault = no',
              '\tcontinuous_focus_position = { x = 50 y = 1400 }']
         for f in self.focuses:
             L += ['\tfocus = {', f'\t\tid = {f["id"]}', f'\t\ticon = {f["icon"]}', f'\t\tx = {f["x"]}', f'\t\ty = {f["y"]}',
@@ -624,6 +626,19 @@ IDEAS = {
     'BC_professional_army': ('Профессиональная армия', 'Professional Army', 'army_attack_factor = 0.05 army_defence_factor = 0.05'),
     'BC_yugoslav_rebirth': ('Возрождённая Югославия', 'Yugoslavia Reborn', 'stability_factor = 0.1 political_power_gain = 0.2 industrial_capacity_factory = 0.05'),
     'BC_war_damage': ('Разрушения войны', 'War Damage', 'production_speed_buildings_factor = -0.1'),
+    'BC_generic_industry': ('Индустриализация', 'Industrialisation',
+                            'industrial_capacity_factory = 0.1 production_speed_buildings_factor = 0.1'),
+    'BC_generic_infra': ('Инфраструктурный бум', 'Infrastructure Boom',
+                         'production_speed_buildings_factor = 0.1 stability_factor = 0.03'),
+    'BC_generic_trade': ('Открытая экономика', 'Open Economy',
+                         'industrial_capacity_factory = 0.05 political_power_gain = 0.1'),
+    'BC_generic_army': ('Военная реформа', 'Military Reform', 'army_org_factor = 0.05 conscription = 0.01'),
+    'BC_generic_arms': ('Оборонная промышленность', 'Defence Industry',
+                        'industrial_capacity_factory = 0.05'),
+    'BC_generic_diplomacy': ('Дипломатическая активность', 'Diplomatic Activity',
+                             'political_power_gain = 0.15 stability_factor = 0.02'),
+    'BC_post_soviet': ('Общесоюзное наследие', 'Common Soviet Legacy',
+                       'stability_factor = -0.05 political_power_gain = 0.05'),
 }
 
 
@@ -879,6 +894,13 @@ LOC_COMMON = {
         'KOS_LEADER_DESC': 'Альбин Курти — премьер-министр Косово в 2026 году.',
         'FYR_LEADER_DESC': 'Християн Мицкоский — премьер-министр Северной Македонии в 2026 году.',
         'SER_1980_tree': 'Югославия: распад и возрождение',
+        'BC_1995_NAME': 'После Дейтона — 1995',
+        'BC_1995_DESC': '1 января 1995 года. Хорватская война и осада Сараева только что закончились: республики хорваты и боснийцы получили независимость, но Югославия не умерла — она продолжает разваливаться. СССР прекратил существование в декабре 1991 года, и пятнадцать его республик стали отдельными государствами.',
+        'BC_1995_HISTORY': 'Союзная Республика Югославия: Сербия и Черногория без Косово, изолированная Санкция, долгая зима. Сможете ли вы собрать страну заново — или вам придётся смириться с её смертью?',
+        'BC_2026_NAME': 'Сербия — 2026',
+        'BC_2026_DESC': '1 января 2026 года. Югославия давно не существует, а её народы живут по разные стороны границ, которые никто не признал окончательными. Балканы — члены ЕС и НАТО, но Белград снова мечтает о великой державе. Нацисты, «Студенческий список» и старые обиды ждут своего часа.',
+        'BC_2026_HISTORY': 'Республика Сербия без Косово, независимая Черногория, объединённая Босния. Александру Вучичу удалось собрать вокруг Белграда единый «Студенческий список» — и на выборах 25 октября 2026 года он получил рекордное большинство. Теперь решайте, что будет дальше.',
+        'OTHER_GRAND_DESC': 'Остальной мир: холодная война подходит к концу, но её тени останутся на десятилетия.',
     },
     'english': {
         'BC_1980_NAME': 'Breakup of Yugoslavia — 1980',
@@ -901,6 +923,13 @@ LOC_COMMON = {
         'KOS_LEADER_DESC': 'Albin Kurti, Prime Minister of Kosovo in 2026.',
         'FYR_LEADER_DESC': 'Hristijan Mickoski, Prime Minister of North Macedonia in 2026.',
         'SER_1980_tree': 'Yugoslavia: Break-up and Rebirth',
+        'BC_1995_NAME': 'After Dayton — 1995',
+        'BC_1995_DESC': '1 January 1995. The war in Croatia and the siege of Sarajevo are over: the Croats and the Bosnians have their own states, but Yugoslavia did not die - it keeps falling apart. The USSR ceased to exist in December 1991 and its fifteen republics are independent countries.',
+        'BC_1995_HISTORY': 'The Federal Republic of Yugoslavia: Serbia and Montenegro without Kosovo, a sealed country, a long winter. Can you still put the country back together - or will you have to accept its death?',
+        'BC_2026_NAME': 'Serbia — 2026',
+        'BC_2026_DESC': '1 January 2026. Yugoslavia has been gone for decades and its peoples live on different sides of borders nobody ever accepted. The Balkans are in the EU and NATO, but Belgrade dreams of a great power once more. The nationalists, the "Student List" and the old wounds are waiting.',
+        'BC_2026_HISTORY': 'The Republic of Serbia without Kosovo, an independent Montenegro, a united Bosnia. Aleksandar Vucic managed to gather a single "Student List" around Belgrade - and on 25 October 2026 it won a record majority. Now it is up to you to decide what comes next.',
+        'OTHER_GRAND_DESC': 'The rest of the world: the Cold War is coming to an end, but its shadows will remain for decades.',
     },
 }
 
@@ -966,7 +995,7 @@ GFX = """spriteTypes = {
 
 
 def descriptor(path=None):
-    L = ['name="Балканы 1980: распад Югославии"', 'version="2.0"', 'supported_version="1.*"',
+    L = ['name="Балканы 1980: распад Югославии"', 'version="3.0"', 'supported_version="1.*"',
          'tags={', '\t"Alternative History"', '\t"Historical"', '\t"Map"', '\t"National Focuses"', '\t"Events"', '}',
          'picture="thumbnail.png"']
     for p in ['history/states', 'history/countries', 'history/units', 'history/general', 'map/strategicregions',

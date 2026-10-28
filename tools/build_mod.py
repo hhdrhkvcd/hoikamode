@@ -21,6 +21,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pdx  # noqa: E402
 import balkan_content  # noqa: E402
+import world_content  # noqa: E402
 
 IDEOLOGIES = ['democratic', 'communism', 'fascism', 'neutrality']
 
@@ -182,7 +183,8 @@ def convert_states(md_archive):
                     res[k] = num(v)
         provinces = [int(p) for p in pdx.values(pdx.get(st, 'provinces', []))]
         states[sid] = dict(
-            id=sid, file=os.path.basename(path), owner=owner, cores=cores, claims=claims, vps=vps,
+            id=sid, file=os.path.basename(path), owner=owner, md_owner=owner,
+            cores=cores, claims=claims, vps=vps,
             blds=blds, prov_blds=prov_blds, res=res, provinces=provinces,
             manpower=int(num(pdx.get(st, 'manpower'), 1000)),
             category=pdx.get(st, 'state_category', 'state_01'),
@@ -466,6 +468,19 @@ MAJORS = set('USA SOV ENG FRA GER CHI JAP ITA'.split())
 DEVELOPED = MAJORS | set('DDR CZE POL HUN ROM BUL SER SWE SWI CAN AST HOL BEL ISR SPR TUR RAJ BRA ARG KOR TAI'.split())
 
 
+def base_country_body(tag, ruling, developed=True):
+    pops = {'communism': dict(democratic=5, fascism=2, communism=80, neutrality=13),
+            'democratic': dict(democratic=60, fascism=5, communism=15, neutrality=20),
+            'neutrality': dict(democratic=15, fascism=8, communism=12, neutrality=65)}[ruling]
+    tech = BASE_TECH + (ADVANCED_TECH if developed else [])
+    L = ['set_research_slots = 3', 'set_technology = {'] + [f'\t{t} = 1' for t in dict.fromkeys(tech)] + ['}',
+         'set_politics = {', f'\truling_party = {ruling}', '\tlast_election = "1980.1.1"',
+         '\telection_frequency = 48', '\telections_allowed = yes', '}',
+         'set_popularities = { ' + ' '.join(f'{k} = {v}' for k, v in pops.items()) + ' }',
+         'set_stability = 0.5', 'set_war_support = 0.25']
+    return '\n'.join(L) + '\n'
+
+
 def build_history(md_archive, out, states, tags):
     owned = collections.defaultdict(list)
     for s in states.values():
@@ -487,13 +502,23 @@ def build_history(md_archive, out, states, tags):
             cap = max(sts, key=lambda s: (sum(v for _, v in s['vps']), s['manpower']))['id']
         capitals[tag] = cap
     balkan = balkan_content.HISTORY
-    for tag in sorted(set(owned) | set(balkan)):
+    extra_tags = set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026)
+    for tag in sorted((set(owned) | set(balkan) | extra_tags)):
         if tag not in tags:
             raise SystemExit(f'owner tag {tag} not defined')
         if tag in balkan:
             body = balkan[tag]
             cap = capitals.get(tag, balkan_content.CAPITALS[tag])
             text = f'capital = {balkan_content.CAPITALS.get(tag, cap)}\n' + body
+        elif tag in world_content.SOV_SUCCESSORS:
+            # a republic of the USSR: it only becomes a country after the 1991 collapse
+            own = [s for s in states.values() if s['md_owner'] == tag]
+            cap = md_capitals.get(tag)
+            if cap is None or cap not in [s['id'] for s in own]:
+                cap = max(own, key=lambda s: (sum(v for _, v in s['vps']), s['id']))['id'] if own else 0
+            text = (f'capital = {cap}\n' + base_country_body(tag, 'democratic', developed=False))
+        elif tag not in owned:
+            continue          # a landless autonomous region (folded into its mother country)
         else:
             cap = capitals[tag]
             ruling = 'communism' if tag in COMMUNIST_1980 else 'democratic' if tag in DEMOCRATIC_1980 else 'neutrality'
@@ -612,6 +637,303 @@ def build_flags(md_repo, old_mod, out, tags_needed):
 
 
 # --------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------
+# Portraits, focus art and the three scenarios
+# --------------------------------------------------------------------------
+BALKAN_PORTRAITS = {
+    'SER': ['joska_broz.dds'],
+    'CRO': ['CRO_Andrej_Plenkovic.dds'],
+    'SLV': ['janez_jansa.dds'],
+    'KOS': ['albin_kurti.dds'],
+}
+
+
+def scenario_portraits(md_repo, leaders):
+    """{tag: portrait file} for the leaders of one scenario."""
+    md_leaders = os.path.join(md_repo, 'gfx', 'leaders')
+    out = {}
+    for tag, spec in leaders.items():
+        name, ide, patterns, dkey = spec
+        f = world_content.find_portrait(md_leaders, tag, patterns)
+        if f:
+            out[tag] = f
+    return out
+
+
+def copy_portraits(md_repo, out, wanted):
+    """wanted: {tag: [file names]}"""
+    md_leaders = os.path.join(md_repo, 'gfx', 'leaders')
+    for tag, files in wanted.items():
+        for f in files:
+            src = os.path.join(md_leaders, tag, f)
+            if not os.path.exists(src):
+                continue
+            dst_dir = os.path.join(out, 'gfx', 'leaders', tag)
+            os.makedirs(dst_dir, exist_ok=True)
+            shutil.copy2(src, os.path.join(dst_dir, f))
+
+
+def md_sprite_table(md_repo):
+    """name -> texturefile for every sprite defined by Millennium Dawn."""
+    table = {}
+    for p in glob.glob(os.path.join(md_repo, 'interface', '*.gfx')):
+        t = read(p)
+        for m in re.finditer(r'name\s*=\s*"([^"]+)"\s*\n\s*texturefile\s*=\s*"([^"]+)"', t):
+            table.setdefault(m.group(1), m.group(2))
+    return table
+
+
+ICON_FOLDER_BY_TOKEN = {
+    'army': '00_army', 'military': '00_army', 'tanks': '00_army', 'artillery': '00_army',
+    'weapons': '00_army', 'infantry': '00_army', 'doctrines': '00_army', 'position': '00_army',
+    'occupy': '00_army', 'fortify': '00_army', 'defence': '00_army', 'defense': '00_army',
+    'guns': '00_army', 'forces': '00_army', 'special': '00_army', 'school': '00_army',
+    'naval': '00_navy', 'dockyard': '00_navy', 'fleet': '00_navy', 'submarine': '00_navy',
+    'merchant': '00_navy', 'seaport': '00_navy',
+    'industry': '00_economy', 'production': '00_economy', 'economic': '00_economy',
+    'energy': '00_economy', 'hydroelectric': '00_economy', 'aluminum': '00_economy',
+    'mining': '00_economy', 'oil': '00_economy', 'investments': '00_economy',
+    'reorient': '00_economy', 'civilian': '00_economy', 'infrastructure': '00_economy',
+    'trade': '00_economy', 'construction': '00_economy', 'industrial': '00_economy',
+    'diplomatic': '00_diplomacy', 'treaty': '00_diplomacy', 'relations': '00_diplomacy',
+    'pressure': '00_diplomacy', 'concessions': '00_diplomacy', 'entente': '00_diplomacy',
+    'diplomacy': '00_diplomacy', 'balkans': 'serbia', 'balkan': 'serbia', 'yugoslav': 'serbia',
+    'ikarus': 'croatia', 'banovina': 'croatia', 'adriatic': 'croatia',
+    'safeguard': 'Bosnia', 'divide': 'Bosnia', 'albania': 'albania',
+    'alliance': '00_alliance', 'allies': '00_alliance', 'entente': '00_alliance',
+    'propaganda': '00_media', 'media': '00_media', 'press': '00_media',
+    'democracy': '00_ideology', 'soviet': '00_ideology', 'national': '00_ideology',
+    'unity': '00_ideology', 'ideology': '00_ideology', 'communism': '00_ideology',
+    'court': '00_buildings', 'administration': '00_buildings', 'parliament': '00_buildings',
+    'university': '00_buildings', 'capital': '00_cities', 'city': '00_cities',
+    'port': '00_cities', 'flags': '00_alliance', 'suffrage': '00_ideology',
+    'self': '00_ideology', 'annex': '00_expansion', 'territory': '00_expansion',
+    'war': '00_conflict', 'major': '00_alliance', 'occupying': '00_conflict',
+    'construct': '00_economy', 'factory': '00_economy', 'civ': '00_economy',
+    'small': '00_army', 'arms': '00_army', 'allies': '00_army', 'build': '00_economy',
+}
+DEFAULT_FOLDER = '00_diplomacy'
+
+
+def find_art(md_repo, key):
+    """Find a suitable picture for a focus icon inside the Millennium Dawn art."""
+    goals = os.path.join(md_repo, 'gfx', 'interface', 'goals')
+    tokens = [t for t in re.split(r'_', key.lower()) if t not in ('gfx', 'focus', 'goal', 'generic')]
+    folder = None
+    for t in tokens:
+        if t in ICON_FOLDER_BY_TOKEN:
+            folder = ICON_FOLDER_BY_TOKEN[t]
+            break
+    candidates = []
+    if folder:
+        d = os.path.join(goals, folder)
+        if os.path.isdir(d):
+            candidates = sorted(f for f in os.listdir(d) if f.lower().endswith('.dds'))
+    if not candidates:
+        for t in tokens:
+            d = os.path.join(goals, ICON_FOLDER_BY_TOKEN.get(t, DEFAULT_FOLDER))
+            if os.path.isdir(d):
+                candidates = sorted(f for f in os.listdir(d) if f.lower().endswith('.dds'))
+                if candidates:
+                    break
+    if not candidates:
+        return None
+    for t in tokens:
+        for f in candidates:
+            if t in f.lower():
+                return f'gfx/interface/goals/{folder}/{f}' if folder else None
+    for f in candidates:
+        if f.lower().startswith('generic'):
+            return f'gfx/interface/goals/{folder}/{f}' if folder else None
+    if candidates and folder:
+        return f'gfx/interface/goals/{folder}/{candidates[0]}'
+    return None
+
+
+def resolve_icons(md_repo, out, icon_keys):
+    """Every focus icon gets its own picture (copied from Millennium Dawn)."""
+    table = md_sprite_table(md_repo)
+    sprites = []
+    mapping = {}
+    for key in sorted(set(icon_keys)):
+        tex = table.get(key)
+        if tex and os.path.exists(os.path.join(md_repo, tex)):
+            src = os.path.join(md_repo, tex)
+        else:
+            src_rel = find_art(md_repo, key)
+            if not src_rel:
+                continue
+            src = os.path.join(md_repo, src_rel)
+            tex = src_rel
+        if not os.path.exists(src):
+            continue
+        new = 'BC_ico_' + re.sub(r'[^A-Za-z0-9]', '_', key)
+        dst = os.path.join(out, tex)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        if not os.path.exists(dst):
+            shutil.copy2(src, dst)
+        sprites.append((new, tex))
+        mapping[key] = new
+    return sprites, mapping
+
+
+def country_icon_sprites(out, copied):
+    """Sprites for the country art copied out of Millennium Dawn."""
+    lines = []
+    for tag, files in copied.items():
+        for f in files:
+            tex = f'gfx/interface/goals/bc_{tag}/{f}'
+            if not os.path.exists(os.path.join(out, tex)):
+                continue
+            lines.append((f'BC_ico_{tag}_{os.path.splitext(f)[0]}', tex))
+    return lines
+
+
+def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en):
+    """Writes the three bookmarks (1980 / 1995 / 2026) and the extra localisation."""
+    md_owner_of = {s['id']: s['md_owner'] for s in states.values()}
+
+    # ---- portraits -------------------------------------------------------
+    wanted = {k: list(v) for k, v in BALKAN_PORTRAITS.items()}
+    p1995 = scenario_portraits(md_repo, world_content.LEADERS_1995)
+    p2026 = scenario_portraits(md_repo, world_content.LEADERS_2026)
+    for mapping in (p1995, p2026):
+        for tag, f in mapping.items():
+            wanted.setdefault(tag, [])
+            if f not in wanted[tag]:
+                wanted[tag].append(f)
+    copy_portraits(md_repo, out, wanted)
+
+    # ---- focus art -------------------------------------------------------
+    icon_tags = list(world_content.ICON_FOLDERS.keys())
+    copied = world_content.copy_focus_icons(md_repo, out, icon_tags)
+    trees = balkan_content.all_trees()
+    # generic focus tree for every country without its own
+    gen_files = []
+    for tag in tags:
+        if tag in balkan_content.BALKAN_TAGS:
+            continue
+        path = os.path.join(out, 'common', 'national_focus', f'bc_gen_{tag}.txt')
+        write(path, world_content.generic_tree(tag, f'BC_GEN_{tag}_tree'))
+        gen_files.append(path)
+    icon_keys = [f['icon'] for t in trees for f in t.focuses]
+    for p in gen_files:
+        icon_keys += re.findall(r'icon = (\S+)', read(p))
+    md_sprites, icon_mapping = resolve_icons(md_repo, out, icon_keys)
+    for t in trees:
+        for f in t.focuses:
+            f['icon'] = icon_mapping.get(f['icon'], f['icon'])
+
+    # country art for the Balkan trees
+    for t in trees:
+        if t.tag in copied:
+            world_content.assign_country_icons(t, t.tag, copied[t.tag])
+    icon_keys = [f['icon'] for t in trees for f in t.focuses]
+
+    # write the trees again (icons may have changed)
+    for t in trees:
+        write(os.path.join(out, 'common', 'national_focus', f'bc_{t.tag.lower()}_focus.txt'), t.render())
+
+    # every icon of every tree (also the generic ones) gets a real picture
+    all_keys = set(f['icon'] for t in trees for f in t.focuses)
+    extra_sprites, mapping = resolve_icons(md_repo, out, all_keys)
+    md_sprites += extra_sprites
+    for t in trees:
+        for f in t.focuses:
+            f['icon'] = mapping.get(f['icon'], f['icon'])
+    for t in trees:
+        write(os.path.join(out, 'common', 'national_focus', f'bc_{t.tag.lower()}_focus.txt'), t.render())
+
+    merged = dict(icon_mapping)
+    merged.update(mapping)
+    for p in gen_files:
+        txt = read(p)
+        for k, v in merged.items():
+            txt = re.sub(r'icon = ' + re.escape(k) + r'\b', 'icon = ' + v, txt)
+        write(p, txt)
+
+    sprites = md_sprites + country_icon_sprites(out, copied)
+    for key, file in (('GFX_select_date_1980', 'bc_bookmark_1980.dds'),
+                      ('GFX_select_date_1995', 'bc_bookmark_1995.dds'),
+                      ('GFX_select_date_2026', 'bc_bookmark_2026.dds')):
+        if os.path.exists(os.path.join(out, 'gfx', 'interface', file)):
+            sprites.append((key, f'gfx/interface/{file}'))
+    gfx = ['spriteTypes = {']
+    for name, tex in sprites:
+        gfx += ['\tspriteType = {', f'\t\tname = "{name}"', f'\t\ttexturefile = "{tex}"', '\t}']
+    gfx.append('}')
+    write(os.path.join(out, 'interface', 'bc_goals.gfx'), '\n'.join(gfx) + '\n')
+
+    # ---- localisation ----------------------------------------------------
+    loc = {'russian': {}, 'english': {}}
+    for tag, (name, ide, patterns, dkey) in world_content.LEADERS_1995.items():
+        ru_c = names_ru.get(tag, tag)
+        en_c = names_en.get(tag, tag)
+        loc['russian'][dkey] = f'{name} \u2014 \u0433\u043b\u0430\u0432\u0430 \u0433\u043e\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0430 {ru_c} \u0432 1995 \u0433\u043e\u0434\u0443.'
+        loc['english'][dkey] = f'{name} - head of state of {en_c} in 1995.'
+    for tag, (name, ide, patterns, dkey) in world_content.LEADERS_2026.items():
+        ru_c = names_ru.get(tag, tag)
+        en_c = names_en.get(tag, tag)
+        loc['russian'][dkey] = f'{name} \u2014 \u0433\u043b\u0430\u0432\u0430 \u0433\u043e\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0430 {ru_c} \u0432 2026 \u0433\u043e\u0434\u0443.'
+        loc['english'][dkey] = f'{name} - head of state of {en_c} in 2026.'
+    for tag in tags:
+        if tag in balkan_content.BALKAN_TAGS:
+            continue
+        loc['russian'].update(world_content.generic_loc(tag, names_ru.get(tag, tag), 'russian'))
+        loc['english'].update(world_content.generic_loc(tag, names_en.get(tag, tag), 'english'))
+    for lang, d in loc.items():
+        write(os.path.join(out, 'localisation', lang, f'bc_world_l_{lang}.yml'),
+              'l_' + lang + ':\n' + '\n'.join(f' {k}:0 "{v}"' for k, v in d.items()) + '\n', bom=True)
+
+    # ---- the collapse of the USSR on 26 December 1991 --------------------
+    diss = world_content.sov_dissolve(md_owner_of, world_content.LEADERS_1995, p1995)
+    write(os.path.join(out, 'common', 'on_actions', 'bc_actions.txt'),
+          'on_actions = {\n\ton_daily = {\n\t\teffect = {\n\t\t\tif = {\n'
+          '\t\t\t\tlimit = { date > 1991.12.25 NOT = { SOV = { has_country_flag = BC_SOV_COLLAPSE } } }\n'
+          '\t\t\t\tSOV = { set_country_flag = BC_SOV_COLLAPSE ' + diss + ' }\n'
+          '\t\t\t}\n\t\t}\n\t}\n}\n')
+
+    # ---- the three bookmarks --------------------------------------------
+    scn = []
+    for key, date, name, desc, hist, ide in (
+            ('bc_1995', '1995.1.1.12', 'BC_1995_NAME', 'BC_1995_DESC', 'BC_1995_HISTORY', 'neutrality'),
+            ('bc_2026', '2026.1.1.12', 'BC_2026_NAME', 'BC_2026_DESC', 'BC_2026_HISTORY', 'despotism')):
+        leaders = world_content.LEADERS_1995 if key == 'bc_1995' else world_content.LEADERS_2026
+        portraits = p1995 if key == 'bc_1995' else p2026
+        effect = world_content.scenario_effects(key, md_owner_of, leaders, portraits)
+        focuses = ['SER_tito_legacy'] if key == 'bc_1995' else ['SER_tito_legacy', 'SER_restore_yugoslavia']
+        scn.append(dict(id=key, date=date, name=name, desc=desc, history=hist,
+                        ideology=ide, focuses=focuses, effect=effect))
+    write(os.path.join(out, 'common', 'bookmarks', 'bc_scenarios.txt'),
+          world_content.bookmarks_file(scn))
+
+    # ---- pictures: the artwork of the first version of the mod ------------
+    src = os.path.join(old_mod, 'Balkan_Collapse')
+    ld_src = os.path.join(src, 'gfx', 'loadingscreens')
+    if os.path.isdir(ld_src):
+        os.makedirs(os.path.join(out, 'gfx', 'loadingscreens'), exist_ok=True)
+        # 1 - Serbia 1980, the beginning of the collapse
+        # 2 - Serbia alone
+        # 3 - modern Belgrade
+        plan = [('load_1.dds', 'load_1.dds'), ('load_2.dds', 'load_2.dds'), ('load_5.dds', 'load_3.dds'),
+                (os.path.join('..', 'interface', 'illustrations', 'bc_main_menu_background.dds'), 'load_4.dds'),
+                (os.path.join('..', 'interface', 'illustrations', 'bc_serbia_background.dds'), 'load_5.dds')]
+        for a, b in plan:
+            p = os.path.join(ld_src, a)
+            if os.path.exists(p):
+                shutil.copy2(p, os.path.join(out, 'gfx', 'loadingscreens', b))
+        # bookmark pictures
+        os.makedirs(os.path.join(out, 'gfx', 'interface'), exist_ok=True)
+        for src_name, dst_name in (('load_1.dds', 'bc_bookmark_1980.dds'), ('load_2.dds', 'bc_bookmark_1995.dds'),
+                                   ('load_5.dds', 'bc_bookmark_2026.dds')):
+            p = os.path.join(ld_src, src_name)
+            if os.path.exists(p):
+                shutil.copy2(p, os.path.join(out, 'gfx', 'interface', dst_name))
+    return copied
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--md-archive', required=True)
@@ -630,10 +952,14 @@ def main():
     tags = build_countries(a.md_repo, out, None)
     build_localisation(a.md_repo, out, tags)
     capitals, owned = build_history(a.md_archive, out, states, tags)
-    missing = build_flags(a.md_repo, a.old_mod, out, set(owned) | set(balkan_content.BALKAN_TAGS))
+    missing = build_flags(a.md_repo, a.old_mod, out, set(owned) | set(balkan_content.BALKAN_TAGS)
+                          | set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026))
     if missing:
         print('flags without Millennium art:', len(missing), missing[:20])
     balkan_content.build(out, a.old_mod, states, capitals)
+    names = country_names(a.md_repo, tags)
+    build_scenarios(out, a.md_repo, a.old_mod, states, tags,
+                    names['russian'], names['english'])
     write(os.path.join(a.out, 'Balkan_Collapse.mod'), balkan_content.descriptor(path='mod/Balkan_Collapse'))
     print('owners in 1980:', len(owned))
     print('done ->', out)
