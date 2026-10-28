@@ -1,0 +1,16 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 901
+    name = "STATE_901"
+    manpower = 1092848
+    state_category = rural
+    history = {
+        owner = ECU
+        controller = ECU
+        add_core_of = ECU
+        buildings = {
+            infrastructure = 1
+        }
+    }
+    provinces = { 8075 10888 }
+}

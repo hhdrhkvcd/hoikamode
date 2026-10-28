@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 494
+    name = "STATE_494"
+    manpower = 1735826
+    state_category = town
+    history = {
+        owner = PRU
+        controller = PRU
+        add_core_of = PRU
+        buildings = {
+            infrastructure = 2
+            air_base = 1
+        }
+    }
+    provinces = { 2212 2226 5166 8160 8191 10940 }
+}

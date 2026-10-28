@@ -1,0 +1,28 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 525
+    name = "STATE_525"
+    manpower = 8007142
+    state_category = megalopolis
+    resources = {
+        steel = 50
+    }
+    history = {
+        owner = KOR
+        controller = KOR
+        add_core_of = KOR
+        add_claim_by = PRK
+        victory_points = { 11977 7 }
+        victory_points = { 14238 3 }
+        victory_points = { 14239 2 }
+        buildings = {
+            infrastructure = 5
+            air_base = 4
+            industrial_complex = 8
+            arms_factory = 2
+            dockyard = 1
+            anti_air_building = 4
+        }
+    }
+    provinces = { 1100 7175 7204 11977 11992 14238 14239 14240 }
+}

@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 779
+    name = "STATE_779"
+    manpower = 1688760
+    state_category = rural
+    history = {
+        owner = CPC
+        controller = CPC
+        add_core_of = CAR
+        add_core_of = CPC
+        buildings = {
+            infrastructure = 1
+        }
+    }
+    provinces = { 1974 5084 8078 14484 14585 14587 }
+}

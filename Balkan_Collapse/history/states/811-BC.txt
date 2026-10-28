@@ -1,0 +1,20 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 811
+    name = "STATE_811"
+    manpower = 2056250
+    state_category = city
+    history = {
+        owner = PAL
+        controller = PAL
+        add_core_of = PAL
+        add_claim_by = ISR
+        victory_points = { 4088 10 }
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 2
+            arms_factory = 2
+        }
+    }
+    provinces = { 4088 }
+}

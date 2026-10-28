@@ -1,0 +1,21 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1304
+    name = "STATE_1304"
+    manpower = 1310000
+    state_category = large_town
+    resources = {
+        chromium = 10.000
+        steel = 9.000
+    }
+    history = {
+        owner = SAF
+        controller = SAF
+        add_core_of = SAF
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 1
+        }
+    }
+    provinces = { 10697 12419 14422 14426 14427 14432 14463 }
+}

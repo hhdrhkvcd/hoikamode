@@ -1,0 +1,18 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 904
+    name = "STATE_904"
+    manpower = 38100
+    state_category = wasteland
+    resources = {
+        oil = 1
+    }
+    history = {
+        owner = FRA
+        controller = FRA
+        add_core_of = FRA
+        add_core_of = CAY
+        buildings = { }
+    }
+    provinces = { 4934 }
+}

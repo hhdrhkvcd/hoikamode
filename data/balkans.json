@@ -1,0 +1,241 @@
+{
+  "version": "2.0.5",
+  "start_date": "1980.5.1.12",
+  "reconstruction_date": "2008.2.18.12",
+  "end_date": "2036.1.1.1",
+  "countries": {
+    "SER": {
+      "name_ru": "Сербия",
+      "name_en": "Serbia",
+      "capital": 107,
+      "states": [
+        45,
+        107,
+        108,
+        1296
+      ],
+      "leader": "Aleksandar Vučić",
+      "leader_ru": "Александр Вучич",
+      "ideology": "conservatism",
+      "ruling_party": "democratic",
+      "divisions": 12
+    },
+    "CRO": {
+      "name_ru": "Хорватия",
+      "name_en": "Croatia",
+      "capital": 109,
+      "states": [
+        103,
+        109,
+        163,
+        736,
+        1306
+      ],
+      "independence": "1991.6.25",
+      "leader": "Andrej Plenković",
+      "leader_ru": "Андрей Пленкович",
+      "ideology": "conservatism",
+      "ruling_party": "democratic",
+      "divisions": 6
+    },
+    "SLV": {
+      "name_ru": "Словения",
+      "name_en": "Slovenia",
+      "capital": 102,
+      "states": [
+        102,
+        900
+      ],
+      "independence": "1991.6.25",
+      "leader": "Janez Janša",
+      "leader_ru": "Янез Янша",
+      "ideology": "conservatism",
+      "ruling_party": "democratic",
+      "divisions": 3
+    },
+    "BOS": {
+      "name_ru": "Босния и Герцеговина",
+      "name_en": "Bosnia and Herzegovina",
+      "capital": 104,
+      "states": [
+        104,
+        848,
+        849,
+        850,
+        851
+      ],
+      "independence": "1992.3.3",
+      "leader": "Borjana Krišto",
+      "leader_ru": "Боряна Кришто",
+      "ideology": "centrism",
+      "ruling_party": "democratic",
+      "divisions": 4
+    },
+    "SRP": {
+      "name_ru": "Республика Сербская",
+      "name_en": "Republika Srpska",
+      "capital": 848,
+      "states": [
+        848,
+        849
+      ],
+      "release_states": [
+        848,
+        849,
+        850
+      ],
+      "independence": "1992.1.9",
+      "leader": "Siniša Karan",
+      "leader_ru": "Синиша Каран",
+      "ideology": "despotism",
+      "ruling_party": "neutrality",
+      "divisions": 3
+    },
+    "MNT": {
+      "name_ru": "Черногория",
+      "name_en": "Montenegro",
+      "capital": 105,
+      "states": [
+        105
+      ],
+      "independence": "2006.6.3",
+      "leader": "Milojko Spajić",
+      "leader_ru": "Милойко Спаич",
+      "ideology": "centrism",
+      "ruling_party": "democratic",
+      "divisions": 2
+    },
+    "MAC": {
+      "name_ru": "Северная Македония",
+      "name_en": "North Macedonia",
+      "capital": 106,
+      "states": [
+        106
+      ],
+      "independence": "1991.9.25",
+      "leader": "Hristijan Mickoski",
+      "leader_ru": "Христиан Мицкоский",
+      "ideology": "conservatism",
+      "ruling_party": "democratic",
+      "divisions": 3
+    },
+    "KOS": {
+      "name_ru": "Косово",
+      "name_en": "Kosovo",
+      "capital": 785,
+      "states": [
+        785,
+        1305
+      ],
+      "independence": "2008.2.17",
+      "leader": "Albin Kurti",
+      "leader_ru": "Альбин Курти",
+      "ideology": "socialism",
+      "ruling_party": "democratic",
+      "divisions": 2
+    }
+  },
+  "state_names": {
+    "45": [
+      "Vojvodina",
+      "Воеводина"
+    ],
+    "102": [
+      "Slovenia",
+      "Словения"
+    ],
+    "103": [
+      "Dalmatia",
+      "Далмация"
+    ],
+    "104": [
+      "Bosnia",
+      "Босния"
+    ],
+    "105": [
+      "Montenegro",
+      "Черногория"
+    ],
+    "106": [
+      "North Macedonia",
+      "Северная Македония"
+    ],
+    "107": [
+      "Belgrade",
+      "Белград"
+    ],
+    "108": [
+      "Southern and Eastern Serbia",
+      "Южная и Восточная Сербия"
+    ],
+    "109": [
+      "Zagreb and Slavonia",
+      "Загреб и Славония"
+    ],
+    "163": [
+      "Kvarner and Lika",
+      "Кварнер и Лика"
+    ],
+    "736": [
+      "Istria",
+      "Истрия"
+    ],
+    "785": [
+      "Kosovo",
+      "Косово"
+    ],
+    "848": [
+      "Northern Republika Srpska",
+      "Север Республики Сербской"
+    ],
+    "849": [
+      "Eastern Republika Srpska",
+      "Восток Республики Сербской"
+    ],
+    "850": [
+      "Brčko",
+      "Брчко"
+    ],
+    "851": [
+      "Herzegovina",
+      "Герцеговина"
+    ],
+    "900": [
+      "Slovenian Littoral",
+      "Словенское Приморье"
+    ],
+    "1296": [
+      "Šumadija and Western Serbia",
+      "Шумадия и Западная Сербия"
+    ],
+    "1305": [
+      "Northern Kosovo",
+      "Северное Косово"
+    ],
+    "1306": [
+      "Krajina",
+      "Краина"
+    ]
+  },
+  "compatibility_tags": [
+    "BHR",
+    "BLC",
+    "CHM",
+    "CIN",
+    "GDC",
+    "GSM",
+    "HBC",
+    "IMO",
+    "KAS",
+    "KHM",
+    "KLT",
+    "KUM",
+    "NXM",
+    "RKH",
+    "RNG",
+    "RUT",
+    "SAB",
+    "SOK",
+    "XIC"
+  ]
+}

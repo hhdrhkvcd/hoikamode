@@ -1,0 +1,28 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 470
+    name = "STATE_470"
+    manpower = 4391551
+    state_category = town
+    resources = {
+        tungsten = 60
+        oil = 160
+        steel = 6
+    }
+    history = {
+        owner = CAN
+        controller = CAN
+        add_core_of = CAN
+        victory_points = { 1262 10 }
+        victory_points = { 3010 5 }
+        victory_points = { 7787 3 }
+        victory_points = { 3706 3 }
+        victory_points = { 7348 2 }
+        buildings = {
+            infrastructure = 3
+            industrial_complex = 1
+            air_base = 2
+        }
+    }
+    provinces = { 515 1262 1347 1763 1804 2407 3010 3706 4272 4765 6726 6754 7348 7718 7766 7787 7830 10684 12166 12534 13192 }
+}

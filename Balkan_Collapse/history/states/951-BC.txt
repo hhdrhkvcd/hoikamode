@@ -1,0 +1,20 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 951
+    name = "STATE_951"
+    manpower = 262272
+    state_category = town
+    resources = {
+        oil = 40
+    }
+    history = {
+        owner = USA
+        controller = USA
+        add_core_of = USA
+        add_core_of = CAL
+        buildings = {
+            infrastructure = 3
+        }
+    }
+    provinces = { 13368 7986 }
+}

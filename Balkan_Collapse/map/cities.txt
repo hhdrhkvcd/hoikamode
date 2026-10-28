@@ -1,0 +1,83 @@
+types_source = "map/cities.bmp"
+pixel_step_x = 2
+pixel_step_y = 2
+city_group = {
+    color_index = 15
+    density = 0.2
+    building = {
+        distance = 1
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 2
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 3
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 4
+        mesh = { "westerngfx_house_1_1" }
+    }
+}
+city_group = {
+    color_index = 0
+    density = 0.00001
+    building = {
+        distance = 1
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 2
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 3
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 4
+        mesh = { "westerngfx_house_1_1" }
+    }
+}
+city_group = {
+    color_index = 1
+    density = 1.0
+    building = {
+        distance = 1
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 2
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 3
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 4
+        mesh = { "westerngfx_house_1_1" }
+    }
+}
+city_group = {
+    color_index = 2
+    density = 0.2
+    building = {
+        distance = 1
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 2
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 3
+        mesh = { "westerngfx_house_1_1" }
+    }
+    building = {
+        distance = 4
+        mesh = { "westerngfx_house_1_1" }
+    }
+}

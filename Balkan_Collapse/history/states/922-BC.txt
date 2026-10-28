@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 922
+    name = "STATE_922"
+    manpower = 13645
+    state_category = pastoral
+    history = {
+        owner = HOU
+        controller = HOU
+        add_core_of = HOU
+        add_core_of = YEM
+        buildings = {
+            infrastructure = 1
+        }
+    }
+    provinces = { 13270 }
+}

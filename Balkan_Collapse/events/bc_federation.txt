@@ -1,0 +1,35 @@
+add_namespace = bc_federation
+country_event = {
+    id = bc_federation.1
+    title = bc_federation.1.t
+    desc = bc_federation.1.d
+    picture = GFX_BC_event_serbia
+    is_triggered_only = yes
+    option = {
+        name = bc_federation.1.a
+        ai_chance = { factor = 70 modifier = { factor = 3 has_country_flag = BC_open_to_federation } }
+        if = {
+            limit = { country_exists = FROM has_war = no FROM = { has_war = no } }
+            # A subject entity follows its constitutional parent only when that parent consents.
+            if = {
+                limit = { tag = BOS country_exists = SRP SRP = { is_subject_of = ROOT } }
+                FROM = { annex_country = { target = SRP transfer_troops = yes } }
+            }
+            FROM = { annex_country = { target = ROOT transfer_troops = yes } }
+        }
+    }
+    option = {
+        name = bc_federation.1.b
+        ai_chance = { factor = 30 }
+        add_stability = 0.02
+        if = { limit = { country_exists = FROM } FROM = { country_event = { id = bc_federation.2 days = 1 } } }
+    }
+}
+country_event = {
+    id = bc_federation.2
+    title = bc_federation.2.t
+    desc = bc_federation.2.d
+    picture = GFX_BC_event_serbia
+    is_triggered_only = yes
+    option = { name = bc_federation.2.a add_political_power = 10 }
+}

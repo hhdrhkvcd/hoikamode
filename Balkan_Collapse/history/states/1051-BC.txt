@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1051
+    name = "STATE_1051"
+    manpower = 883292
+    state_category = rural
+    history = {
+        owner = TAL
+        controller = TAL
+        add_core_of = AFG
+        add_core_of = TAL
+        buildings = {
+            infrastructure = 2
+        }
+    }
+    provinces = { 13744 13745 13748 13746 13747 2062 }
+}

@@ -1,0 +1,234 @@
+spriteTypes = {
+    spriteType = {
+        name = "GFX_BC_goal_tito"
+        texturefile = "gfx/interface/goals/bc_tito.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_tito"
+        texturefile = "gfx/interface/goals/bc_tito.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_tito_shine"
+        texturefile = "gfx/interface/goals/bc_tito.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_government"
+        texturefile = "gfx/interface/goals/bc_government.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_government"
+        texturefile = "gfx/interface/goals/bc_government.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_government_shine"
+        texturefile = "gfx/interface/goals/bc_government.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_economy"
+        texturefile = "gfx/interface/goals/bc_economy.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_economy"
+        texturefile = "gfx/interface/goals/bc_economy.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_economy_shine"
+        texturefile = "gfx/interface/goals/bc_economy.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_transport"
+        texturefile = "gfx/interface/goals/bc_transport.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_transport"
+        texturefile = "gfx/interface/goals/bc_transport.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_transport_shine"
+        texturefile = "gfx/interface/goals/bc_transport.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_diplomacy"
+        texturefile = "gfx/interface/goals/bc_diplomacy.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_diplomacy"
+        texturefile = "gfx/interface/goals/bc_diplomacy.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_diplomacy_shine"
+        texturefile = "gfx/interface/goals/bc_diplomacy.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_research"
+        texturefile = "gfx/interface/goals/bc_research.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_research"
+        texturefile = "gfx/interface/goals/bc_research.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_research_shine"
+        texturefile = "gfx/interface/goals/bc_research.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_reconstruction"
+        texturefile = "gfx/interface/goals/bc_reconstruction.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_reconstruction"
+        texturefile = "gfx/interface/goals/bc_reconstruction.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_reconstruction_shine"
+        texturefile = "gfx/interface/goals/bc_reconstruction.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_army"
+        texturefile = "gfx/interface/goals/bc_army.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_army"
+        texturefile = "gfx/interface/goals/bc_army.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_army_shine"
+        texturefile = "gfx/interface/goals/bc_army.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_ser"
+        texturefile = "gfx/interface/goals/bc_ser.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_ser"
+        texturefile = "gfx/interface/goals/bc_ser.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_ser_shine"
+        texturefile = "gfx/interface/goals/bc_ser.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_cro"
+        texturefile = "gfx/interface/goals/bc_cro.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_cro"
+        texturefile = "gfx/interface/goals/bc_cro.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_cro_shine"
+        texturefile = "gfx/interface/goals/bc_cro.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_slv"
+        texturefile = "gfx/interface/goals/bc_slv.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_slv"
+        texturefile = "gfx/interface/goals/bc_slv.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_slv_shine"
+        texturefile = "gfx/interface/goals/bc_slv.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_bos"
+        texturefile = "gfx/interface/goals/bc_bos.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_bos"
+        texturefile = "gfx/interface/goals/bc_bos.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_bos_shine"
+        texturefile = "gfx/interface/goals/bc_bos.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_srp"
+        texturefile = "gfx/interface/goals/bc_srp.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_srp"
+        texturefile = "gfx/interface/goals/bc_srp.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_srp_shine"
+        texturefile = "gfx/interface/goals/bc_srp.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_mnt"
+        texturefile = "gfx/interface/goals/bc_mnt.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_mnt"
+        texturefile = "gfx/interface/goals/bc_mnt.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_mnt_shine"
+        texturefile = "gfx/interface/goals/bc_mnt.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_mac"
+        texturefile = "gfx/interface/goals/bc_mac.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_mac"
+        texturefile = "gfx/interface/goals/bc_mac.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_mac_shine"
+        texturefile = "gfx/interface/goals/bc_mac.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_kos"
+        texturefile = "gfx/interface/goals/bc_kos.dds"
+    }
+    spriteType = {
+        name = "GFX_decision_BC_kos"
+        texturefile = "gfx/interface/goals/bc_kos.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_goal_kos_shine"
+        texturefile = "gfx/interface/goals/bc_kos.dds"
+    }
+    spriteType = {
+        name = "GFX_idea_BC_debt_crisis"
+        texturefile = "gfx/interface/goals/bc_reconstruction.dds"
+    }
+    spriteType = {
+        name = "GFX_idea_BC_fragmented_command"
+        texturefile = "gfx/interface/goals/bc_army.dds"
+    }
+    spriteType = {
+        name = "GFX_idea_BC_reconstruction_program"
+        texturefile = "gfx/interface/goals/bc_economy.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_MAIN_MENU_PANORAMA"
+        texturefile = "gfx/interface/illustrations/bc_main_menu_background.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_SERBIA_BACKGROUND"
+        texturefile = "gfx/interface/illustrations/bc_serbia_background.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_BOOKMARK_1980"
+        texturefile = "gfx/interface/bookmarks/bc_1980.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_BOOKMARK_SERBIA"
+        texturefile = "gfx/interface/bookmarks/bc_serbia.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_event_tito"
+        texturefile = "gfx/event_pictures/bc_tito.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_event_crisis"
+        texturefile = "gfx/event_pictures/bc_crisis.dds"
+    }
+    spriteType = {
+        name = "GFX_BC_event_serbia"
+        texturefile = "gfx/event_pictures/bc_serbia.dds"
+    }
+}

@@ -1,0 +1,16 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1273
+    name = "STATE_1273"
+    manpower = 1797660
+    state_category = town
+    history = {
+        owner = PHI
+        controller = PHI
+        add_core_of = PHI
+        buildings = {
+            infrastructure = 3
+        }
+    }
+    provinces = { 4423 7325 10167 10298 }
+}

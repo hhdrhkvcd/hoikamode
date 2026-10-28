@@ -1,0 +1,15 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 906
+    name = "STATE_906"
+    manpower = 450000
+    state_category = wasteland
+    history = {
+        owner = BRA
+        controller = BRA
+        add_core_of = BRA
+        victory_points = { 5214 1 }
+        buildings = { }
+    }
+    provinces = { 5214 }
+}

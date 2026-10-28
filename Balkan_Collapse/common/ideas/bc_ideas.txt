@@ -1,0 +1,22 @@
+ideas = {
+    country = {
+        BC_debt_crisis = {
+            picture = BC_debt_crisis
+            allowed = { original_tag = SER }
+            removal_cost = -1
+            modifier = { stability_factor = -0.1 consumer_goods_factor = 0.08 production_speed_buildings_factor = -0.05 }
+        }
+        BC_fragmented_command = {
+            picture = BC_fragmented_command
+            allowed = { original_tag = SER }
+            removal_cost = -1
+            modifier = { army_org_factor = -0.08 }
+        }
+        BC_reconstruction_program = {
+            picture = BC_reconstruction_program
+            allowed = { always = yes }
+            removal_cost = -1
+            modifier = { production_speed_buildings_factor = 0.05 }
+        }
+    }
+}

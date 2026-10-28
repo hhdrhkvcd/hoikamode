@@ -1,0 +1,28 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 100
+    name = "STATE_100"
+    manpower = 283568
+    state_category = large_town
+    resources = {
+        aluminium = 24.000
+    }
+    history = {
+        owner = ICE
+        controller = ICE
+        add_core_of = ICE
+        victory_points = { 4861 1 }
+        victory_points = { 12674 5 }
+        buildings = {
+            infrastructure = 4
+            industrial_complex = 2
+            dockyard = 1
+            air_base = 1
+            anti_air_building = 1
+            12674 = {
+                naval_base = 2
+            }
+        }
+    }
+    provinces = { 4861 12674 }
+}

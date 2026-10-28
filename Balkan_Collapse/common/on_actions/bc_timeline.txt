@@ -1,0 +1,412 @@
+on_actions = {
+    on_startup = {
+        effect = {
+            if = {
+                limit = {
+                    NOT = {
+                        has_global_flag = BC_startup_complete
+                    }
+                }
+                set_global_flag = BC_startup_complete
+                if = {
+                    limit = {
+                        date > 1995.12.13
+                        country_exists = BOS
+                        country_exists = SRP
+                    }
+                    SER = {
+                        BC_dayton_settlement = yes
+                    }
+                }
+            }
+        }
+    }
+    on_daily_MAC = {
+        effect = {
+            if = {
+                limit = {
+                    tag = MAC
+                    date > 1991.11.16
+                    has_country_flag = BALKANS_INDEPENDENT
+                    NOT = {
+                        has_country_flag = MAC_constitution
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_20
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_20
+                country_event = {
+                    id = serbia_collapse.20
+                }
+            }
+        }
+    }
+    on_daily_SER = {
+        effect = {
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1980.5.3
+                    NOT = {
+                        has_country_flag = SER_tito_dead
+                    }
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_1
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_1
+                country_event = {
+                    id = serbia_collapse.1
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1990.12.22
+                    has_country_flag = SER_tito_dead
+                    NOT = {
+                        has_country_flag = SER_slovenia_plebiscite
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_21
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_21
+                country_event = {
+                    id = serbia_collapse.21
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1991.5.18
+                    has_country_flag = SER_tito_dead
+                    NOT = {
+                        has_country_flag = SER_croatia_referendum
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_22
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_22
+                country_event = {
+                    id = serbia_collapse.22
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1991.6.24
+                    has_country_flag = SER_tito_dead
+                    NOT = {
+                        has_country_flag = SER_first_breakup_wave
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_2
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_2
+                country_event = {
+                    id = serbia_collapse.2
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1991.6.26
+                    has_country_flag = SER_first_breakup_wave
+                    NOT = {
+                        has_country_flag = SER_slovenia_war_started
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_3
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_3
+                country_event = {
+                    id = serbia_collapse.3
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1991.7.6
+                    has_country_flag = SER_slovenia_war_started
+                    NOT = {
+                        has_country_flag = SER_slovenia_war_ended
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_4
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_4
+                country_event = {
+                    id = serbia_collapse.4
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1991.8.24
+                    has_country_flag = SER_first_breakup_wave
+                    NOT = {
+                        has_country_flag = SER_croatia_war_started
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_6
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_6
+                country_event = {
+                    id = serbia_collapse.6
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1991.9.7
+                    NOT = {
+                        has_country_flag = SER_macedonia_referendum
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_5
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_5
+                country_event = {
+                    id = serbia_collapse.5
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1991.9.24
+                    has_country_flag = SER_macedonia_referendum
+                    NOT = {
+                        has_country_flag = SER_macedonia_independent
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_19
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_19
+                country_event = {
+                    id = serbia_collapse.19
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1991.10.7
+                    has_country_flag = SER_first_breakup_wave
+                    NOT = {
+                        has_country_flag = SER_croatia_separation_confirmed
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_17
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_17
+                country_event = {
+                    id = serbia_collapse.17
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1992.1.14
+                    has_country_flag = SER_first_breakup_wave
+                    NOT = {
+                        has_country_flag = SER_ec_recognition
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_18
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_18
+                country_event = {
+                    id = serbia_collapse.18
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1992.1.8
+                    NOT = {
+                        has_country_flag = SER_srp_proclaimed
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_8
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_8
+                country_event = {
+                    id = serbia_collapse.8
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1992.3.2
+                    NOT = {
+                        has_country_flag = SER_bosnia_independent
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_10
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_10
+                country_event = {
+                    id = serbia_collapse.10
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1992.4.26
+                    has_country_flag = SER_tito_dead
+                    NOT = {
+                        has_country_flag = SER_fry_formed
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_12
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_12
+                country_event = {
+                    id = serbia_collapse.12
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 1995.11.11
+                    has_country_flag = SER_croatia_war_started
+                    NOT = {
+                        has_country_flag = SER_croatia_war_ended
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_13
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_13
+                country_event = {
+                    id = serbia_collapse.13
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 2006.6.2
+                    has_country_flag = SER_fry_formed
+                    NOT = {
+                        has_country_flag = SER_montenegro_independent
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_15
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_15
+                country_event = {
+                    id = serbia_collapse.15
+                }
+            }
+            if = {
+                limit = {
+                    tag = SER
+                    date > 2008.2.16
+                    has_country_flag = SER_fry_formed
+                    NOT = {
+                        has_country_flag = SER_kosovo_independent
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_16
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_16
+                country_event = {
+                    id = serbia_collapse.16
+                }
+            }
+        }
+    }
+    on_daily_SRP = {
+        effect = {
+            if = {
+                limit = {
+                    tag = SRP
+                    date > 1992.2.27
+                    has_country_flag = SRP_proclaimed
+                    NOT = {
+                        has_country_flag = SRP_constitution
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_9
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_9
+                country_event = {
+                    id = serbia_collapse.9
+                }
+            }
+            if = {
+                limit = {
+                    tag = SRP
+                    date > 1992.4.5
+                    has_country_flag = SRP_proclaimed
+                    NOT = {
+                        has_country_flag = SRP_bosnia_war_started
+                    }
+                    BOS = {
+                        has_country_flag = BALKANS_INDEPENDENT
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_11
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_11
+                country_event = {
+                    id = serbia_collapse.11
+                }
+            }
+            if = {
+                limit = {
+                    tag = SRP
+                    date > 1995.12.13
+                    has_country_flag = SRP_bosnia_war_started
+                    NOT = {
+                        has_country_flag = SRP_dayton_signed
+                    }
+                    BC_timeline_active = yes
+                    NOT = {
+                        has_country_flag = BC_queued_serbia_collapse_14
+                    }
+                }
+                set_country_flag = BC_queued_serbia_collapse_14
+                country_event = {
+                    id = serbia_collapse.14
+                }
+            }
+        }
+    }
+}

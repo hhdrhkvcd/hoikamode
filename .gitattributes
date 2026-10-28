@@ -1,0 +1,11 @@
+# Stable source text; native CMD wrappers keep Windows line endings on checkout.
+* text=auto eol=lf
+*.bat text eol=crlf whitespace=cr-at-eol
+*.ps1 text eol=lf
+*.psm1 text eol=lf
+*.zip binary
+*.rar binary
+*.dds binary
+*.tga binary
+*.png binary
+*.bmp binary

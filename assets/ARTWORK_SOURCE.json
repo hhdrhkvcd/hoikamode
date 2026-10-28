@@ -1,0 +1,60 @@
+{
+  "method": "Crops, resizing, DDS encoding and flag geometry only. No generated or downloaded photographs.",
+  "sources": {
+    "Balkan_Collapse/gfx/loadingscreens/load_1.dds": "b5de4f123b524078aeb0ab059af0b1680a4893b2edd378596bf5f3ab7bb3f5bf",
+    "Balkan_Collapse/gfx/interface/illustrations/bc_main_menu_background.dds": "691861893f286f0c6e262e5a8623411dc6a940a9f9a8afe360c9f56157cdcb50",
+    "Balkan_Collapse/gfx/interface/illustrations/bc_serbia_background.dds": "8793005debbdd7937063cae8bc20994b98c53dfec2babb56f0b5b57bddb0ffcc",
+    "assets/source/bc_supplied_crisis.png": "aedf0f8bdf8b60da08398dbdb0c92361285d75a623cb430e0a76c2edbe118904"
+  },
+  "photo_focuses": {
+    "tito": [
+      270,
+      15,
+      900,
+      845
+    ],
+    "government": [
+      1050,
+      100,
+      1750,
+      570
+    ],
+    "economy": [
+      30,
+      150,
+      900,
+      700
+    ],
+    "transport": [
+      400,
+      260,
+      1420,
+      690
+    ],
+    "diplomacy": [
+      650,
+      30,
+      1450,
+      720
+    ],
+    "research": [
+      650,
+      320,
+      1350,
+      980
+    ],
+    "reconstruction": [
+      1550,
+      620,
+      1920,
+      900
+    ],
+    "army": [
+      115,
+      278,
+      455,
+      444
+    ]
+  },
+  "leader_portraits": "Tito is cropped from the supplied image. All other leaders use symbolic flag/building placeholders; these are not their photographs."
+}

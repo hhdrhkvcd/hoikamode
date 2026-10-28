@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 810
+    name = "STATE_810"
+    manpower = 423230
+    state_category = rural
+    history = {
+        owner = ISR
+        controller = ISR
+        add_core_of = PAL
+        add_core_of = ISR
+        buildings = {
+            infrastructure = 2
+        }
+    }
+    provinces = { 7107 }
+}

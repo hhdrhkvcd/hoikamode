@@ -1,0 +1,19 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 734
+    name = "STATE_734"
+    manpower = 5167
+    state_category = tiny_island
+    history = {
+        owner = FRA
+        controller = FRA
+        add_core_of = FRA
+        buildings = {
+            infrastructure = 2
+            7390 = {
+                naval_base = 1
+            }
+        }
+    }
+    provinces = { 7390 }
+}

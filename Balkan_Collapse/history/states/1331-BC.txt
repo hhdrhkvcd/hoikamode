@@ -1,0 +1,15 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1331
+    name = "STATE_1331"
+    manpower = 32182
+    state_category = wasteland
+    history = {
+        owner = ALG
+        controller = ALG
+        add_core_of = ALG
+        add_claim_by = TAU
+        buildings = { }
+    }
+    provinces = { 5095 10749 12849 }
+}

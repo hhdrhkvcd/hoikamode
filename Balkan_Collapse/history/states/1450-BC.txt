@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1450
+    name = "STATE_1450"
+    manpower = 38896
+    state_category = rural
+    history = {
+        owner = SWI
+        controller = SWI
+        add_core_of = SWI
+        victory_points = { 13211 1 }
+        buildings = {
+            infrastructure = 3
+        }
+    }
+    provinces = { 13211 }
+}

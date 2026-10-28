@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 745
+    name = "STATE_745"
+    manpower = 4550504
+    state_category = town
+    history = {
+        owner = MLI
+        controller = MLI
+        add_core_of = MLI
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 1
+        }
+    }
+    provinces = { 2044 7930 7954 }
+}

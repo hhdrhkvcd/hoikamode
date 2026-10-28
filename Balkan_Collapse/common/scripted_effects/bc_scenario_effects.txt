@@ -1,0 +1,225 @@
+BC_tito_succession = {
+    kill_country_leader = yes
+    clr_country_flag = SER_tito_alive
+    set_country_flag = SER_tito_dead
+    create_country_leader = {
+    name = "Aleksandar Vučić"
+    desc = SER_LEADER_DESC
+    picture = "gfx/leaders/BC/BC_SER_government.dds"
+    expire = "2036.1.1.12"
+    ideology = conservatism
+    traits = { }
+}
+    set_politics = { ruling_party = democratic elections_allowed = no }
+    set_popularities = { democratic = 55 fascism = 5 communism = 25 neutrality = 15 }
+}
+
+BC_initialize_CRO_army = {
+    if = {
+        limit = { NOT = { has_country_flag = BC_army_initialized } }
+        set_country_flag = BC_army_initialized
+        load_oob = "BC_CRO"
+        add_equipment_to_stockpile = { type = infantry_equipment_1 amount = 1500 producer = CRO }
+    }
+}
+
+BC_release_CRO = {
+    if = {
+        limit = { NOT = { country_exists = CRO } }
+        release = CRO
+    }
+    if = { limit = { country_exists = CRO }
+        CRO = {
+            set_country_flag = BALKANS_INDEPENDENT
+            BC_initialize_CRO_army = yes
+        }
+    }
+    103 = { remove_core_of = SER }
+    109 = { remove_core_of = SER }
+    163 = { remove_core_of = SER }
+    736 = { remove_core_of = SER }
+    1306 = { remove_core_of = SER }
+}
+
+BC_initialize_SLV_army = {
+    if = {
+        limit = { NOT = { has_country_flag = BC_army_initialized } }
+        set_country_flag = BC_army_initialized
+        load_oob = "BC_SLV"
+        add_equipment_to_stockpile = { type = infantry_equipment_1 amount = 1500 producer = SLV }
+    }
+}
+
+BC_release_SLV = {
+    if = {
+        limit = { NOT = { country_exists = SLV } }
+        release = SLV
+    }
+    if = { limit = { country_exists = SLV }
+        SLV = {
+            set_country_flag = BALKANS_INDEPENDENT
+            BC_initialize_SLV_army = yes
+        }
+    }
+    102 = { remove_core_of = SER }
+    900 = { remove_core_of = SER }
+}
+
+BC_initialize_BOS_army = {
+    if = {
+        limit = { NOT = { has_country_flag = BC_army_initialized } }
+        set_country_flag = BC_army_initialized
+        load_oob = "BC_BOS"
+        add_equipment_to_stockpile = { type = infantry_equipment_1 amount = 1500 producer = BOS }
+    }
+}
+
+BC_release_BOS = {
+    if = {
+        limit = { NOT = { country_exists = BOS } }
+        release = BOS
+    }
+    if = { limit = { country_exists = BOS }
+        BOS = {
+            set_country_flag = BALKANS_INDEPENDENT
+            BC_initialize_BOS_army = yes
+        }
+    }
+    104 = { remove_core_of = SER }
+    848 = { remove_core_of = SER }
+    849 = { remove_core_of = SER }
+    850 = { remove_core_of = SER }
+    851 = { remove_core_of = SER }
+}
+
+BC_initialize_SRP_army = {
+    if = {
+        limit = { NOT = { has_country_flag = BC_army_initialized } }
+        set_country_flag = BC_army_initialized
+        load_oob = "BC_SRP"
+        add_equipment_to_stockpile = { type = infantry_equipment_1 amount = 1500 producer = SRP }
+    }
+}
+
+BC_release_SRP = {
+    if = {
+        limit = { NOT = { country_exists = SRP } }
+        release = SRP
+    }
+    if = { limit = { country_exists = SRP }
+        SRP = {
+            set_country_flag = BALKANS_INDEPENDENT
+            BC_initialize_SRP_army = yes
+        }
+    }
+    848 = { remove_core_of = SER }
+    849 = { remove_core_of = SER }
+    850 = { remove_core_of = SER }
+}
+
+BC_initialize_MNT_army = {
+    if = {
+        limit = { NOT = { has_country_flag = BC_army_initialized } }
+        set_country_flag = BC_army_initialized
+        load_oob = "BC_MNT"
+        add_equipment_to_stockpile = { type = infantry_equipment_1 amount = 1500 producer = MNT }
+    }
+}
+
+BC_release_MNT = {
+    if = {
+        limit = { NOT = { country_exists = MNT } }
+        release = MNT
+    }
+    if = { limit = { country_exists = MNT }
+        MNT = {
+            set_country_flag = BALKANS_INDEPENDENT
+            BC_initialize_MNT_army = yes
+        }
+    }
+    105 = { remove_core_of = SER }
+}
+
+BC_initialize_MAC_army = {
+    if = {
+        limit = { NOT = { has_country_flag = BC_army_initialized } }
+        set_country_flag = BC_army_initialized
+        load_oob = "BC_MAC"
+        add_equipment_to_stockpile = { type = infantry_equipment_1 amount = 1500 producer = MAC }
+    }
+}
+
+BC_release_MAC = {
+    if = {
+        limit = { NOT = { country_exists = MAC } }
+        release = MAC
+    }
+    if = { limit = { country_exists = MAC }
+        MAC = {
+            set_country_flag = BALKANS_INDEPENDENT
+            BC_initialize_MAC_army = yes
+        }
+    }
+    106 = { remove_core_of = SER }
+}
+
+BC_initialize_KOS_army = {
+    if = {
+        limit = { NOT = { has_country_flag = BC_army_initialized } }
+        set_country_flag = BC_army_initialized
+        load_oob = "BC_KOS"
+        add_equipment_to_stockpile = { type = infantry_equipment_1 amount = 1500 producer = KOS }
+    }
+}
+
+BC_release_KOS = {
+    if = {
+        limit = { NOT = { country_exists = KOS } }
+        release = KOS
+    }
+    if = { limit = { country_exists = KOS }
+        KOS = {
+            set_country_flag = BALKANS_INDEPENDENT
+            BC_initialize_KOS_army = yes
+        }
+    }
+    785 = { remove_core_of = SER }
+    1305 = { remove_core_of = SER }
+}
+
+BC_restore_federation = {
+    set_country_flag = BC_federation_restored
+    set_cosmetic_tag = BC_RESTORED_YUGOSLAVIA
+    remove_ideas = BC_debt_crisis
+    add_stability = 0.1
+    add_political_power = 100
+    45 = { add_core_of = SER }
+    102 = { add_core_of = SER }
+    103 = { add_core_of = SER }
+    104 = { add_core_of = SER }
+    105 = { add_core_of = SER }
+    106 = { add_core_of = SER }
+    107 = { add_core_of = SER }
+    108 = { add_core_of = SER }
+    109 = { add_core_of = SER }
+    163 = { add_core_of = SER }
+    736 = { add_core_of = SER }
+    785 = { add_core_of = SER }
+    848 = { add_core_of = SER }
+    849 = { add_core_of = SER }
+    850 = { add_core_of = SER }
+    851 = { add_core_of = SER }
+    900 = { add_core_of = SER }
+    1296 = { add_core_of = SER }
+    1305 = { add_core_of = SER }
+    1306 = { add_core_of = SER }
+}
+
+BC_dayton_settlement = {
+    if = { limit = { country_exists = BOS country_exists = SRP }
+        if = { limit = { SRP = { has_war_with = BOS } } SRP = { white_peace = BOS } }
+        if = { limit = { 850 = { is_owned_by = SRP } } BOS = { transfer_state = 850 } }
+        if = { limit = { SRP = { is_subject = no } } BOS = { puppet = SRP } }
+        SRP = { set_politics = { ruling_party = neutrality elections_allowed = no } }
+    }
+}

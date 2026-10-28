@@ -1,0 +1,49 @@
+capital = 785
+
+set_research_slots = 3
+
+set_stability = 0.55
+
+set_war_support = 0.25
+
+set_convoys = 20
+
+set_technology = {
+    tech_support = 1
+    tech_engineers = 1
+    tech_recon = 1
+    infantry_weapons = 1
+    infantry_weapons1 = 1
+    infantry_weapons2 = 1
+    support_weapons = 1
+    support_weapons2 = 1
+    gw_artillery = 1
+    motorised_infantry = 1
+    basic_train = 1
+    basic_machine_tools = 1
+    improved_machine_tools = 1
+    construction1 = 1
+    construction2 = 1
+    electronic_mechanical_engineering = 1
+    radio = 1
+}
+
+
+set_politics = { ruling_party = democratic elections_allowed = no }
+
+set_popularities = { democratic = 65 fascism = 5 communism = 10 neutrality = 20 }
+
+create_country_leader = {
+    name = "Albin Kurti"
+    desc = KOS_LEADER_DESC
+    picture = "gfx/leaders/BC/BC_KOS_government.dds"
+    expire = "2036.1.1.12"
+    ideology = socialism
+    traits = { }
+}
+
+2008.2.17 = {
+    set_country_flag = BALKANS_INDEPENDENT
+    set_country_flag = BC_army_initialized
+    oob = "BC_KOS"
+}

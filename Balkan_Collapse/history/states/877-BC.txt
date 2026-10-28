@@ -1,0 +1,21 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 877
+    name = "STATE_877"
+    manpower = 1994500
+    state_category = large_town
+    resources = {
+        aluminium = 7
+    }
+    history = {
+        owner = AZR
+        controller = AZR
+        add_core_of = AZR
+        victory_points = { 11674 2 }
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 1
+        }
+    }
+    provinces = { 1539 11645 11674 6763 }
+}

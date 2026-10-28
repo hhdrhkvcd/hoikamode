@@ -1,0 +1,24 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 439
+    name = "STATE_439"
+    manpower = 65936800
+    state_category = megalopolis
+    resources = {
+        steel = 33
+    }
+    history = {
+        owner = RAJ
+        controller = RAJ
+        add_core_of = RAJ
+        victory_points = { 10729 3 }
+        victory_points = { 2002 2 }
+        buildings = {
+            infrastructure = 3
+            air_base = 1
+            industrial_complex = 2
+            arms_factory = 1
+        }
+    }
+    provinces = { 2002 2076 10729 14738 14739 14740 }
+}

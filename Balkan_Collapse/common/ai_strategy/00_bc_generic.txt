@@ -1,0 +1,1 @@
+# Use native AI and focus weights; no 1936 national plans on the converted map.

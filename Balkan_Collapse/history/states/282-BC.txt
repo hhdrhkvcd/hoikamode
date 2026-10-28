@@ -1,0 +1,22 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 282
+    name = "STATE_282"
+    manpower = 28610171
+    state_category = metropolis
+    history = {
+        owner = JAP
+        controller = JAP
+        add_core_of = JAP
+        victory_points = { 14698 10 }
+        victory_points = { 1113 10 }
+        victory_points = { 4100 10 }
+        buildings = {
+            infrastructure = 5
+            air_base = 4
+            industrial_complex = 3
+            arms_factory = 2
+        }
+    }
+    provinces = { 993 1097 1113 4000 4100 4184 4188 7016 14693 14694 14698 14701 }
+}

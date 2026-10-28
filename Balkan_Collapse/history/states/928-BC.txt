@@ -1,0 +1,18 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 928
+    name = "STATE_928"
+    manpower = 713645
+    state_category = pastoral
+    history = {
+        owner = HEZ
+        controller = HEZ
+        add_core_of = LEB
+        add_core_of = HEZ
+        victory_points = { 13289 1 }
+        buildings = {
+            infrastructure = 2
+        }
+    }
+    provinces = { 13289 }
+}

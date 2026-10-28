@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1366
+    name = "STATE_1366"
+    manpower = 3008546
+    state_category = town
+    history = {
+        owner = RAJ
+        controller = RAJ
+        add_core_of = RAJ
+        victory_points = { 1581 4 }
+        buildings = {
+            infrastructure = 2
+        }
+    }
+    provinces = { 1581 }
+}

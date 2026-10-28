@@ -1,0 +1,21 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 184
+    name = "STATE_184"
+    manpower = 382500
+    state_category = town
+    history = {
+        owner = GRE
+        controller = GRE
+        add_core_of = GRE
+        buildings = {
+            infrastructure = 3
+            air_base = 1
+            industrial_complex = 1
+            11905 = {
+                naval_base = 3
+            }
+        }
+    }
+    provinces = { 9791 9930 11774 11905 }
+}

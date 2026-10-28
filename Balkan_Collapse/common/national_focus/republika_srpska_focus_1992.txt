@@ -1,0 +1,1097 @@
+# Eight national trees retain 50 focuses each; photographs are reused, not AI-generated.
+focus_tree = {
+    id = SRP_1992_tree
+    country = {
+        factor = 0
+        modifier = {
+            add = 20
+            tag = SRP
+        }
+    }
+    default = no
+    focus = {
+        id = SRP_proclamation
+        x = 4
+        y = 0
+        cost = 5
+        available = {
+            has_country_flag = SRP_proclaimed
+        }
+        icon = GFX_BC_goal_srp
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_constitution
+        x = 4
+        y = 1
+        cost = 5
+        prerequisite = {
+            focus = SRP_proclamation
+        }
+        icon = GFX_BC_goal_government
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_industry
+        x = 2
+        y = 2
+        cost = 5
+        prerequisite = {
+            focus = SRP_constitution
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_army
+        x = 6
+        y = 2
+        cost = 5
+        prerequisite = {
+            focus = SRP_constitution
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_trade
+        x = 4
+        y = 2
+        cost = 5
+        prerequisite = {
+            focus = SRP_constitution
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_transport
+        x = 2
+        y = 3
+        cost = 5
+        prerequisite = {
+            focus = SRP_industry
+        }
+        icon = GFX_BC_goal_transport
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                if = {
+                    limit = {
+                        infrastructure < 5
+                    }
+                    add_building_construction = {
+                        type = infrastructure
+                        level = 1
+                        instant_build = yes
+                    }
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_security
+        x = 6
+        y = 3
+        cost = 5
+        prerequisite = {
+            focus = SRP_army
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy
+        x = 4
+        y = 3
+        cost = 5
+        prerequisite = {
+            focus = SRP_trade
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_sovereignty
+        x = 4
+        y = 4
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy
+        }
+        icon = GFX_BC_goal_srp
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_01
+        x = 2
+        y = 4
+        cost = 5
+        prerequisite = {
+            focus = SRP_transport
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_02
+        x = 2
+        y = 5
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_01
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_03
+        x = 2
+        y = 6
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_02
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_04
+        x = 2
+        y = 7
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_03
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_05
+        x = 2
+        y = 8
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_04
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_06
+        x = 2
+        y = 9
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_05
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_07
+        x = 2
+        y = 10
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_06
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_08
+        x = 2
+        y = 11
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_07
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_09
+        x = 2
+        y = 12
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_08
+        }
+        icon = GFX_BC_goal_research
+        completion_reward = {
+            add_political_power = 35
+            add_tech_bonus = {
+                name = BC_research_bonus
+                bonus = 0.5
+                uses = 1
+                category = industry
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_10
+        x = 2
+        y = 13
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_09
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_11
+        x = 2
+        y = 14
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_10
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_12
+        x = 2
+        y = 15
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_11
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_13
+        x = 2
+        y = 16
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_12
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_economy_14
+        x = 2
+        y = 17
+        cost = 5
+        prerequisite = {
+            focus = SRP_economy_13
+        }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_01
+        x = 6
+        y = 4
+        cost = 5
+        prerequisite = {
+            focus = SRP_security
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_02
+        x = 6
+        y = 5
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_01
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_03
+        x = 6
+        y = 6
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_02
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_04
+        x = 6
+        y = 7
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_03
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_05
+        x = 6
+        y = 8
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_04
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_equipment_to_stockpile = {
+                type = infantry_equipment_1
+                amount = 1500
+                producer = SRP
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_06
+        x = 6
+        y = 9
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_05
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_07
+        x = 6
+        y = 10
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_06
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_08
+        x = 6
+        y = 11
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_07
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_09
+        x = 6
+        y = 12
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_08
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_equipment_to_stockpile = {
+                type = infantry_equipment_1
+                amount = 1500
+                producer = SRP
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_10
+        x = 6
+        y = 13
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_09
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_11
+        x = 6
+        y = 14
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_10
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_12
+        x = 6
+        y = 15
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_11
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_13
+        x = 6
+        y = 16
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_12
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_equipment_to_stockpile = {
+                type = infantry_equipment_1
+                amount = 1500
+                producer = SRP
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_defence_14
+        x = 6
+        y = 17
+        cost = 5
+        prerequisite = {
+            focus = SRP_defence_13
+        }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_01
+        x = 4
+        y = 5
+        cost = 5
+        prerequisite = {
+            focus = SRP_sovereignty
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_02
+        x = 4
+        y = 6
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_01
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_03
+        x = 4
+        y = 7
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_02
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_04
+        x = 4
+        y = 8
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_03
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_05
+        x = 4
+        y = 9
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_04
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_06
+        x = 4
+        y = 10
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_05
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_07
+        x = 4
+        y = 11
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_06
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_08
+        x = 4
+        y = 12
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_07
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_09
+        x = 4
+        y = 13
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_08
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_10
+        x = 4
+        y = 14
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_09
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_11
+        x = 4
+        y = 15
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_10
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_12
+        x = 4
+        y = 16
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_11
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+    focus = {
+        id = SRP_diplomacy_13
+        x = 4
+        y = 17
+        cost = 5
+        prerequisite = {
+            focus = SRP_diplomacy_12
+        }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+            set_country_flag = BC_open_to_federation
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
+    }
+}

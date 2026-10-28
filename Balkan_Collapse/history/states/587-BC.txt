@@ -1,0 +1,18 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 587
+    name = "STATE_587"
+    manpower = 2230300
+    state_category = town
+    history = {
+        owner = UZB
+        controller = UZB
+        add_core_of = UZB
+        victory_points = { 1614 3 }
+        buildings = {
+            infrastructure = 3
+            industrial_complex = 1
+        }
+    }
+    provinces = { 1479 1614 4618 7541 7641 10348 10395 10435 12233 12383 12454 12474 }
+}

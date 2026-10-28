@@ -1,0 +1,20 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1377
+    name = "STATE_1377"
+    manpower = 7004320
+    state_category = town
+    history = {
+        owner = GUA
+        controller = GUA
+        add_core_of = GUA
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 1
+            14673 = {
+                naval_base = 1
+            }
+        }
+    }
+    provinces = { 4991 13085 14672 14673 14676 }
+}

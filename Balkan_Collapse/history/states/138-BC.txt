@@ -1,0 +1,25 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 138
+    name = "STATE_138"
+    manpower = 1389336
+    state_category = large_city
+    history = {
+        owner = SWE
+        controller = SWE
+        add_core_of = SWE
+        victory_points = { 9279 20 }
+        buildings = {
+            infrastructure = 4
+            9279 = {
+                naval_base = 5
+                coastal_bunker = 1
+            }
+            dockyard = 2
+            air_base = 5
+            anti_air_building = 2
+            industrial_complex = 2
+        }
+    }
+    provinces = { 6120 6345 9279 9300 9362 11376 }
+}

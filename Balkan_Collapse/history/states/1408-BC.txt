@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1408
+    name = "STATE_1408"
+    manpower = 563000
+    state_category = town
+    history = {
+        owner = KLA
+        controller = KLA
+        add_core_of = KLA
+        add_core_of = BRM
+        buildings = {
+            infrastructure = 1
+        }
+    }
+    provinces = { 1934 8063 14920 14922 14923 }
+}

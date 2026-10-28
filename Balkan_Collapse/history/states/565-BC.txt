@@ -1,0 +1,16 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 565
+    name = "STATE_565"
+    manpower = 37489
+    state_category = wasteland
+    history = {
+        owner = SOV
+        controller = SOV
+        add_core_of = SOV
+        buildings = {
+            infrastructure = 1
+        }
+    }
+    provinces = { 1792 4737 4795 4868 7726 7759 7828 10583 10628 10654 10688 12531 12538 12668 12681 }
+}

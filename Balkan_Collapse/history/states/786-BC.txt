@@ -1,0 +1,24 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 786
+    name = "STATE_786"
+    manpower = 372744
+    state_category = town
+    history = {
+        owner = ITA
+        controller = ITA
+        add_core_of = ITA
+        add_core_of = VNT
+        add_core_of = LOM
+        victory_points = { 6626 3 }
+        buildings = {
+            infrastructure = 3
+            industrial_complex = 1
+            dockyard = 1
+            6626 = {
+                naval_base = 4
+            }
+        }
+    }
+    provinces = { 6626 }
+}

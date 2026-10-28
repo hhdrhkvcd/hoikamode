@@ -1,0 +1,19 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1330
+    name = "STATE_1330"
+    manpower = 199212
+    state_category = town
+    resources = { }
+    history = {
+        owner = SOV
+        controller = SOV
+        add_core_of = SOV
+        victory_points = { 11633 3 }
+        victory_points = { 11690 1 }
+        buildings = {
+            infrastructure = 3
+        }
+    }
+    provinces = { 11633 6718 6733 11661 6702 11690 }
+}

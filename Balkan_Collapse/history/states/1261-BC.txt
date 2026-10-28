@@ -1,0 +1,18 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1261
+    name = "STATE_1261"
+    manpower = 478801
+    state_category = town
+    history = {
+        owner = CNF
+        controller = CNF
+        add_core_of = CNF
+        add_core_of = BRM
+        victory_points = { 3999 3 }
+        buildings = {
+            infrastructure = 2
+        }
+    }
+    provinces = { 3999 4454 7122 7534 10033 11966 }
+}

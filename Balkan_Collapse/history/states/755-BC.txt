@@ -1,0 +1,21 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 755
+    name = "STATE_755"
+    manpower = 5150250
+    state_category = town
+    resources = {
+        oil = 3.000
+    }
+    history = {
+        owner = CMR
+        controller = CMR
+        add_core_of = CMR
+        victory_points = { 6039 7 }
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 1
+        }
+    }
+    provinces = { 6039 14575 14581 14589 }
+}

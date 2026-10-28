@@ -1,0 +1,24 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 443
+    name = "STATE_443"
+    manpower = 23228179
+    state_category = city
+    resources = {
+        steel = 4.000
+    }
+    history = {
+        owner = PAK
+        controller = PAK
+        add_core_of = PAK
+        victory_points = { 4110 15 }
+        victory_points = { 7084 5 }
+        victory_points = { 1147 2 }
+        buildings = {
+            infrastructure = 3
+            industrial_complex = 1
+            air_base = 3
+        }
+    }
+    provinces = { 1147 1971 1980 4003 4110 4382 7084 }
+}
