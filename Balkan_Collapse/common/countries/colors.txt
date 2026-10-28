@@ -1,0 +1,39 @@
+BOS = {
+    color = rgb { 32 85 154 }
+    color_ui = rgb { 56 119 196 }
+}
+
+CRO = {
+    color = rgb { 205 38 50 }
+    color_ui = rgb { 230 62 70 }
+}
+
+KOS = {
+    color = rgb { 38 78 160 }
+    color_ui = rgb { 57 104 205 }
+}
+
+MAC = {
+    color = rgb { 200 32 42 }
+    color_ui = rgb { 225 52 55 }
+}
+
+MNT = {
+    color = rgb { 174 30 39 }
+    color_ui = rgb { 214 50 54 }
+}
+
+SER = {
+    color = rgb { 196 42 55 }
+    color_ui = rgb { 220 60 75 }
+}
+
+SLV = {
+    color = rgb { 45 97 150 }
+    color_ui = rgb { 75 135 192 }
+}
+
+SRP = {
+    color = rgb { 185 40 52 }
+    color_ui = rgb { 216 62 70 }
+}

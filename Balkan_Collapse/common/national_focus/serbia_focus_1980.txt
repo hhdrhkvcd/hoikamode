@@ -1,0 +1,690 @@
+focus_tree = {
+
+    id = SER_1980_tree
+
+    country = {
+
+        factor = 0
+
+        modifier = { add = 20 tag = SER }
+
+    }
+
+    default = no
+
+    focus = {
+        id = SER_tito_aftermath
+        icon = GFX_goal_generic_political_reform
+        x = 4
+        y = 0
+        cost = 5
+        available = { has_country_flag = SER_tito_dead }
+        completion_reward = {
+            add_political_power = 75
+            add_stability = 0.05
+        }
+    }
+
+    focus = {
+        id = SER_yugoslav_legacy
+        icon = GFX_goal_generic_national_unity
+        x = 2
+        y = 1
+        cost = 5
+        prerequisite = { focus = SER_tito_aftermath }
+        completion_reward = {
+            add_stability = 0.05
+            add_political_power = 35
+        }
+    }
+
+    focus = {
+        id = SER_restore_economy
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 1
+        cost = 5
+        prerequisite = { focus = SER_tito_aftermath }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = SER_reform_army
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 1
+        cost = 5
+        prerequisite = { focus = SER_tito_aftermath }
+        completion_reward = {
+            army_experience = 20
+            add_manpower = 20000
+        }
+    }
+
+    focus = {
+        id = SER_civil_reform
+        icon = GFX_goal_generic_political_reform
+        x = 2
+        y = 2
+        cost = 5
+        prerequisite = { focus = SER_yugoslav_legacy }
+        completion_reward = {
+            add_political_power = 60
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = SER_industrial_revival
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 2
+        cost = 5
+        prerequisite = { focus = SER_restore_economy }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = SER_modern_army
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 2
+        cost = 5
+        prerequisite = { focus = SER_reform_army }
+        completion_reward = {
+            army_experience = 20
+            add_war_support = 0.03
+        }
+    }
+
+    focus = {
+        id = SER_balkan_conference
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 3
+        cost = 5
+        prerequisite = { focus = SER_civil_reform }
+        mutually_exclusive = { focus = SER_serbian_program }
+        completion_reward = {
+            add_political_power = 80
+            add_stability = 0.04
+        }
+    }
+
+    focus = {
+        id = SER_regional_trade
+        icon = GFX_goal_generic_construct_infrastructure
+        x = 4
+        y = 3
+        cost = 5
+        prerequisite = { focus = SER_industrial_revival }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = SER_serbian_program
+        icon = GFX_goal_generic_demand_territory
+        x = 6
+        y = 3
+        cost = 5
+        prerequisite = { focus = SER_modern_army }
+        mutually_exclusive = { focus = SER_balkan_conference }
+        completion_reward = {
+            add_political_power = 50
+            add_war_support = 0.08
+        }
+    }
+
+    focus = {
+        id = SER_federal_treaty
+        icon = GFX_goal_generic_allies_build_infantry
+        x = 2
+        y = 4
+        cost = 5
+        prerequisite = { focus = SER_balkan_conference }
+        completion_reward = {
+            create_faction = "Балканская федерация"
+            add_stability = 0.05
+        }
+    }
+
+    focus = {
+        id = SER_research_program
+        icon = GFX_goal_generic_research
+        x = 4
+        y = 4
+        cost = 5
+        prerequisite = { focus = SER_regional_trade }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = SER_claim_kosovo
+        icon = GFX_goal_generic_demand_territory
+        x = 6
+        y = 4
+        cost = 5
+        prerequisite = { focus = SER_serbian_program }
+        completion_reward = {
+            add_state_claim = 802
+            add_political_power = 25
+        }
+    }
+
+    focus = {
+        id = SER_claim_montenegro
+        icon = GFX_goal_generic_demand_territory
+        x = 7
+        y = 4
+        cost = 5
+        prerequisite = { focus = SER_serbian_program }
+        completion_reward = {
+            add_state_claim = 105
+            add_political_power = 25
+        }
+    }
+
+    focus = {
+        id = SER_claim_bosnia
+        icon = GFX_goal_generic_demand_territory
+        x = 8
+        y = 4
+        cost = 5
+        prerequisite = { focus = SER_serbian_program }
+        completion_reward = {
+            add_state_claim = 104
+            add_state_claim = 804
+            add_political_power = 25
+        }
+    }
+
+    focus = {
+        id = SER_claim_croatia_slovenia
+        icon = GFX_goal_generic_demand_territory
+        x = 6
+        y = 5
+        cost = 5
+        prerequisite = { focus = SER_serbian_program }
+        completion_reward = {
+            add_state_claim = 102
+            add_state_claim = 103
+            add_state_claim = 109
+            add_state_claim = 852
+            add_state_claim = 853
+        }
+    }
+
+    focus = {
+        id = SER_rearmament
+        icon = GFX_goal_generic_construct_mil_factory
+        x = 6
+        y = 6
+        cost = 5
+        prerequisite = { focus = SER_claim_croatia_slovenia }
+        completion_reward = {
+            army_experience = 25
+            add_war_support = 0.05
+            add_manpower = 40000
+        }
+    }
+
+    focus = {
+        id = SER_balkan_campaign
+        icon = GFX_goal_generic_major_war
+        x = 6
+        y = 7
+        cost = 5
+        prerequisite = { focus = SER_rearmament }
+        completion_reward = {
+            if = { limit = { exists = CRO } declare_war_on = { target = CRO type = annex_everything } }
+            if = { limit = { exists = BOS } declare_war_on = { target = BOS type = annex_everything } }
+            if = { limit = { exists = SRP } declare_war_on = { target = SRP type = annex_everything } }
+            if = { limit = { exists = SLV } declare_war_on = { target = SLV type = annex_everything } }
+            if = { limit = { exists = MAC } declare_war_on = { target = MAC type = annex_everything } }
+            if = { limit = { exists = MNT } declare_war_on = { target = MNT type = annex_everything } }
+            if = { limit = { exists = KOS } declare_war_on = { target = KOS type = annex_everything } }
+            add_war_support = 0.08
+        }
+    }
+
+    focus = {
+        id = SER_restore_cores
+        icon = GFX_goal_generic_national_unity
+        x = 6
+        y = 8
+        cost = 5
+        prerequisite = { focus = SER_balkan_campaign }
+        completion_reward = {
+            add_state_claim = 104
+            add_state_claim = 804
+            add_state_claim = 105
+            add_state_claim = 802
+            add_stability = 0.05
+        }
+    }
+
+    focus = {
+        id = SER_reunify_peacefully
+        icon = GFX_goal_generic_national_unity
+        x = 2
+        y = 5
+        cost = 5
+        prerequisite = { focus = SER_federal_treaty }
+        completion_reward = {
+            if = { limit = { exists = CRO } annex_country = { target = CRO transfer_troops = yes } }
+            if = { limit = { exists = SLV } annex_country = { target = SLV transfer_troops = yes } }
+            if = { limit = { exists = BOS } annex_country = { target = BOS transfer_troops = yes } }
+            if = { limit = { exists = SRP } annex_country = { target = SRP transfer_troops = yes } }
+            if = { limit = { exists = MAC } annex_country = { target = MAC transfer_troops = yes } }
+            if = { limit = { exists = MNT } annex_country = { target = MNT transfer_troops = yes } }
+            if = { limit = { exists = KOS } annex_country = { target = KOS transfer_troops = yes } }
+            add_stability = 0.15
+            add_political_power = 100
+        }
+    }
+
+    focus = {
+        id = SER_balkan_council
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 6
+        cost = 5
+        prerequisite = { focus = SER_reunify_peacefully }
+        completion_reward = {
+            add_political_power = 100
+            add_stability = 0.05
+        }
+    }
+
+    focus = {
+        id = SER_economy_expansion_01
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 5
+        cost = 5
+        prerequisite = { focus = SER_research_program }
+        completion_reward = {
+            add_political_power = 45
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_economy_expansion_02
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 6
+        cost = 5
+        prerequisite = { focus = SER_economy_expansion_01 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_economy_expansion_03
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 7
+        cost = 5
+        prerequisite = { focus = SER_economy_expansion_02 }
+        completion_reward = {
+            add_political_power = 45
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_economy_expansion_04
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 8
+        cost = 5
+        prerequisite = { focus = SER_economy_expansion_03 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_economy_expansion_05
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 9
+        cost = 5
+        prerequisite = { focus = SER_economy_expansion_04 }
+        completion_reward = {
+            add_political_power = 45
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_economy_expansion_06
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 10
+        cost = 5
+        prerequisite = { focus = SER_economy_expansion_05 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_economy_expansion_07
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 11
+        cost = 5
+        prerequisite = { focus = SER_economy_expansion_06 }
+        completion_reward = {
+            add_political_power = 45
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_economy_expansion_08
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 12
+        cost = 5
+        prerequisite = { focus = SER_economy_expansion_07 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_economy_expansion_09
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 13
+        cost = 5
+        prerequisite = { focus = SER_economy_expansion_08 }
+        completion_reward = {
+            add_political_power = 45
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_economy_expansion_10
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 4
+        y = 14
+        cost = 5
+        prerequisite = { focus = SER_economy_expansion_09 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_diplomacy_expansion_01
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 7
+        cost = 5
+        prerequisite = { focus = SER_balkan_council }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_diplomacy_expansion_02
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 8
+        cost = 5
+        prerequisite = { focus = SER_diplomacy_expansion_01 }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_diplomacy_expansion_03
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 9
+        cost = 5
+        prerequisite = { focus = SER_diplomacy_expansion_02 }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_diplomacy_expansion_04
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 10
+        cost = 5
+        prerequisite = { focus = SER_diplomacy_expansion_03 }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_diplomacy_expansion_05
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 11
+        cost = 5
+        prerequisite = { focus = SER_diplomacy_expansion_04 }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_diplomacy_expansion_06
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 12
+        cost = 5
+        prerequisite = { focus = SER_diplomacy_expansion_05 }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_diplomacy_expansion_07
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 13
+        cost = 5
+        prerequisite = { focus = SER_diplomacy_expansion_06 }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_diplomacy_expansion_08
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 14
+        cost = 5
+        prerequisite = { focus = SER_diplomacy_expansion_07 }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_diplomacy_expansion_09
+        icon = GFX_goal_generic_improve_relations
+        x = 2
+        y = 15
+        cost = 5
+        prerequisite = { focus = SER_diplomacy_expansion_08 }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_army_expansion_01
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 9
+        cost = 5
+        prerequisite = { focus = SER_restore_cores }
+        completion_reward = {
+            army_experience = 10
+            add_war_support = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_army_expansion_02
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 10
+        cost = 5
+        prerequisite = { focus = SER_army_expansion_01 }
+        completion_reward = {
+            army_experience = 8
+            add_war_support = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_army_expansion_03
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 11
+        cost = 5
+        prerequisite = { focus = SER_army_expansion_02 }
+        completion_reward = {
+            army_experience = 10
+            add_war_support = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_army_expansion_04
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 12
+        cost = 5
+        prerequisite = { focus = SER_army_expansion_03 }
+        completion_reward = {
+            army_experience = 8
+            add_war_support = 0.02
+            add_manpower = 10000
+        }
+    }
+
+    focus = {
+        id = SER_army_expansion_05
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 13
+        cost = 5
+        prerequisite = { focus = SER_army_expansion_04 }
+        completion_reward = {
+            army_experience = 10
+            add_war_support = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_army_expansion_06
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 14
+        cost = 5
+        prerequisite = { focus = SER_army_expansion_05 }
+        completion_reward = {
+            army_experience = 8
+            add_war_support = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_army_expansion_07
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 15
+        cost = 5
+        prerequisite = { focus = SER_army_expansion_06 }
+        completion_reward = {
+            army_experience = 10
+            add_war_support = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_army_expansion_08
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 16
+        cost = 5
+        prerequisite = { focus = SER_army_expansion_07 }
+        completion_reward = {
+            army_experience = 8
+            add_war_support = 0.02
+            add_manpower = 10000
+        }
+    }
+
+    focus = {
+        id = SER_army_expansion_09
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 17
+        cost = 5
+        prerequisite = { focus = SER_army_expansion_08 }
+        completion_reward = {
+            army_experience = 10
+            add_war_support = 0.02
+        }
+    }
+
+    focus = {
+        id = SER_army_expansion_10
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 18
+        cost = 5
+        prerequisite = { focus = SER_army_expansion_09 }
+        completion_reward = {
+            army_experience = 8
+            add_war_support = 0.02
+        }
+    }
+
+}

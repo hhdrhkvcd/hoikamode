@@ -1,0 +1,12 @@
+
+bookmarks = {
+    bookmark = {
+        name = SERBIA_1980_NAME
+        desc = SERBIA_1980_DESC
+        date = 1980.5.1.12
+        picture = GFX_BC_SERBIA_BACKGROUND
+        default = yes
+        default_country = SER
+
+    }
+}
