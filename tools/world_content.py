@@ -93,6 +93,13 @@ LEADERS_1995 = {
     'TUR': ('Tansu Çiller', 'liberalism', ['ciller'], 'TUR_CILLER_DESC'),
 }
 
+# the leaders of the Soviet republics on the day the USSR collapsed (26 December 1991)
+LEADERS_1991 = dict(LEADERS_1995)
+LEADERS_1991.update({
+    'UKR': ('Leonid Kravchuk', 'conservatism', ['kravchuk'], 'UKR_KRAVCHUK_DESC'),
+    'BLR': ('Stanislav Shushkevich', 'liberalism', ['shushkevich'], 'BLR_SHUSHKEVICH_DESC'),
+})
+
 LEADERS_2026 = {
     'SER': ('Aleksandar Vučić', 'despotism', ['vucic'], 'SER_VUCIC_DESC'),
     'CRO': ('Andrej Plenković', 'conservatism', ['plenkovic'], 'CRO_PLENKOVIC_DESC'),

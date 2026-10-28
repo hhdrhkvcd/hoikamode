@@ -889,6 +889,13 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en):
         en_c = names_en.get(tag, tag)
         loc['russian'][dkey] = f'{name} \u2014 \u0433\u043b\u0430\u0432\u0430 \u0433\u043e\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0430 {ru_c} \u0432 1995 \u0433\u043e\u0434\u0443.'
         loc['english'][dkey] = f'{name} - head of state of {en_c} in 1995.'
+    for tag, (name, ide, patterns, dkey) in world_content.LEADERS_1991.items():
+        if dkey in loc['russian']:
+            continue
+        ru_c = names_ru.get(tag, tag)
+        en_c = names_en.get(tag, tag)
+        loc['russian'][dkey] = f'{name} \u2014 \u0433\u043b\u0430\u0432\u0430 \u0433\u043e\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0430 {ru_c} \u0432 1991 \u0433\u043e\u0434\u0443.'
+        loc['english'][dkey] = f'{name} - head of state of {en_c} in 1991.'
     for tag, (name, ide, patterns, dkey) in world_content.LEADERS_2026.items():
         ru_c = names_ru.get(tag, tag)
         en_c = names_en.get(tag, tag)
@@ -908,7 +915,8 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en):
               'l_' + lang + ':\n' + '\n'.join(f' {k}:0 "{v}"' for k, v in d.items()) + '\n', bom=True)
 
     # ---- the collapse of the USSR on 26 December 1991 --------------------
-    diss = world_content.sov_dissolve(md_owner_of, world_content.LEADERS_1995, p1995)
+    p1991 = scenario_portraits(md_repo, world_content.LEADERS_1991)
+    diss = world_content.sov_dissolve(md_owner_of, world_content.LEADERS_1991, p1991)
     write(os.path.join(out, 'common', 'on_actions', 'bc_actions.txt'),
           'on_actions = {\n\ton_daily = {\n\t\teffect = {\n\t\t\tif = {\n'
           '\t\t\t\tlimit = { date > 1991.12.25 NOT = { SOV = { has_country_flag = BC_SOV_COLLAPSE } } }\n'
