@@ -6,7 +6,8 @@
 
 ```
 assets/extra_portraits/
-├── SER/    Milosevic.dds, Vucic.dds, Tito.dds
+├── SER/    Tito.dds (фото Тито), Tito_painting.dds (живописный портрет Тито),
+│           Milosevic.dds, Vucic.dds, Tadic.dds, Dinic.dds
 ├── CRO/    Tudjman.dds, Kucan.dds
 ├── SLV/    Kucan.dds
 ├── BOS/    Kristo.dds
@@ -19,6 +20,11 @@ assets/extra_portraits/
 Сопоставление идёт по фамилии (без учёта диакритики): `Tudjman.dds` подойдёт к
 «Franjo Tuđman», `Vucic.dds` — к «Aleksandar Vučić». Если в папке страны лежит
 ровно один файл, он будет использован, даже если имя не совпало.
+
+Уже добавлено:
+- `SER/Tito.dds` — настоящее фото Иосипа Броза Тито (156×210, DXT5). Портрет правителя
+  СФРЮ в 1980 году. Чтобы вернуть живописный портрет, поменяй местами `Tito.dds`
+  и `Tito_painting.dds` — сборка возьмёт файл по фамилии.
 
 После добавления файлов пересобери мод:
 

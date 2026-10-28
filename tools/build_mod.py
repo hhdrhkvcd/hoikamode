@@ -676,13 +676,26 @@ def scenario_portraits(md_repo, leaders, root=None):
 
 def copy_extra_portraits(root, out, extra):
     """Portraits the user put into assets/extra_portraits/<TAG>/."""
-    for tag, f in extra.items():
-        src = os.path.join(world_content.extra_portrait_dir(root, tag), f)
-        if not os.path.exists(src):
+    for tag in sorted(os.listdir(os.path.join(root, 'assets', 'extra_portraits'))
+                      if os.path.isdir(os.path.join(root, 'assets', 'extra_portraits')) else []):
+        d = world_content.extra_portrait_dir(root, tag)
+        if not os.path.isdir(d):
             continue
-        dst_dir = os.path.join(out, 'gfx', 'leaders', tag)
-        os.makedirs(dst_dir, exist_ok=True)
-        shutil.copy2(src, os.path.join(dst_dir, f))
+        for f in sorted(os.listdir(d)):
+            if not f.lower().endswith('.dds'):
+                continue
+            src = os.path.join(d, f)
+            dst_dir = os.path.join(out, 'gfx', 'leaders', tag)
+            os.makedirs(dst_dir, exist_ok=True)
+            shutil.copy2(src, os.path.join(dst_dir, f))
+    for tag, files in extra.items():
+        for f in files:
+            src = os.path.join(world_content.extra_portrait_dir(root, tag), f)
+            if not os.path.exists(src):
+                continue
+            dst_dir = os.path.join(out, 'gfx', 'leaders', tag)
+            os.makedirs(dst_dir, exist_ok=True)
+            shutil.copy2(src, os.path.join(dst_dir, f))
 
 
 def copy_portraits(md_repo, out, wanted):
@@ -841,18 +854,24 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en, roo
                 wanted[tag].append(f)
     copy_portraits(md_repo, out, wanted)
     extra = {}
-    leaders_1980 = [(tag, spec[0]) for tag, spec in LEADERS_1980.items()]
-    for tag, name in leaders_1980:
+
+    def add(tag, name):
         f = world_content.find_extra_portrait(root, tag, name) if root else None
-        if f and tag not in extra:
-            extra[tag] = f
+        if f:
+            extra.setdefault(tag, [])
+            if f not in extra[tag]:
+                extra[tag].append(f)
+
+    for tag, (name, ide) in LEADERS_1980.items():
+        add(tag, name)
+    for tag, body in balkan_content.HISTORY.items():
+        m = re.search(r'name = "([^"]+)"', body)
+        if m:
+            add(tag, m.group(1))
     for leaders in (world_content.LEADERS_1991,
                     world_content.LEADERS_1995, world_content.LEADERS_2026):
         for tag, spec in leaders.items():
-            name = spec[0]
-            f = world_content.find_extra_portrait(root, tag, name) if root else None
-            if f and (tag not in extra or extra[tag] != f):
-                extra[tag] = f
+            add(tag, spec[0])
     copy_extra_portraits(root, out, extra)
 
     # ---- focus art -------------------------------------------------------
@@ -995,6 +1014,32 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en, roo
     return copied
 
 
+def resolve_history_pictures(out, root, md_repo):
+    """A portrait from assets/extra_portraits replaces the one of the country history."""
+    folder = os.path.join(out, 'history', 'countries')
+    if not os.path.isdir(folder):
+        return
+    md_leaders = os.path.join(md_repo, 'gfx', 'leaders')
+    for name in sorted(os.listdir(folder)):
+        if not name.endswith('.txt'):
+            continue
+        tag = name[:3]
+        path = os.path.join(folder, name)
+        txt = read(path)
+
+        def repl(m):
+            leader = m.group(2)
+            f = world_content.find_extra_portrait(root, tag, leader)
+            if not f:
+                f = world_content.find_portrait(md_leaders, tag, [world_content.surname(leader).lower()])
+            return m.group(1) + f + m.group(4) if f else m.group(0)
+
+        new = re.sub(r'(create_country_leader = \{[^}]*?name = "([^"]+)"[^}]*?picture = ")([^"]+)(")',
+                     repl, txt)
+        if new != txt:
+            write(path, new)
+
+
 def resolve_event_pictures(out, root, md_repo):
     """Adds the picture of a leader to every create_country_leader block of the events."""
     path = os.path.join(out, 'events', 'bc_yugoslavia.txt')
@@ -1043,6 +1088,7 @@ def main():
         if f:
             portrait_1980[tag] = f
     capitals, owned = build_history(a.md_archive, out, states, tags, portrait_1980)
+    resolve_history_pictures(out, repo_root0, a.md_repo)
     missing = build_flags(a.md_repo, a.old_mod, out, set(owned) | set(balkan_content.HISTORIC_TAGS)
                           | set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026))
     if missing:
