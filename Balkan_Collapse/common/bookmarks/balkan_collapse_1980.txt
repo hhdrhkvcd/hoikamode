@@ -1,12 +1,20 @@
-
 bookmarks = {
     bookmark = {
-        name = SERBIA_1980_NAME
-        desc = SERBIA_1980_DESC
+        name = "SERBIA_1980_NAME"
+        desc = "SERBIA_1980_DESC"
         date = 1980.5.1.12
-        picture = GFX_BC_SERBIA_BACKGROUND
+        picture = "GFX_BC_SERBIA_BACKGROUND"
         default = yes
-        default_country = SER
+        default_country = "SER"
 
+        "SER" = {
+            history = "SER_BOOKMARK_1980_HISTORY"
+            ideology = communism
+            focuses = { SER_tito_aftermath }
+        }
+
+        effect = {
+            randomize_weather = 19800501
+        }
     }
 }
