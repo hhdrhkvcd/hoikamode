@@ -14,7 +14,7 @@ focus_tree = {
 
     focus = {
         id = SLV_independence
-        icon = GFX_goal_generic_political_reform
+        icon = GFX_goal_generic_national_unity
         x = 4
         y = 0
         cost = 5
@@ -27,7 +27,7 @@ focus_tree = {
 
     focus = {
         id = SLV_constitution
-        icon = GFX_goal_generic_political_reform
+        icon = GFX_goal_generic_national_unity
         x = 4
         y = 1
         cost = 5

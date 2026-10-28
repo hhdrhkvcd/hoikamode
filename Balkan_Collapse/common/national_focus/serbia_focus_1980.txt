@@ -14,7 +14,7 @@ focus_tree = {
 
     focus = {
         id = SER_tito_aftermath
-        icon = GFX_goal_generic_political_reform
+        icon = GFX_goal_generic_national_unity
         x = 4
         y = 0
         cost = 5
@@ -66,7 +66,7 @@ focus_tree = {
 
     focus = {
         id = SER_civil_reform
-        icon = GFX_goal_generic_political_reform
+        icon = GFX_goal_generic_national_unity
         x = 2
         y = 2
         cost = 5
@@ -159,7 +159,7 @@ focus_tree = {
 
     focus = {
         id = SER_research_program
-        icon = GFX_goal_generic_research
+        icon = GFX_focus_research
         x = 4
         y = 4
         cost = 5
@@ -186,7 +186,7 @@ focus_tree = {
     focus = {
         id = SER_claim_montenegro
         icon = GFX_goal_generic_demand_territory
-        x = 7
+        x = 9
         y = 4
         cost = 5
         prerequisite = { focus = SER_serbian_program }
@@ -199,7 +199,7 @@ focus_tree = {
     focus = {
         id = SER_claim_bosnia
         icon = GFX_goal_generic_demand_territory
-        x = 8
+        x = 12
         y = 4
         cost = 5
         prerequisite = { focus = SER_serbian_program }
