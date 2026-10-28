@@ -1,11 +1,16 @@
 БАЛКАНЫ 1980–2008: РАСПАД ЮГОСЛАВИИ
 
-УСТАНОВКА
-1. Закрой Hearts of Iron IV и Paradox Launcher.
-2. Распакуй архив Balkan_Collapse_1980.zip в Документы/Paradox Interactive/Hearts of Iron IV/mod/.
-3. Проверь, что в этой папке рядом лежат папка Balkan_Collapse и файл Balkan_Collapse.mod.
-4. В лаунчере создай отдельный плейсет, включи только Balkan Collapse и запусти игру.
-5. Начни новую кампанию за Сербию с датой 1 мая 1980 года.
+УСТАНОВКА ЧЕРЕЗ BAT (рекомендуется)
+1. Распакуй весь Balkan_Collapse_1980.zip в отдельную папку. Не запускай BAT внутри архива.
+2. Закрой Hearts of Iron IV и Paradox Launcher.
+3. Запусти START_BALKAN.bat и подтверди установку клавишей Y.
+4. BAT скопирует мод в папку документов игры, сохранит резервную копию списка модов, включит только Balkan Collapse и попробует запустить hoi4.exe напрямую.
+5. В новой игре нажми «Изменить сценарий» и выбери Сербию, 1 мая 1980 года.
+
+BAT временно отключает остальные моды, чтобы исключить конфликты. Резервные копии старого Balkan_Collapse и dlc_load.json сохраняются в Documents/Paradox Interactive/Hearts of Iron IV/Balkan_Collapse_backups. Чтобы вернуть прежний список модов, запусти RESTORE_PREVIOUS_MODS.bat из той же распакованной папки.
+
+УСТАНОВКА ВРУЧНУЮ
+Если BAT не запускается, скопируй папку Balkan_Collapse и файл Balkan_Collapse.mod рядом друг с другом в Documents/Paradox Interactive/Hearts of Iron IV/mod/ и включи мод в лаунчере.
 
 КАРТИНКИ
 - Главное меню: панорама Белграда на закате, из твоего последнего изображения.

@@ -1,5 +1,5 @@
 name="Балканы 1980–2008: распад Югославии"
-version="1.2"
+version="1.3"
 tags={
     "Alternative History"
     "Events"
