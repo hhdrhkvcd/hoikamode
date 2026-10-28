@@ -1,2 +1,7 @@
-
+BOS = "countries/BOS.txt"
+CRO = "countries/CRO.txt"
+KOS = "countries/KOS.txt"
+MAC = "countries/MAC.txt"
+MNT = "countries/MNT.txt"
+SLV = "countries/SLV.txt"
 SRP = "countries/Republika_Srpska.txt"

@@ -1,4 +1,4 @@
-﻿focus_tree = {
+focus_tree = {
 
     id = CRO_1991_tree
 
@@ -125,6 +125,542 @@
         completion_reward = {
             add_stability = 0.08
             add_war_support = 0.03
+        }
+    }
+
+    focus = {
+        id = CRO_economy_01
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 4
+        cost = 5
+        prerequisite = { focus = CRO_transport }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_economy_02
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 5
+        cost = 5
+        prerequisite = { focus = CRO_economy_01 }
+        completion_reward = {
+            add_political_power = 30
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_economy_03
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 6
+        cost = 5
+        prerequisite = { focus = CRO_economy_02 }
+        completion_reward = {
+            add_political_power = 30
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_economy_04
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 7
+        cost = 5
+        prerequisite = { focus = CRO_economy_03 }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = CRO_economy_05
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 8
+        cost = 5
+        prerequisite = { focus = CRO_economy_04 }
+        completion_reward = {
+            add_political_power = 30
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_economy_06
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 9
+        cost = 5
+        prerequisite = { focus = CRO_economy_05 }
+        completion_reward = {
+            add_political_power = 30
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_economy_07
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 10
+        cost = 5
+        prerequisite = { focus = CRO_economy_06 }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_economy_08
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 11
+        cost = 5
+        prerequisite = { focus = CRO_economy_07 }
+        completion_reward = {
+            add_political_power = 30
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = CRO_economy_09
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 12
+        cost = 5
+        prerequisite = { focus = CRO_economy_08 }
+        completion_reward = {
+            add_political_power = 30
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_economy_10
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 13
+        cost = 5
+        prerequisite = { focus = CRO_economy_09 }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_economy_11
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 14
+        cost = 5
+        prerequisite = { focus = CRO_economy_10 }
+        completion_reward = {
+            add_political_power = 30
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_economy_12
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 15
+        cost = 5
+        prerequisite = { focus = CRO_economy_11 }
+        completion_reward = {
+            add_political_power = 30
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = CRO_economy_13
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 16
+        cost = 5
+        prerequisite = { focus = CRO_economy_12 }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_economy_14
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 17
+        cost = 5
+        prerequisite = { focus = CRO_economy_13 }
+        completion_reward = {
+            add_political_power = 30
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_01
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 4
+        cost = 5
+        prerequisite = { focus = CRO_security }
+        completion_reward = {
+            army_experience = 8
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_02
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 5
+        cost = 5
+        prerequisite = { focus = CRO_defence_01 }
+        completion_reward = {
+            army_experience = 5
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_03
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 6
+        cost = 5
+        prerequisite = { focus = CRO_defence_02 }
+        completion_reward = {
+            army_experience = 5
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_04
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 7
+        cost = 5
+        prerequisite = { focus = CRO_defence_03 }
+        completion_reward = {
+            army_experience = 8
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_05
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 8
+        cost = 5
+        prerequisite = { focus = CRO_defence_04 }
+        completion_reward = {
+            army_experience = 5
+            add_war_support = 0.01
+            add_manpower = 5000
+        }
+    }
+
+    focus = {
+        id = CRO_defence_06
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 9
+        cost = 5
+        prerequisite = { focus = CRO_defence_05 }
+        completion_reward = {
+            army_experience = 5
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_07
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 10
+        cost = 5
+        prerequisite = { focus = CRO_defence_06 }
+        completion_reward = {
+            army_experience = 8
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_08
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 11
+        cost = 5
+        prerequisite = { focus = CRO_defence_07 }
+        completion_reward = {
+            army_experience = 5
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_09
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 12
+        cost = 5
+        prerequisite = { focus = CRO_defence_08 }
+        completion_reward = {
+            army_experience = 5
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_10
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 13
+        cost = 5
+        prerequisite = { focus = CRO_defence_09 }
+        completion_reward = {
+            army_experience = 8
+            add_war_support = 0.01
+            add_manpower = 5000
+        }
+    }
+
+    focus = {
+        id = CRO_defence_11
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 14
+        cost = 5
+        prerequisite = { focus = CRO_defence_10 }
+        completion_reward = {
+            army_experience = 5
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_12
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 15
+        cost = 5
+        prerequisite = { focus = CRO_defence_11 }
+        completion_reward = {
+            army_experience = 5
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_13
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 16
+        cost = 5
+        prerequisite = { focus = CRO_defence_12 }
+        completion_reward = {
+            army_experience = 8
+            add_war_support = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_defence_14
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 17
+        cost = 5
+        prerequisite = { focus = CRO_defence_13 }
+        completion_reward = {
+            army_experience = 5
+            add_war_support = 0.01
+            add_manpower = 5000
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_01
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 5
+        cost = 5
+        prerequisite = { focus = CRO_sovereignty }
+        completion_reward = {
+            add_political_power = 45
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_02
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 6
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_01 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_03
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 7
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_02 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_04
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 8
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_03 }
+        completion_reward = {
+            add_political_power = 45
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_05
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 9
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_04 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_06
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 10
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_05 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_07
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 11
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_06 }
+        completion_reward = {
+            add_political_power = 45
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_08
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 12
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_07 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_09
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 13
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_08 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_10
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 14
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_09 }
+        completion_reward = {
+            add_political_power = 45
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_11
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 15
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_10 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.01
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_12
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 16
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_11 }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy_13
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 17
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy_12 }
+        completion_reward = {
+            add_political_power = 45
+            add_stability = 0.01
         }
     }
 

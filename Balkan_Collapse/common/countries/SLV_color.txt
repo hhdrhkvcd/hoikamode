@@ -1,4 +1,0 @@
-SLV = {
-    color = rgb { 45 97 150 }
-    color_ui = rgb { 75 135 192 }
-}

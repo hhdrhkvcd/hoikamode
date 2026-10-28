@@ -1,4 +1,0 @@
-MAC = {
-    color = rgb { 200 32 42 }
-    color_ui = rgb { 225 52 55 }
-}

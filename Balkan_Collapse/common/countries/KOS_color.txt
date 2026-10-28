@@ -1,4 +1,0 @@
-KOS = {
-    color = rgb { 38 78 160 }
-    color_ui = rgb { 57 104 205 }
-}

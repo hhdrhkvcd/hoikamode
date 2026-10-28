@@ -1,4 +1,0 @@
-SER = {
-    color = rgb { 196 42 55 }
-    color_ui = rgb { 220 60 75 }
-}

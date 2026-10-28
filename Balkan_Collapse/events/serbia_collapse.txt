@@ -1,4 +1,4 @@
-﻿add_namespace = serbia_collapse
+add_namespace = serbia_collapse
 
 # Tito died on 4 May 1980. The federation survives for another decade.
 country_event = {

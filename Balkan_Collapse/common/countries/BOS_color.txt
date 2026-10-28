@@ -1,4 +1,0 @@
-BOS = {
-    color = rgb { 32 85 154 }
-    color_ui = rgb { 56 119 196 }
-}

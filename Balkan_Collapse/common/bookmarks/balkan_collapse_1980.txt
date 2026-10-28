@@ -7,6 +7,6 @@ bookmarks = {
         picture = GFX_BC_SERBIA_BACKGROUND
         default = yes
         default_country = SER
-        country = { tag = SER }
+
     }
 }
