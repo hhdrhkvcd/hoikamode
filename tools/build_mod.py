@@ -481,7 +481,8 @@ def base_country_body(tag, ruling, developed=True):
     return '\n'.join(L) + '\n'
 
 
-def build_history(md_archive, out, states, tags):
+def build_history(md_archive, out, states, tags, portrait_1980=None):
+    portrait_1980 = portrait_1980 or {}
     owned = collections.defaultdict(list)
     for s in states.values():
         owned[s['owner']].append(s)
@@ -535,8 +536,11 @@ def build_history(md_archive, out, states, tags):
                  f'set_stability = 0.6', f'set_war_support = {0.4 if tag in MAJORS else 0.25}']
             if tag in LEADERS_1980:
                 name, ide = LEADERS_1980[tag]
-                L += ['create_country_leader = {', f'\tname = "{name}"', '\tdesc = ""',
-                      f'\tideology = {ide}', '\ttraits = { }', '}']
+                pic = portrait_1980.get(tag)
+                L += ['create_country_leader = {', f'\tname = "{name}"']
+                if pic:
+                    L.append(f'\tpicture = "{pic}"')
+                L += ['\tdesc = ""', f'\tideology = {ide}', '\ttraits = { }', '}']
             text = '\n'.join(L) + '\n'
         write(os.path.join(out, 'history', 'countries', f'{tag} - BC.txt'), text)
         if tag in owned:
@@ -798,9 +802,21 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en):
     # ---- portraits -------------------------------------------------------
     wanted = {k: list(v) for k, v in BALKAN_PORTRAITS.items()}
     p1995 = scenario_portraits(md_repo, world_content.LEADERS_1995)
+    p1995['SOV_GORBACHEV'] = world_content.find_portrait(
+        os.path.join(md_repo, 'gfx', 'leaders'), 'SOV', ['mikhail_gorbachev', 'gorbachev'])
     p2026 = scenario_portraits(md_repo, world_content.LEADERS_2026)
     for mapping in (p1995, p2026):
         for tag, f in mapping.items():
+            if tag == 'SOV_GORBACHEV':
+                continue
+            wanted.setdefault(tag, [])
+            if f not in wanted[tag]:
+                wanted[tag].append(f)
+    if p1995.get('SOV_GORBACHEV'):
+        wanted.setdefault('SOV', []).append(p1995['SOV_GORBACHEV'])
+    for tag, patterns in world_content.PORTRAITS_1980.items():
+        f = world_content.find_portrait(os.path.join(md_repo, 'gfx', 'leaders'), tag, patterns)
+        if f:
             wanted.setdefault(tag, [])
             if f not in wanted[tag]:
                 wanted[tag].append(f)
@@ -878,6 +894,10 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en):
         en_c = names_en.get(tag, tag)
         loc['russian'][dkey] = f'{name} \u2014 \u0433\u043b\u0430\u0432\u0430 \u0433\u043e\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0430 {ru_c} \u0432 2026 \u0433\u043e\u0434\u0443.'
         loc['english'][dkey] = f'{name} - head of state of {en_c} in 2026.'
+    loc['russian']['SOV_GORBACHEV_DESC'] = ('Mikhail Gorbachev - the last general secretary of the CPSU, '
+                                           'leader of the Soviet Union until its collapse on 26 December 1991.')
+    loc['english']['SOV_GORBACHEV_DESC'] = ('Mikhail Gorbachev - the last general secretary of the CPSU, '
+                                            'leader of the Soviet Union until its collapse on 26 December 1991.')
     for tag in tags:
         if tag in balkan_content.BALKAN_TAGS:
             continue
@@ -951,7 +971,13 @@ def main():
     build_map(a.md_archive, out)
     tags = build_countries(a.md_repo, out, None)
     build_localisation(a.md_repo, out, tags)
-    capitals, owned = build_history(a.md_archive, out, states, tags)
+    md_leaders = os.path.join(a.md_repo, 'gfx', 'leaders')
+    portrait_1980 = {}
+    for tag, patterns in world_content.PORTRAITS_1980.items():
+        f = world_content.find_portrait(md_leaders, tag, patterns)
+        if f:
+            portrait_1980[tag] = f
+    capitals, owned = build_history(a.md_archive, out, states, tags, portrait_1980)
     missing = build_flags(a.md_repo, a.old_mod, out, set(owned) | set(balkan_content.BALKAN_TAGS)
                           | set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026))
     if missing:

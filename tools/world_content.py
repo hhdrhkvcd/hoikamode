@@ -18,6 +18,9 @@ import shutil
 
 
 def norm(s):
+    import unicodedata
+    s = unicodedata.normalize('NFKD', s)
+    s = ''.join(c for c in s if not unicodedata.combining(c))
     return re.sub(r'[^a-z0-9]', '', s.lower())
 
 
@@ -34,6 +37,17 @@ def find_portrait(md_leaders_dir, tag, patterns):
                 return f
     return None
 
+
+# portraits of the leaders of 1980 (Millennium Dawn has only a part of them)
+PORTRAITS_1980 = {
+    'CUB': ['fidel_castro'],
+    'NIC': ['daniel_ortega'],
+    'ZIM': ['robert_mugabe'],
+    'SYR': ['hafez_al_assaad', 'hafez'],
+    'IRQ': ['saddam_hussein'],
+    'LBA': ['muammar_al_gaddafi'],
+    'ALB': ['enver_hoxha'],
+}
 
 # --------------------------------------------------------------------------
 # Leaders of the scenarios
@@ -53,8 +67,8 @@ LEADERS_1995 = {
     'FYR': ('Kiro Gligorov', 'centrism', ['gligorov'], 'FYR_GLIGOROV_DESC'),
     # former USSR
     'SOV': ('Boris Yeltsin', 'conservatism', ['yeltsin'], 'SOV_YELTSIN_DESC'),
-    'UKR': ('Leonid Kravchuk', 'conservatism', ['kravchuk'], 'UKR_KRAVCHUK_DESC'),
-    'BLR': ('Stanislav Shushkevich', 'liberalism', ['shushkevich'], 'BLR_SHUSHKEVICH_DESC'),
+    'UKR': ('Leonid Kuchma', 'conservatism', ['leonid_kuchma', 'kuchma'], 'UKR_KUCHMA_DESC'),
+    'BLR': ('Alexander Lukashenko', 'despotism', ['alexander_lukashenko', 'lukashenko'], 'BLR_LUKASHENKO_DESC'),
     'MLV': ('Mircea Snegur', 'centrism', ['snegur'], 'MLV_SNEGUR_DESC'),
     'GEO': ('Zviad Gamsakhurdia', 'national_socialism', ['gamsakhurdia'], 'GEO_GAMSAKHURDIA_DESC'),
     'ARM': ('Levon Ter-Petrosyan', 'liberalism', ['ter_petrosyan', 'terpetrosyan'], 'ARM_TERPETROSYAN_DESC'),
@@ -68,7 +82,7 @@ LEADERS_1995 = {
     'LAT': ('Anatolijs Gorbunovs', 'centrism', ['gorbunovs'], 'LAT_GORBUNOVS_DESC'),
     'LIT': ('Vytautas Landsbergis', 'centrism', ['landsbergis'], 'LIT_LANDSBERGIS_DESC'),
     # great powers
-    'USA': ('Bill Clinton', 'liberalism', ['clinton'], 'USA_CLINTON_DESC'),
+    'USA': ('Bill Clinton', 'liberalism', ['bill_clinton'], 'USA_CLINTON_DESC'),
     'ENG': ('John Major', 'conservatism', ['major'], 'ENG_MAJOR_DESC'),
     'FRA': ('François Mitterrand', 'socialism', ['mitterrand'], 'FRA_MITTERRAND_DESC'),
     'GER': ('Helmut Kohl', 'centrism', ['kohl'], 'GER_KOHL_DESC'),
@@ -420,7 +434,12 @@ def _fold_autonomous(md_owner_of, mapping):
 
 def sov_dissolve(md_owner_of, leaders, portraits):
     """Public wrapper: the effect that dissolves the USSR."""
-    return _dissolve_sov(md_owner_of, leaders, portraits)
+    diss = _dissolve_sov(md_owner_of, leaders, portraits)
+    gov = portraits.get('SOV_GORBACHEV')
+    lead = ('SOV = { kill_country_leader = yes create_country_leader = { name = "Mikhail Gorbachev"'
+            + (f' picture = "{gov}"' if gov else '') +
+            ' desc = "SOV_GORBACHEV_DESC" ideology = leninism traits = { } } } ')
+    return lead + diss
 
 
 def scenario_effects(scn, md_owner_of, leaders, portraits):
