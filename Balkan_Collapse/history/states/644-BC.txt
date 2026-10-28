@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 644
+    name = "STATE_644"
+    manpower = 73927
+    state_category = wasteland
+    impassable = yes
+    history = {
+        owner = SOV
+        controller = SOV
+        add_core_of = SOV
+        buildings = {
+            infrastructure = 1
+        }
+    }
+    provinces = { 1722 1819 2877 2900 3184 4006 4229 6085 6211 9224 12549 12634 13060 13061 14222 14224 14225 }
+}

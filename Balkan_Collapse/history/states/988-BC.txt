@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 988
+    name = "STATE_988"
+    manpower = 16236
+    state_category = town
+    history = {
+        owner = USA
+        controller = USA
+        add_core_of = USA
+        add_core_of = NMX
+        buildings = {
+            infrastructure = 2
+        }
+    }
+    provinces = { 13540 }
+}

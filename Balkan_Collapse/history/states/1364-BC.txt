@@ -1,0 +1,21 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1364
+    name = "STATE_1364"
+    manpower = 1212352
+    state_category = megalopolis
+    resources = { }
+    history = {
+        owner = BEL
+        controller = BEL
+        add_core_of = BEL
+        victory_points = { 516 25 }
+        buildings = {
+            infrastructure = 5
+            industrial_complex = 3
+            arms_factory = 1
+            air_base = 4
+        }
+    }
+    provinces = { 516 }
+}

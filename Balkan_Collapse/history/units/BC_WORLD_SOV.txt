@@ -1,0 +1,141 @@
+# Vanilla-compatible infantry; no dependency on modern-mod equipment.
+division_template = {
+    name = "BC Infantry"
+    regiments = {
+        infantry = { x = 0 y = 0 }
+        infantry = { x = 0 y = 1 }
+        infantry = { x = 1 y = 0 }
+        infantry = { x = 1 y = 1 }
+        infantry = { x = 2 y = 0 }
+        infantry = { x = 2 y = 1 }
+    }
+    support = { engineer = { x = 0 y = 0 } }
+}
+units = {
+    division = {
+        name = "1. SOV Infantry"
+        location = 6348
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "2. SOV Infantry"
+        location = 6380
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "3. SOV Infantry"
+        location = 6414
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "4. SOV Infantry"
+        location = 14865
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "5. SOV Infantry"
+        location = 1297
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "6. SOV Infantry"
+        location = 1779
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "7. SOV Infantry"
+        location = 1794
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "8. SOV Infantry"
+        location = 1797
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "9. SOV Infantry"
+        location = 4803
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "10. SOV Infantry"
+        location = 7680
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "11. SOV Infantry"
+        location = 10537
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "12. SOV Infantry"
+        location = 10546
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "13. SOV Infantry"
+        location = 11410
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "14. SOV Infantry"
+        location = 12515
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "15. SOV Infantry"
+        location = 12528
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "16. SOV Infantry"
+        location = 12613
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "17. SOV Infantry"
+        location = 705
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "18. SOV Infantry"
+        location = 3722
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+}

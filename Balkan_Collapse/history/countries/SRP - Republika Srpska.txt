@@ -1,41 +1,56 @@
-capital = 804
+capital = 848
 
 set_research_slots = 3
+
+set_stability = 0.55
+
+set_war_support = 0.25
+
+set_convoys = 20
+
 set_technology = {
     tech_support = 1
     tech_engineers = 1
-    tech_mountaineers = 1
+    tech_recon = 1
     infantry_weapons = 1
     infantry_weapons1 = 1
+    infantry_weapons2 = 1
     support_weapons = 1
+    support_weapons2 = 1
     gw_artillery = 1
+    motorised_infantry = 1
     basic_train = 1
     basic_machine_tools = 1
+    improved_machine_tools = 1
     construction1 = 1
+    construction2 = 1
     electronic_mechanical_engineering = 1
     radio = 1
 }
 
-set_politics = {
-    ruling_party = neutrality
-    last_election = "1992.1.1"
-    election_frequency = 48
-    elections_allowed = yes
-}
-set_popularities = {
-    democratic = 20
-    fascism = 5
-    communism = 5
-    neutrality = 70
-}
-set_stability = 0.55
-set_war_support = 0.25
-set_country_flag = SRP_history_seed
+
+set_politics = { ruling_party = neutrality elections_allowed = no }
+
+set_popularities = { democratic = 25 fascism = 5 communism = 5 neutrality = 65 }
+
 create_country_leader = {
     name = "Siniša Karan"
-    desc = "SRP_LEADER_DESC"
-    picture = GFX_portrait_generic_democratic
+    desc = SRP_LEADER_DESC
+    picture = "gfx/leaders/BC/BC_SRP_government.dds"
     expire = "2036.1.1.12"
-    ideology = centrism
+    ideology = despotism
     traits = { }
 }
+
+1992.1.9 = {
+    set_country_flag = BALKANS_INDEPENDENT
+    set_country_flag = BC_army_initialized
+    oob = "BC_SRP"
+    set_country_flag = SRP_proclaimed
+}
+
+1992.2.28 = { set_country_flag = SRP_constitution }
+
+1992.4.6 = { set_country_flag = SRP_bosnia_war_started }
+
+1995.12.14 = { set_country_flag = SRP_dayton_signed }

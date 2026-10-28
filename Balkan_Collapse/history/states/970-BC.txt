@@ -1,0 +1,21 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 970
+    name = "STATE_970"
+    manpower = 634318
+    state_category = town
+    history = {
+        owner = USA
+        controller = USA
+        add_core_of = USA
+        add_core_of = TEX
+        victory_points = { 12301 10 }
+        victory_points = { 13495 3 }
+        victory_points = { 13493 1 }
+        buildings = {
+            infrastructure = 3
+            air_base = 3
+        }
+    }
+    provinces = { 13488 13509 9773 12301 12848 13496 13495 13493 13490 12893 13497 }
+}

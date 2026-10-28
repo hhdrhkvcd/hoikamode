@@ -1,0 +1,113 @@
+# Vanilla-compatible infantry; no dependency on modern-mod equipment.
+division_template = {
+    name = "BC Infantry"
+    regiments = {
+        infantry = { x = 0 y = 0 }
+        infantry = { x = 0 y = 1 }
+        infantry = { x = 1 y = 0 }
+        infantry = { x = 1 y = 1 }
+        infantry = { x = 2 y = 0 }
+        infantry = { x = 2 y = 1 }
+    }
+    support = { engineer = { x = 0 y = 0 } }
+}
+units = {
+    division = {
+        name = "1. COG Infantry"
+        location = 14556
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "2. COG Infantry"
+        location = 14557
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "3. COG Infantry"
+        location = 5117
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "4. COG Infantry"
+        location = 12945
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "5. COG Infantry"
+        location = 14943
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "6. COG Infantry"
+        location = 14944
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "7. COG Infantry"
+        location = 14945
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "8. COG Infantry"
+        location = 14946
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "9. COG Infantry"
+        location = 4128
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "10. COG Infantry"
+        location = 7716
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "11. COG Infantry"
+        location = 10025
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "12. COG Infantry"
+        location = 12896
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "13. COG Infantry"
+        location = 988
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "14. COG Infantry"
+        location = 7931
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+}

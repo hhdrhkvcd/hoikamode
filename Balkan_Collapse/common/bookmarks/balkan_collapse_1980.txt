@@ -1,20 +1,29 @@
 bookmarks = {
-    bookmark = {
-        name = "SERBIA_1980_NAME"
-        desc = "SERBIA_1980_DESC"
-        date = 1980.5.1.12
-        picture = "GFX_BC_SERBIA_BACKGROUND"
-        default = yes
-        default_country = "SER"
-
-        "SER" = {
-            history = "SER_BOOKMARK_1980_HISTORY"
-            ideology = communism
-            focuses = { SER_tito_aftermath }
-        }
-
-        effect = {
-            randomize_weather = 19800501
-        }
-    }
+bookmark = {
+    name = SERBIA_1980_NAME
+    desc = SERBIA_1980_DESC
+    date = 1980.5.1.12
+    picture = GFX_BC_BOOKMARK_1980
+    default = yes
+    default_country = "SER"
+    SER = { history = SER_BOOKMARK_1980_HISTORY ideology = communism focuses = { SER_tito_aftermath } }
+    effect = { randomize_weather = 19800501 }
+}
+bookmark = {
+    name = BC_2008_NAME
+    desc = BC_2008_DESC
+    date = 2008.2.18.12
+    picture = GFX_BC_BOOKMARK_SERBIA
+    default = no
+    default_country = "SER"
+    SER = { history = BC_SER_BOOKMARK_2008_HISTORY ideology = democratic focuses = { SER_tito_aftermath } }
+    CRO = { history = BC_CRO_BOOKMARK_HISTORY ideology = democratic focuses = { CRO_independence } }
+    SLV = { history = BC_SLV_BOOKMARK_HISTORY ideology = democratic focuses = { SLV_independence } }
+    BOS = { history = BC_BOS_BOOKMARK_HISTORY ideology = democratic focuses = { BOS_independence } }
+    SRP = { history = BC_SRP_BOOKMARK_HISTORY ideology = neutrality focuses = { SRP_proclamation } }
+    MNT = { history = BC_MNT_BOOKMARK_HISTORY ideology = democratic focuses = { MNT_independence } }
+    MAC = { history = BC_MAC_BOOKMARK_HISTORY ideology = democratic focuses = { MAC_independence } }
+    KOS = { history = BC_KOS_BOOKMARK_HISTORY ideology = democratic focuses = { KOS_independence } }
+    effect = { randomize_weather = 19800501 }
+}
 }

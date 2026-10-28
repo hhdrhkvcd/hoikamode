@@ -1,0 +1,141 @@
+# Vanilla-compatible infantry; no dependency on modern-mod equipment.
+division_template = {
+    name = "BC Infantry"
+    regiments = {
+        infantry = { x = 0 y = 0 }
+        infantry = { x = 0 y = 1 }
+        infantry = { x = 1 y = 0 }
+        infantry = { x = 1 y = 1 }
+        infantry = { x = 2 y = 0 }
+        infantry = { x = 2 y = 1 }
+    }
+    support = { engineer = { x = 0 y = 0 } }
+}
+units = {
+    division = {
+        name = "1. RAJ Infantry"
+        location = 12868
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "2. RAJ Infantry"
+        location = 2032
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "3. RAJ Infantry"
+        location = 2086
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "4. RAJ Infantry"
+        location = 11955
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "5. RAJ Infantry"
+        location = 1238
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "6. RAJ Infantry"
+        location = 1321
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "7. RAJ Infantry"
+        location = 7391
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "8. RAJ Infantry"
+        location = 7447
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "9. RAJ Infantry"
+        location = 1273
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "10. RAJ Infantry"
+        location = 1268
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "11. RAJ Infantry"
+        location = 1381
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "12. RAJ Infantry"
+        location = 1409
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "13. RAJ Infantry"
+        location = 4327
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "14. RAJ Infantry"
+        location = 4416
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "15. RAJ Infantry"
+        location = 4420
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "16. RAJ Infantry"
+        location = 7265
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "17. RAJ Infantry"
+        location = 7288
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "18. RAJ Infantry"
+        location = 7363
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+}

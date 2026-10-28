@@ -1,0 +1,24 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 764
+    name = "STATE_764"
+    manpower = 20500250
+    state_category = large_town
+    resources = {
+        oil = 51.000
+    }
+    history = {
+        owner = NGA
+        controller = NGA
+        add_core_of = NGA
+        victory_points = { 14956 7 }
+        victory_points = { 8034 5 }
+        victory_points = { 14957 3 }
+        buildings = {
+            infrastructure = 3
+            industrial_complex = 5
+            air_base = 1
+        }
+    }
+    provinces = { 1992 4889 7978 8034 14956 14957 }
+}

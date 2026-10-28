@@ -1,0 +1,25 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 386
+    name = "STATE_386"
+    manpower = 833131
+    state_category = large_city
+    resources = {
+        oil = 5
+        steel = 28
+    }
+    history = {
+        owner = USA
+        controller = USA
+        add_core_of = USA
+        add_core_of = WAS
+        victory_points = { 7442 1 }
+        buildings = {
+            infrastructure = 4
+            arms_factory = 1
+            air_base = 5
+            nuclear_reactor = 1
+        }
+    }
+    provinces = { 7255 7442 10155 10690 12155 12214 13412 13315 }
+}

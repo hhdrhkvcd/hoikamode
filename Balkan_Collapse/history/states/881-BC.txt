@@ -1,0 +1,22 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 881
+    name = "STATE_881"
+    manpower = 55000
+    state_category = rural
+    history = {
+        owner = ISR
+        controller = ISR
+        add_core_of = SYR
+        add_core_of = ISR
+        victory_points = { 13221 1 }
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 1
+            13221 = {
+                bunker = 4
+            }
+        }
+    }
+    provinces = { 13221 }
+}

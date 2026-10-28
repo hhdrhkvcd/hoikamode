@@ -1,0 +1,22 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 503
+    name = "STATE_503"
+    manpower = 19922700
+    state_category = large_town
+    resources = {
+        steel = 47.000
+    }
+    history = {
+        owner = BRA
+        controller = BRA
+        add_core_of = BRA
+        buildings = {
+            infrastructure = 4
+            air_base = 4
+            industrial_complex = 3
+            arms_factory = 1
+        }
+    }
+    provinces = { 1529 2109 4533 4548 4587 5156 5178 8181 8239 10405 12466 }
+}

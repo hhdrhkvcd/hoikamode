@@ -1,120 +1,117 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿[CmdletBinding()]
+param([string]$GamePath, [string]$DocumentsPath, [switch]$NoLaunch, [switch]$Yes)
+$ErrorActionPreference = 'Stop'
+Import-Module (Join-Path $PSScriptRoot 'scripts\BalkanTools.psm1') -Force
 
-function Stop-WithMessage([string]$Message) {
-    Write-Host "`nОШИБКА: $Message" -ForegroundColor Red
+$stage = $null
+$transactionStarted = $false
+$oldModMoved = $false
+$newModInstalled = $false
+$descriptorTouched = $false
+$loadTouched = $false
+$oldDescriptorExists = $false
+$oldLoadExists = $false
+try {
+    Assert-BalkanGameStopped
+    $paths = Get-BalkanPaths $DocumentsPath
+    $sourceMod = Join-Path $PSScriptRoot 'Balkan_Collapse'
+    $sourceDescriptor = Join-Path $PSScriptRoot 'Balkan_Collapse.mod'
+    $payload = Join-Path $PSScriptRoot 'assets\millennium_map.zip'
+    $manifest = Join-Path $PSScriptRoot 'assets\MAP_SOURCE.json'
+    $targetMod = Join-Path $paths.ModDirectory 'Balkan_Collapse'
+    $targetDescriptor = Join-Path $paths.ModDirectory 'Balkan_Collapse.mod'
+    if (!(Test-Path -LiteralPath $sourceMod -PathType Container) -or !(Test-Path -LiteralPath $sourceDescriptor -PathType Leaf)) {
+        throw 'Не найдены Balkan_Collapse и Balkan_Collapse.mod рядом с BAT. Распакуй ВЕСЬ новый ZIP, не запускай BAT внутри архива.'
+    }
+    if ([IO.Path]::GetFullPath($sourceMod).TrimEnd('\') -eq [IO.Path]::GetFullPath($targetMod).TrimEnd('\')) {
+        throw 'Нельзя устанавливать мод поверх папки, из которой работает установщик. Распакуй ZIP в отдельную папку, например на рабочий стол.'
+    }
+    $sourceHasMap = Test-Path -LiteralPath (Join-Path $sourceMod 'map\provinces.bmp') -PathType Leaf
+    if (!$sourceHasMap -and !(Test-Path -LiteralPath $payload -PathType Leaf)) {
+        throw 'Нет данных карты. Нужен целый новый Balkan_Collapse_1980.zip или assets\millennium_map.zip из GitHub. Старый ZIP 1.6 не подходит.'
+    }
+    # Parse BEFORE modifying the installed mod. Malformed JSON is never overwritten.
+    $settings = Read-BalkanSettings $paths.LoadFile
+    if ($GamePath) { $null = Find-BalkanGame $GamePath }
+    Write-Host 'Balkan Collapse 2.0 — современная карта, 1980 / 2008' -ForegroundColor Cyan
+    Write-Host "Данные игры: $($paths.Data)"
+    Write-Host 'Будет включён ТОЛЬКО Balkan Collapse. DLC сохраняются. Полный Millennium Dawn включать одновременно нельзя.'
+    Write-Host 'Старая версия мода и список модов будут сохранены. Сохранения, настройки и файлы игры не удаляются.'
+    if (!$Yes) {
+        $answer = Read-Host 'Установить? (Y/N)'
+        if ($answer -notmatch '^(Y|YES|Д|ДА)$') { Write-Host 'Отменено. Ничего не изменено.'; exit 0 }
+    }
+    New-Item -ItemType Directory -Force -Path $paths.ModDirectory,$paths.Backups | Out-Null
+    $stamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
+    $stage = Join-Path $paths.Backups ('.staging-' + [guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path $stage | Out-Null
+    $stagedMod = Join-Path $stage 'Balkan_Collapse'
+    Copy-Item -LiteralPath $sourceMod -Destination $stagedMod -Recurse
+    if (!$sourceHasMap) {
+        if (!(Test-Path -LiteralPath $manifest -PathType Leaf)) { throw 'Нет assets\MAP_SOURCE.json для проверки архива карты.' }
+        $mapInfo = Get-Content -LiteralPath $manifest -Raw -Encoding UTF8 | ConvertFrom-Json
+        $actualHash = (Get-FileHash -LiteralPath $payload -Algorithm SHA256).Hash.ToLowerInvariant()
+        if ($actualHash -ne $mapInfo.payload_sha256) { throw 'Контрольная сумма архива карты не совпадает. Скачай архив заново.' }
+        Write-Host 'Распаковываю карту из GitHub...' -ForegroundColor Cyan
+        Expand-Archive -LiteralPath $payload -DestinationPath $stagedMod -Force
+    }
+    foreach ($required in @('map\provinces.bmp','map\definition.csv','map\rivers.bmp','map\heightmap.bmp','map\terrain_morecities.bmp','map\trees.bmp','map\supply_nodes.txt','history\states\107-BC.txt','descriptor.mod')) {
+        if (!(Test-Path -LiteralPath (Join-Path $stagedMod $required) -PathType Leaf)) { throw "Неполная сборка: $required" }
+    }
+    $stateFiles = @(Get-ChildItem -LiteralPath (Join-Path $stagedMod 'history\states') -Filter '*.txt' -File)
+    if ($stateFiles.Count -ne 1493) { throw "Ожидалось 1493 области карты, найдено $($stateFiles.Count). Установка отменена." }
+    $oldModBackup = Join-Path $paths.Backups "Balkan_Collapse-$stamp"
+    $oldDescriptorBackup = Join-Path $paths.Backups "Balkan_Collapse-$stamp.mod"
+    $oldLoadExists = Test-Path -LiteralPath $paths.LoadFile -PathType Leaf
+    $oldDescriptorExists = Test-Path -LiteralPath $targetDescriptor -PathType Leaf
+    Backup-BalkanSettings $paths $stamp
+    if ($oldDescriptorExists) { Copy-Item -LiteralPath $targetDescriptor -Destination $oldDescriptorBackup }
+    $settings.enabled_mods = @('mod/Balkan_Collapse.mod')
+    $stagedLoad = Join-Path $stage 'dlc_load.json'
+    Write-BalkanJson $stagedLoad $settings
+    $null = Read-BalkanSettings $stagedLoad
+    Write-BalkanJson (Join-Path $paths.Backups "transaction-$stamp.json") ([pscustomobject]@{
+        version = '2.0.0'; previous_load_existed = $oldLoadExists
+        previous_descriptor_existed = $oldDescriptorExists; target = $targetMod
+    })
+    # Transaction: only now replace an existing install, after all staging checks succeeded.
+    $transactionStarted = $true
+    if (Test-Path -LiteralPath $targetMod) {
+        Move-Item -LiteralPath $targetMod -Destination $oldModBackup
+        $oldModMoved = $true
+    }
+    Move-Item -LiteralPath $stagedMod -Destination $targetMod
+    $newModInstalled = $true
+    $descriptorTouched = $true
+    Copy-Item -LiteralPath $sourceDescriptor -Destination $targetDescriptor -Force
+    $loadTouched = $true
+    Copy-Item -LiteralPath $stagedLoad -Destination $paths.LoadFile -Force
+    $transactionStarted = $false
+    Write-Host 'Мод 2.0 установлен. Доступны сценарии 1980 и 2008.' -ForegroundColor Green
+    Write-Host "Резервные копии: $($paths.Backups)"
+    Write-Host 'Используй НОВУЮ игру: сохранения прежней карты несовместимы.'
+} catch {
+    $failure = $_.Exception.Message
+    if ($transactionStarted) {
+        Write-Warning 'Установка не завершена. Восстанавливаю прежние файлы...'
+        try {
+            if ($newModInstalled -and (Test-Path -LiteralPath $targetMod)) { Remove-Item -LiteralPath $targetMod -Recurse -Force }
+            if ($oldModMoved) { Move-Item -LiteralPath $oldModBackup -Destination $targetMod }
+            if ($descriptorTouched) {
+                if ($oldDescriptorExists) { Copy-Item -LiteralPath $oldDescriptorBackup -Destination $targetDescriptor -Force }
+                elseif (Test-Path -LiteralPath $targetDescriptor) { Remove-Item -LiteralPath $targetDescriptor -Force }
+            }
+            if ($loadTouched) {
+                if ($oldLoadExists) { Copy-Item -LiteralPath (Join-Path $paths.Backups "dlc_load-$stamp.json") -Destination $paths.LoadFile -Force }
+                elseif (Test-Path -LiteralPath $paths.LoadFile) { Remove-Item -LiteralPath $paths.LoadFile -Force }
+            }
+        } catch { Write-Warning "Автооткат не завершён: $($_.Exception.Message). Резервные копии: $($paths.Backups)" }
+    }
+    Write-Host "ОШИБКА: $failure" -ForegroundColor Red
     exit 1
+} finally {
+    if ($stage -and (Test-Path -LiteralPath $stage)) { Remove-Item -LiteralPath $stage -Recurse -Force -ErrorAction SilentlyContinue }
 }
-
-$sourceRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sourceMod = Join-Path $sourceRoot 'Balkan_Collapse'
-$sourceDescriptor = Join-Path $sourceRoot 'Balkan_Collapse.mod'
-if (!(Test-Path -LiteralPath $sourceMod -PathType Container)) {
-    Stop-WithMessage 'рядом со START_BALKAN.bat не найдена папка Balkan_Collapse. Сначала распакуй весь ZIP.'
-}
-if (!(Test-Path -LiteralPath $sourceDescriptor -PathType Leaf)) {
-    Stop-WithMessage 'рядом со START_BALKAN.bat не найден файл Balkan_Collapse.mod. Сначала распакуй весь ZIP.'
-}
-
-$documents = [System.Environment]::GetFolderPath([System.Environment+SpecialFolder]::MyDocuments)
-if ([string]::IsNullOrWhiteSpace($documents)) {
-    Stop-WithMessage 'Windows не смогла определить папку Документы.'
-}
-$hoiData = Join-Path $documents 'Paradox Interactive\Hearts of Iron IV'
-$modDirectory = Join-Path $hoiData 'mod'
-$backupDirectory = Join-Path $hoiData 'Balkan_Collapse_backups'
-New-Item -ItemType Directory -Force -Path $modDirectory | Out-Null
-New-Item -ItemType Directory -Force -Path $backupDirectory | Out-Null
-
-Write-Host 'Установщик Balkan Collapse' -ForegroundColor Cyan
-Write-Host "Папка игры: $hoiData"
-Write-Host 'Для надёжной проверки будут временно включены только файлы этого мода.'
-Write-Host 'Текущий список модов и предыдущая копия Balkan_Collapse сохранятся в резервной папке.'
-$answer = Read-Host 'Продолжить? (Y/N)'
-if ($answer -notmatch '^(Y|Д|ДА|YES)$') {
-    Write-Host 'Отменено. Ничего не изменено.'
-    exit 0
-}
-
-$stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-$targetMod = Join-Path $modDirectory 'Balkan_Collapse'
-$targetDescriptor = Join-Path $modDirectory 'Balkan_Collapse.mod'
-if (Test-Path -LiteralPath $targetMod) {
-    Copy-Item -LiteralPath $targetMod -Destination (Join-Path $backupDirectory "Balkan_Collapse-$stamp") -Recurse -Force
-    Remove-Item -LiteralPath $targetMod -Recurse -Force
-}
-if (Test-Path -LiteralPath $targetDescriptor) {
-    Copy-Item -LiteralPath $targetDescriptor -Destination (Join-Path $backupDirectory "Balkan_Collapse-$stamp.mod") -Force
-}
-Copy-Item -LiteralPath $sourceMod -Destination $targetMod -Recurse -Force
-Copy-Item -LiteralPath $sourceDescriptor -Destination $targetDescriptor -Force
-
-$loadFile = Join-Path $hoiData 'dlc_load.json'
-if (Test-Path -LiteralPath $loadFile) {
-    Copy-Item -LiteralPath $loadFile -Destination (Join-Path $backupDirectory "dlc_load-$stamp.json") -Force
-    try {
-        $settings = Get-Content -LiteralPath $loadFile -Raw | ConvertFrom-Json -ErrorAction Stop
-    } catch {
-        Stop-WithMessage "не удалось прочитать dlc_load.json. Резервная копия сохранена в $backupDirectory; файл не перезаписан."
-    }
-} else {
-    $settings = [pscustomobject]@{ disabled_dlcs = @(); enabled_mods = @() }
-}
-if ($null -eq $settings) {
-    $settings = [pscustomobject]@{ disabled_dlcs = @(); enabled_mods = @() }
-}
-if ($settings.PSObject.Properties.Name -notcontains 'disabled_dlcs') {
-    $settings | Add-Member -MemberType NoteProperty -Name disabled_dlcs -Value @()
-}
-if ($settings.PSObject.Properties.Name -notcontains 'enabled_mods') {
-    $settings | Add-Member -MemberType NoteProperty -Name enabled_mods -Value @()
-}
-$settings.enabled_mods = @('mod/Balkan_Collapse.mod')
-$json = $settings | ConvertTo-Json -Depth 20
-$utf8NoBom = [System.Text.UTF8Encoding]::new($false)
-[System.IO.File]::WriteAllText($loadFile, $json, $utf8NoBom)
-
-Write-Host "`nМод установлен и включён в dlc_load.json." -ForegroundColor Green
-Write-Host "Резервные копии: $backupDirectory"
-
-# Find the Steam library and start HOI4 directly, so the Launcher cannot switch back to a different playset.
-$steamRoots = @()
-try {
-    $steamUser = Get-ItemProperty -Path 'HKCU:\Software\Valve\Steam' -ErrorAction Stop
-    if ($steamUser.SteamPath) { $steamRoots += $steamUser.SteamPath }
-    if ($steamUser.InstallPath) { $steamRoots += $steamUser.InstallPath }
-} catch { }
-try {
-    $steamMachine = Get-ItemProperty -Path 'HKLM:\SOFTWARE\WOW6432Node\Valve\Steam' -ErrorAction Stop
-    if ($steamMachine.InstallPath) { $steamRoots += $steamMachine.InstallPath }
-} catch { }
-if ($env:ProgramFiles) { $steamRoots += (Join-Path $env:ProgramFiles 'Steam') }
-if (${env:ProgramFiles(x86)}) { $steamRoots += (Join-Path ${env:ProgramFiles(x86)} 'Steam') }
-$steamRoots = @($steamRoots | Where-Object { $_ } | Select-Object -Unique)
-
-$libraryRoots = @($steamRoots)
-foreach ($root in $steamRoots) {
-    $vdf = Join-Path $root 'steamapps\libraryfolders.vdf'
-    if (Test-Path -LiteralPath $vdf) {
-        $contents = Get-Content -LiteralPath $vdf -Raw
-        foreach ($match in [regex]::Matches($contents, '"path"\s+"([^"]+)"')) {
-            $library = $match.Groups[1].Value.Replace('\\', '\')
-            if ($library) { $libraryRoots += $library }
-        }
-    }
-}
-$gameExe = $null
-foreach ($library in ($libraryRoots | Select-Object -Unique)) {
-    $candidate = Join-Path $library 'steamapps\common\Hearts of Iron IV\hoi4.exe'
-    if (Test-Path -LiteralPath $candidate) { $gameExe = $candidate; break }
-}
-if ($gameExe) {
-    Write-Host 'Запускаю Hearts of Iron IV с включённым Balkan Collapse...' -ForegroundColor Cyan
-    Start-Process -FilePath $gameExe -WorkingDirectory (Split-Path -Parent $gameExe)
-} else {
-    Write-Host 'Не нашёл hoi4.exe в библиотеках Steam. Открываю страницу запуска игры через Steam.' -ForegroundColor Yellow
-    try {
-        Start-Process 'steam://rungameid/394360'
-    } catch {
-        Stop-WithMessage 'не удалось запустить игру автоматически. Мод установлен и включён; запусти HOI4 через Steam.'
-    }
-}
+# A launch failure must not roll back a successfully installed mod.
+try { Start-BalkanGame -GamePath $GamePath -NoLaunch:$NoLaunch }
+catch { Write-Warning "Мод установлен, но игра не запущена: $($_.Exception.Message)"; exit 1 }

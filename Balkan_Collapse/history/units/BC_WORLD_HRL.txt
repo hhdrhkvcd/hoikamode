@@ -1,0 +1,78 @@
+# Vanilla-compatible infantry; no dependency on modern-mod equipment.
+division_template = {
+    name = "BC Infantry"
+    regiments = {
+        infantry = { x = 0 y = 0 }
+        infantry = { x = 0 y = 1 }
+        infantry = { x = 1 y = 0 }
+        infantry = { x = 1 y = 1 }
+        infantry = { x = 2 y = 0 }
+        infantry = { x = 2 y = 1 }
+    }
+    support = { engineer = { x = 0 y = 0 } }
+}
+units = {
+    division = {
+        name = "1. HRL Infantry"
+        location = 1130
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "2. HRL Infantry"
+        location = 1204
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "3. HRL Infantry"
+        location = 4136
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "4. HRL Infantry"
+        location = 4151
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "5. HRL Infantry"
+        location = 7082
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "6. HRL Infantry"
+        location = 9992
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "7. HRL Infantry"
+        location = 10120
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "8. HRL Infantry"
+        location = 12094
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+    division = {
+        name = "9. HRL Infantry"
+        location = 1060
+        division_template = "BC Infantry"
+        start_experience_factor = 0.2
+        start_equipment_factor = 0.85
+    }
+}

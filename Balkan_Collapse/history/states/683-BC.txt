@@ -1,0 +1,19 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 683
+    name = "STATE_683"
+    manpower = 6018
+    state_category = pastoral
+    history = {
+        owner = CAN
+        controller = CAN
+        add_core_of = CAN
+        victory_points = { 3691 1 }
+        buildings = {
+            3691 = {
+                naval_base = 1
+            }
+        }
+    }
+    provinces = { 1712 2947 3691 7813 8962 10721 13190 13191 }
+}

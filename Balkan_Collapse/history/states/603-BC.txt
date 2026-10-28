@@ -1,0 +1,26 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 603
+    name = "STATE_603"
+    manpower = 13682731
+    state_category = large_town
+    resources = {
+        steel = 12.000
+    }
+    history = {
+        owner = PRC
+        controller = PRC
+        add_core_of = PRC
+        add_claim_by = CHI
+        victory_points = { 14173 5 }
+        victory_points = { 10616 10 }
+        victory_points = { 7549 3 }
+        buildings = {
+            infrastructure = 4
+            industrial_complex = 3
+            arms_factory = 1
+            air_base = 2
+        }
+    }
+    provinces = { 1010 4532 7549 8095 9939 10616 14173 }
+}

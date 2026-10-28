@@ -1,0 +1,14 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 909
+    name = "STATE_909"
+    manpower = 900
+    state_category = wasteland
+    history = {
+        owner = PAN
+        controller = PAN
+        add_core_of = PAN
+        buildings = { }
+    }
+    provinces = { 13233 13234 }
+}

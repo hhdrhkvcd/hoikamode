@@ -1,0 +1,23 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 32
+    name = "STATE_32"
+    manpower = 1007500
+    state_category = large_town
+    resources = {
+        oil = 2
+        steel = 60
+    }
+    history = {
+        owner = FRA
+        controller = FRA
+        add_core_of = FRA
+        victory_points = { 3768 1 }
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 1
+            nuclear_reactor = 1
+        }
+    }
+    provinces = { 762 780 3589 3768 6784 11713 }
+}

@@ -1,0 +1,27 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 930
+    name = "STATE_930"
+    manpower = 5193673
+    state_category = megalopolis
+    history = {
+        owner = USA
+        controller = USA
+        add_core_of = USA
+        add_core_of = CAL
+        victory_points = { 9814 40 }
+        victory_points = { 11757 7 }
+        victory_points = { 13238 2 }
+        victory_points = { 13239 3 }
+        buildings = {
+            infrastructure = 4
+            industrial_complex = 3
+            arms_factory = 3
+            dockyard = 3
+            9814 = {
+                naval_base = 5
+            }
+        }
+    }
+    provinces = { 9814 11757 13238 13239 13303 }
+}

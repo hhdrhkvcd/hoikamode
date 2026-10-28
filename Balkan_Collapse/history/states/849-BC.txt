@@ -1,0 +1,24 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 849
+    name = "STATE_849"
+    manpower = 960000
+    state_category = town
+    history = {
+        owner = SER
+        controller = SER
+        add_core_of = BOS
+        add_core_of = SRP
+        add_core_of = SER
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 1
+        }
+        1992.1.9 = {
+            owner = SRP
+            controller = SRP
+            remove_core_of = SER
+        }
+    }
+    provinces = { 606 953 982 11741 11845 }
+}

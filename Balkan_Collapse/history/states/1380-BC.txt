@@ -1,0 +1,28 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1380
+    name = "STATE_1380"
+    manpower = 66370000
+    state_category = megalopolis
+    resources = {
+        steel = 20
+    }
+    history = {
+        owner = PAK
+        controller = PAK
+        add_core_of = PAK
+        victory_points = { 10772 20 }
+        victory_points = { 9084 10 }
+        victory_points = { 8007 1 }
+        victory_points = { 12005 1 }
+        victory_points = { 10066 5 }
+        victory_points = { 10898 3 }
+        buildings = {
+            infrastructure = 3
+            industrial_complex = 3
+            arms_factory = 1
+            air_base = 2
+        }
+    }
+    provinces = { 10898 12792 10843 8007 10772 10066 9084 12822 12005 }
+}

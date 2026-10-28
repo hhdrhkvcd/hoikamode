@@ -1,0 +1,19 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 649
+    name = "STATE_649"
+    manpower = 11532
+    state_category = tiny_island
+    history = {
+        owner = ECU
+        controller = ECU
+        add_core_of = ECU
+        buildings = {
+            infrastructure = 1
+            5023 = {
+                naval_base = 1
+            }
+        }
+    }
+    provinces = { 5023 }
+}

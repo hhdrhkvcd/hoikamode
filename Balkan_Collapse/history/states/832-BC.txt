@@ -1,0 +1,18 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 832
+    name = "STATE_832"
+    manpower = 134000
+    state_category = town
+    history = {
+        owner = NGK
+        controller = NGK
+        add_core_of = AZR
+        add_core_of = NGK
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 2
+        }
+    }
+    provinces = { 1467 9715 14130 14128 }
+}

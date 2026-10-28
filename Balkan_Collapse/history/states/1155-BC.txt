@@ -1,0 +1,19 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1155
+    name = "STATE_1155"
+    manpower = 95465
+    state_category = wasteland
+    history = {
+        owner = PRC
+        controller = PRC
+        add_core_of = PRC
+        add_core_of = TIB
+        add_claim_by = CHI
+        victory_points = { 10802 5 }
+        buildings = {
+            infrastructure = 2
+        }
+    }
+    provinces = { 1961 5094 8029 10802 12801 }
+}

@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 777
+    name = "STATE_777"
+    manpower = 6550550
+    state_category = rural
+    history = {
+        owner = GHA
+        controller = GHA
+        add_core_of = GHA
+        buildings = {
+            infrastructure = 1
+            industrial_complex = 1
+        }
+    }
+    provinces = { 8039 8096 }
+}

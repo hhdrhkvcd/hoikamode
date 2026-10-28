@@ -1,0 +1,17 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 582
+    name = "STATE_582"
+    manpower = 845537
+    state_category = pastoral
+    history = {
+        owner = SOV
+        controller = SOV
+        add_core_of = SOV
+        victory_points = { 1292 5 }
+        buildings = {
+            infrastructure = 2
+        }
+    }
+    provinces = { 1292 1294 1327 1775 4242 10170 12106 14305 14307 14311 }
+}

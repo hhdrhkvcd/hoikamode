@@ -1,0 +1,25 @@
+# Development tools and unpacked source archives
+.venv/
+.work/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+
+# Reproducible install packages (not source files)
+dist/
+build/
+artifacts/
+
+# Large map images are stored once, compressed, in assets/millennium_map.zip.
+# START_BALKAN.ps1 and tools/build_mod.py unpack them for the game.
+Balkan_Collapse/map/*.bmp
+Balkan_Collapse/map/terrain/
+Balkan_Collapse/map/unitstacks.txt
+
+# Local game diagnostics / saves
+*.dmp
+*.hoi4
+logs/
+crashes/
+diagnostics/

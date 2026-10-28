@@ -1,0 +1,31 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 6
+    name = "STATE_6"
+    manpower = 6950000
+    state_category = megalopolis
+    resources = {
+        steel = 97
+    }
+    history = {
+        owner = BEL
+        controller = BEL
+        add_core_of = BEL
+        victory_points = { 6598 20 }
+        victory_points = { 6560 5 }
+        buildings = {
+            infrastructure = 5
+            industrial_complex = 2
+            arms_factory = 1
+            dockyard = 1
+            6446 = {
+                naval_base = 7
+            }
+            6598 = {
+                naval_base = 10
+            }
+            nuclear_reactor = 1
+        }
+    }
+    provinces = { 3576 6446 6560 6598 9574 11419 13068 }
+}

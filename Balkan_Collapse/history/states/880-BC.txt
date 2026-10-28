@@ -1,0 +1,21 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 880
+    name = "STATE_880"
+    manpower = 1000
+    state_category = pastoral
+    history = {
+        owner = USA
+        controller = USA
+        add_core_of = CUB
+        add_core_of = USA
+        victory_points = { 13216 1 }
+        buildings = {
+            infrastructure = 3
+            13216 = {
+                naval_base = 5
+            }
+        }
+    }
+    provinces = { 13216 }
+}

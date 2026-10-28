@@ -1,0 +1,20 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 545
+    name = "STATE_545"
+    manpower = 14100100
+    state_category = town
+    history = {
+        owner = ZAM
+        controller = ZAM
+        add_core_of = ZAM
+        victory_points = { 5199 5 }
+        buildings = {
+            infrastructure = 2
+            industrial_complex = 4
+            arms_factory = 2
+            air_base = 1
+        }
+    }
+    provinces = { 697 1846 5199 5221 7872 10538 10594 10930 12504 12677 13173 }
+}

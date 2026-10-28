@@ -1,0 +1,1 @@
+# Leaders are defined explicitly in country histories. Vanilla 1936 characters are not loaded.

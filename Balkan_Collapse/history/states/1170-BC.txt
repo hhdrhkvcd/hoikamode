@@ -1,0 +1,15 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1170
+    name = "STATE_1170"
+    manpower = 214502
+    state_category = wasteland
+    impassable = yes
+    history = {
+        owner = EGY
+        controller = EGY
+        add_core_of = EGY
+        buildings = { }
+    }
+    provinces = { 2064 }
+}

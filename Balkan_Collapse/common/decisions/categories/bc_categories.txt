@@ -1,0 +1,5 @@
+BC_reunification = {
+    icon = GFX_BC_goal_diplomacy
+    allowed = { original_tag = SER }
+    visible = { tag = SER has_country_flag = SER_first_breakup_wave }
+}

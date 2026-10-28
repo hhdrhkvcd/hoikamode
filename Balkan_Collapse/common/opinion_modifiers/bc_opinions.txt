@@ -1,0 +1,3 @@
+opinion_modifiers = {
+    BC_regional_cooperation = { value = 25 }
+}

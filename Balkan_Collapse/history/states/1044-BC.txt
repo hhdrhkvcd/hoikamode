@@ -1,0 +1,18 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1044
+    name = "STATE_1044"
+    manpower = 192578
+    state_category = pastoral
+    history = {
+        owner = PRK
+        controller = PRK
+        add_core_of = PRK
+        add_claim_by = KOR
+        victory_points = { 13697 3 }
+        buildings = {
+            infrastructure = 2
+        }
+    }
+    provinces = { 13697 }
+}

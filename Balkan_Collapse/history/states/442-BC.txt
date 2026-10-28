@@ -1,0 +1,18 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 442
+    name = "STATE_442"
+    manpower = 19234092
+    state_category = town
+    history = {
+        owner = PAK
+        controller = PAK
+        add_core_of = PAK
+        buildings = {
+            infrastructure = 1
+            industrial_complex = 1
+            air_base = 1
+        }
+    }
+    provinces = { 1978 4558 4998 12717 12763 14513 14515 14518 14526 }
+}

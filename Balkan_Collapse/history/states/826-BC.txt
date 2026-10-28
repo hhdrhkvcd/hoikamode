@@ -1,0 +1,26 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 826
+    name = "STATE_826"
+    manpower = 3225000
+    state_category = city
+    resources = {
+        aluminium = 204
+        oil = 223
+        steel = 1
+    }
+    history = {
+        owner = UAE
+        controller = UAE
+        add_core_of = UAE
+        victory_points = { 10904 20 }
+        buildings = {
+            infrastructure = 4
+            industrial_complex = 4
+            arms_factory = 1
+            dockyard = 1
+            air_base = 4
+        }
+    }
+    provinces = { 10904 13254 }
+}

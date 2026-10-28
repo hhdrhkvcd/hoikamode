@@ -1,0 +1,27 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 723
+    name = "STATE_723"
+    manpower = 1147198
+    state_category = town
+    resources = {
+        oil = 1
+    }
+    history = {
+        owner = NZL
+        controller = NZL
+        add_core_of = NZL
+        victory_points = { 2197 12 }
+        victory_points = { 2211 5 }
+        buildings = {
+            infrastructure = 3
+            industrial_complex = 1
+            arms_factory = 1
+            air_base = 1
+            2197 = {
+                naval_base = 1
+            }
+        }
+    }
+    provinces = { 2197 2203 2211 4819 5195 7839 8204 8212 8232 8241 10650 12632 12966 12974 12980 12988 14361 }
+}

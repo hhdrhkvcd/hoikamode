@@ -1,0 +1,20 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 807
+    name = "STATE_807"
+    manpower = 1113300
+    state_category = rural
+    history = {
+        owner = SOM
+        controller = SOM
+        add_core_of = SOM
+        add_core_of = SHB
+        buildings = {
+            infrastructure = 1
+            10818 = {
+                naval_base = 2
+            }
+        }
+    }
+    provinces = { 1966 4909 10818 10891 13830 }
+}

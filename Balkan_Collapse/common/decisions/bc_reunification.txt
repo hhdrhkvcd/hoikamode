@@ -1,0 +1,129 @@
+BC_reunification = {
+    BC_proclaim_restoration = {
+        icon = BC_ser
+        cost = 50
+        visible = { NOT = { has_country_flag = BC_federation_restored } }
+        available = { BC_owns_all_yugoslavia = yes OR = { has_completed_focus = SER_balkan_campaign has_country_flag = BC_federal_negotiations } }
+        complete_effect = { BC_restore_federation = yes }
+        ai_will_do = { factor = 10 }
+    }
+    BC_invite_CRO = {
+        icon = BC_cro
+        cost = 50
+        days_re_enable = 180
+        visible = { has_country_flag = BC_federal_negotiations exists = CRO CRO = { is_subject = no } }
+        available = { has_war = no CRO = { has_war = no } }
+        complete_effect = { CRO = { country_event = { id = bc_federation.1 days = 1 } } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_invite_SLV = {
+        icon = BC_slv
+        cost = 50
+        days_re_enable = 180
+        visible = { has_country_flag = BC_federal_negotiations exists = SLV SLV = { is_subject = no } }
+        available = { has_war = no SLV = { has_war = no } }
+        complete_effect = { SLV = { country_event = { id = bc_federation.1 days = 1 } } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_invite_BOS = {
+        icon = BC_bos
+        cost = 50
+        days_re_enable = 180
+        visible = { has_country_flag = BC_federal_negotiations exists = BOS BOS = { is_subject = no } }
+        available = { has_war = no BOS = { has_war = no } }
+        complete_effect = { BOS = { country_event = { id = bc_federation.1 days = 1 } } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_invite_SRP = {
+        icon = BC_srp
+        cost = 50
+        days_re_enable = 180
+        visible = { has_country_flag = BC_federal_negotiations exists = SRP SRP = { is_subject = no } }
+        available = { has_war = no SRP = { has_war = no } }
+        complete_effect = { SRP = { country_event = { id = bc_federation.1 days = 1 } } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_invite_MNT = {
+        icon = BC_mnt
+        cost = 50
+        days_re_enable = 180
+        visible = { has_country_flag = BC_federal_negotiations exists = MNT MNT = { is_subject = no } }
+        available = { has_war = no MNT = { has_war = no } }
+        complete_effect = { MNT = { country_event = { id = bc_federation.1 days = 1 } } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_invite_MAC = {
+        icon = BC_mac
+        cost = 50
+        days_re_enable = 180
+        visible = { has_country_flag = BC_federal_negotiations exists = MAC MAC = { is_subject = no } }
+        available = { has_war = no MAC = { has_war = no } }
+        complete_effect = { MAC = { country_event = { id = bc_federation.1 days = 1 } } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_invite_KOS = {
+        icon = BC_kos
+        cost = 50
+        days_re_enable = 180
+        visible = { has_country_flag = BC_federal_negotiations exists = KOS KOS = { is_subject = no } }
+        available = { has_war = no KOS = { has_war = no } }
+        complete_effect = { KOS = { country_event = { id = bc_federation.1 days = 1 } } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_campaign_CRO = {
+        icon = BC_army
+        cost = 50
+        visible = { has_completed_focus = SER_balkan_campaign exists = CRO CRO = { is_subject = no } NOT = { has_war_with = CRO } }
+        available = { has_war = no }
+        complete_effect = { declare_war_on = { target = CRO type = annex_everything } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_campaign_SLV = {
+        icon = BC_army
+        cost = 50
+        visible = { has_completed_focus = SER_balkan_campaign exists = SLV SLV = { is_subject = no } NOT = { has_war_with = SLV } }
+        available = { has_war = no }
+        complete_effect = { declare_war_on = { target = SLV type = annex_everything } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_campaign_BOS = {
+        icon = BC_army
+        cost = 50
+        visible = { has_completed_focus = SER_balkan_campaign exists = BOS BOS = { is_subject = no } NOT = { has_war_with = BOS } }
+        available = { has_war = no }
+        complete_effect = { declare_war_on = { target = BOS type = annex_everything } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_campaign_SRP = {
+        icon = BC_army
+        cost = 50
+        visible = { has_completed_focus = SER_balkan_campaign exists = SRP SRP = { is_subject = no } NOT = { has_war_with = SRP } }
+        available = { has_war = no }
+        complete_effect = { declare_war_on = { target = SRP type = annex_everything } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_campaign_MNT = {
+        icon = BC_army
+        cost = 50
+        visible = { has_completed_focus = SER_balkan_campaign exists = MNT MNT = { is_subject = no } NOT = { has_war_with = MNT } }
+        available = { has_war = no }
+        complete_effect = { declare_war_on = { target = MNT type = annex_everything } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_campaign_MAC = {
+        icon = BC_army
+        cost = 50
+        visible = { has_completed_focus = SER_balkan_campaign exists = MAC MAC = { is_subject = no } NOT = { has_war_with = MAC } }
+        available = { has_war = no }
+        complete_effect = { declare_war_on = { target = MAC type = annex_everything } }
+        ai_will_do = { factor = 1 }
+    }
+    BC_campaign_KOS = {
+        icon = BC_army
+        cost = 50
+        visible = { has_completed_focus = SER_balkan_campaign exists = KOS KOS = { is_subject = no } NOT = { has_war_with = KOS } }
+        available = { has_war = no }
+        complete_effect = { declare_war_on = { target = KOS type = annex_everything } }
+        ai_will_do = { factor = 1 }
+    }
+}

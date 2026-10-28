@@ -1,0 +1,27 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 454
+    name = "STATE_454"
+    manpower = 5276242
+    state_category = large_town
+    history = {
+        owner = ISR
+        controller = ISR
+        add_core_of = ISR
+        add_core_of = PAL
+        victory_points = { 4206 20 }
+        victory_points = { 13248 21 }
+        buildings = {
+            infrastructure = 4
+            industrial_complex = 4
+            arms_factory = 1
+            dockyard = 1
+            air_base = 5
+            4206 = {
+                bunker = 5
+                naval_base = 5
+            }
+        }
+    }
+    provinces = { 4206 13248 13908 }
+}

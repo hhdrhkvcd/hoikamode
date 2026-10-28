@@ -1,0 +1,30 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 130
+    name = "STATE_130"
+    manpower = 5562495
+    state_category = city
+    resources = {
+        oil = 9
+    }
+    history = {
+        owner = ENG
+        controller = ENG
+        add_core_of = ENG
+        victory_points = { 9379 15 }
+        victory_points = { 11297 10 }
+        victory_points = { 9269 5 }
+        victory_points = { 9315 5 }
+        victory_points = { 11382 3 }
+        buildings = {
+            infrastructure = 4
+            industrial_complex = 3
+            arms_factory = 1
+            air_base = 3
+            11297 = {
+                naval_base = 5
+            }
+        }
+    }
+    provinces = { 6268 9269 9315 9332 9379 9397 11297 11317 11382 }
+}

@@ -1,0 +1,18 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 863
+    name = "STATE_863"
+    manpower = 4470300
+    state_category = rural
+    history = {
+        owner = COG
+        controller = COG
+        add_core_of = M23
+        add_core_of = COG
+        victory_points = { 14539 5 }
+        buildings = {
+            infrastructure = 1
+        }
+    }
+    provinces = { 4941 14541 14538 14539 }
+}

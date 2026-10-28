@@ -1,0 +1,23 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 1050
+    name = "STATE_1050"
+    manpower = 5035356
+    state_category = town
+    history = {
+        owner = PRK
+        controller = PRK
+        add_core_of = PRK
+        add_claim_by = KOR
+        victory_points = { 7171 5 }
+        victory_points = { 13707 5 }
+        buildings = {
+            infrastructure = 3
+            dockyard = 1
+            4052 = {
+                naval_base = 6
+            }
+        }
+    }
+    provinces = { 978 4052 7171 9790 11770 13687 13707 13712 13713 13714 }
+}

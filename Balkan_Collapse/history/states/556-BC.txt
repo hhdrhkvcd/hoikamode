@@ -1,0 +1,16 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 556
+    name = "STATE_556"
+    manpower = 4222000
+    state_category = town
+    history = {
+        owner = IVO
+        controller = IVO
+        add_core_of = IVO
+        buildings = {
+            infrastructure = 2
+        }
+    }
+    provinces = { 5013 5070 8065 }
+}

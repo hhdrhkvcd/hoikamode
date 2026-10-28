@@ -1,0 +1,19 @@
+# Adapted from the user-provided modern map. See assets/MAP_SOURCE.json.
+state = {
+    id = 371
+    name = "STATE_371"
+    manpower = 270232
+    state_category = large_town
+    history = {
+        owner = USA
+        controller = USA
+        add_core_of = USA
+        add_core_of = LOU
+        buildings = {
+            infrastructure = 3
+            industrial_complex = 1
+            air_base = 5
+        }
+    }
+    provinces = { 1559 7555 7599 13520 }
+}

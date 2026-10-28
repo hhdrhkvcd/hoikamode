@@ -1,667 +1,1097 @@
+# Eight national trees retain 50 focuses each; photographs are reused, not AI-generated.
 focus_tree = {
-
     id = MAC_1991_tree
-
     country = {
-
         factor = 0
-
-        modifier = { add = 20 tag = MAC }
-
+        modifier = {
+            add = 20
+            tag = MAC
+        }
     }
-
     default = no
-
     focus = {
         id = MAC_independence
-        icon = GFX_goal_generic_national_unity
         x = 4
         y = 0
         cost = 5
-        available = { has_country_flag = BALKANS_INDEPENDENT }
-        completion_reward = {
-            add_political_power = 60
-            add_stability = 0.05
+        available = {
+            has_country_flag = BALKANS_INDEPENDENT
         }
+        icon = GFX_BC_goal_mac
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_constitution
-        icon = GFX_goal_generic_national_unity
         x = 4
         y = 1
         cost = 5
-        prerequisite = { focus = MAC_independence }
-        completion_reward = {
-            add_political_power = 50
-            add_stability = 0.05
+        prerequisite = {
+            focus = MAC_independence
         }
+        icon = GFX_BC_goal_government
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_industry
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 2
         cost = 5
-        prerequisite = { focus = MAC_constitution }
-        completion_reward = {
-            add_political_power = 40
-            add_stability = 0.03
+        prerequisite = {
+            focus = MAC_constitution
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_army
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 2
         cost = 5
-        prerequisite = { focus = MAC_constitution }
+        prerequisite = {
+            focus = MAC_constitution
+        }
+        icon = GFX_BC_goal_army
         completion_reward = {
             army_experience = 15
-            add_manpower = 15000
+            add_manpower = 4000
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
         }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_trade
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 2
         cost = 5
-        prerequisite = { focus = MAC_constitution }
-        completion_reward = {
-            add_political_power = 50
-            add_stability = 0.03
+        prerequisite = {
+            focus = MAC_constitution
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_transport
-        icon = GFX_goal_generic_construct_infrastructure
         x = 2
         y = 3
         cost = 5
-        prerequisite = { focus = MAC_industry }
+        prerequisite = {
+            focus = MAC_industry
+        }
+        icon = GFX_BC_goal_transport
         completion_reward = {
             add_political_power = 35
-            add_stability = 0.03
+            capital_scope = {
+                if = {
+                    limit = {
+                        infrastructure < 5
+                    }
+                    add_building_construction = {
+                        type = infrastructure
+                        level = 1
+                        instant_build = yes
+                    }
+                }
+            }
         }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_security
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 3
         cost = 5
-        prerequisite = { focus = MAC_army }
-        completion_reward = {
-            army_experience = 10
-            add_war_support = 0.03
+        prerequisite = {
+            focus = MAC_army
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 3
         cost = 5
-        prerequisite = { focus = MAC_trade }
-        completion_reward = {
-            add_political_power = 75
+        prerequisite = {
+            focus = MAC_trade
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_sovereignty
-        icon = GFX_goal_generic_national_unity
         x = 4
         y = 4
         cost = 5
-        prerequisite = { focus = MAC_diplomacy }
-        completion_reward = {
-            add_stability = 0.08
-            add_war_support = 0.03
+        prerequisite = {
+            focus = MAC_diplomacy
         }
+        icon = GFX_BC_goal_mac
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_01
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 4
         cost = 5
-        prerequisite = { focus = MAC_transport }
-        completion_reward = {
-            add_political_power = 40
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_transport
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_02
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 5
         cost = 5
-        prerequisite = { focus = MAC_economy_01 }
-        completion_reward = {
-            add_political_power = 30
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_economy_01
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_03
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 6
         cost = 5
-        prerequisite = { focus = MAC_economy_02 }
-        completion_reward = {
-            add_political_power = 30
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_economy_02
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_04
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 7
         cost = 5
-        prerequisite = { focus = MAC_economy_03 }
-        completion_reward = {
-            add_political_power = 40
-            add_stability = 0.02
+        prerequisite = {
+            focus = MAC_economy_03
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_05
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 8
         cost = 5
-        prerequisite = { focus = MAC_economy_04 }
-        completion_reward = {
-            add_political_power = 30
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_economy_04
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_06
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 9
         cost = 5
-        prerequisite = { focus = MAC_economy_05 }
-        completion_reward = {
-            add_political_power = 30
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_economy_05
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_07
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 10
         cost = 5
-        prerequisite = { focus = MAC_economy_06 }
-        completion_reward = {
-            add_political_power = 40
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_economy_06
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_08
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 11
         cost = 5
-        prerequisite = { focus = MAC_economy_07 }
-        completion_reward = {
-            add_political_power = 30
-            add_stability = 0.02
+        prerequisite = {
+            focus = MAC_economy_07
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_09
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 12
         cost = 5
-        prerequisite = { focus = MAC_economy_08 }
-        completion_reward = {
-            add_political_power = 30
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_economy_08
         }
+        icon = GFX_BC_goal_research
+        completion_reward = {
+            add_political_power = 35
+            add_tech_bonus = {
+                name = BC_research_bonus
+                bonus = 0.5
+                uses = 1
+                category = industry
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_10
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 13
         cost = 5
-        prerequisite = { focus = MAC_economy_09 }
-        completion_reward = {
-            add_political_power = 40
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_economy_09
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_11
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 14
         cost = 5
-        prerequisite = { focus = MAC_economy_10 }
-        completion_reward = {
-            add_political_power = 30
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_economy_10
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_12
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 15
         cost = 5
-        prerequisite = { focus = MAC_economy_11 }
-        completion_reward = {
-            add_political_power = 30
-            add_stability = 0.02
+        prerequisite = {
+            focus = MAC_economy_11
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = industrial_complex
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_13
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 16
         cost = 5
-        prerequisite = { focus = MAC_economy_12 }
-        completion_reward = {
-            add_political_power = 40
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_economy_12
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_economy_14
-        icon = GFX_goal_generic_construct_civ_factory
         x = 2
         y = 17
         cost = 5
-        prerequisite = { focus = MAC_economy_13 }
-        completion_reward = {
-            add_political_power = 30
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_economy_13
         }
+        icon = GFX_BC_goal_economy
+        completion_reward = {
+            add_political_power = 35
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_01
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 4
         cost = 5
-        prerequisite = { focus = MAC_security }
-        completion_reward = {
-            army_experience = 8
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_security
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_02
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 5
         cost = 5
-        prerequisite = { focus = MAC_defence_01 }
-        completion_reward = {
-            army_experience = 5
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_defence_01
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_03
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 6
         cost = 5
-        prerequisite = { focus = MAC_defence_02 }
-        completion_reward = {
-            army_experience = 5
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_defence_02
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_04
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 7
         cost = 5
-        prerequisite = { focus = MAC_defence_03 }
-        completion_reward = {
-            army_experience = 8
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_defence_03
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_05
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 8
         cost = 5
-        prerequisite = { focus = MAC_defence_04 }
-        completion_reward = {
-            army_experience = 5
-            add_war_support = 0.01
-            add_manpower = 5000
+        prerequisite = {
+            focus = MAC_defence_04
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_equipment_to_stockpile = {
+                type = infantry_equipment_1
+                amount = 1500
+                producer = MAC
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_06
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 9
         cost = 5
-        prerequisite = { focus = MAC_defence_05 }
-        completion_reward = {
-            army_experience = 5
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_defence_05
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_07
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 10
         cost = 5
-        prerequisite = { focus = MAC_defence_06 }
-        completion_reward = {
-            army_experience = 8
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_defence_06
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_08
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 11
         cost = 5
-        prerequisite = { focus = MAC_defence_07 }
-        completion_reward = {
-            army_experience = 5
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_defence_07
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_09
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 12
         cost = 5
-        prerequisite = { focus = MAC_defence_08 }
-        completion_reward = {
-            army_experience = 5
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_defence_08
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_equipment_to_stockpile = {
+                type = infantry_equipment_1
+                amount = 1500
+                producer = MAC
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_10
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 13
         cost = 5
-        prerequisite = { focus = MAC_defence_09 }
-        completion_reward = {
-            army_experience = 8
-            add_war_support = 0.01
-            add_manpower = 5000
+        prerequisite = {
+            focus = MAC_defence_09
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_11
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 14
         cost = 5
-        prerequisite = { focus = MAC_defence_10 }
-        completion_reward = {
-            army_experience = 5
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_defence_10
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            capital_scope = {
+                add_extra_state_shared_building_slots = 1
+                add_building_construction = {
+                    type = arms_factory
+                    level = 1
+                    instant_build = yes
+                }
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_12
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 15
         cost = 5
-        prerequisite = { focus = MAC_defence_11 }
-        completion_reward = {
-            army_experience = 5
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_defence_11
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_13
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 16
         cost = 5
-        prerequisite = { focus = MAC_defence_12 }
-        completion_reward = {
-            army_experience = 8
-            add_war_support = 0.01
+        prerequisite = {
+            focus = MAC_defence_12
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_equipment_to_stockpile = {
+                type = infantry_equipment_1
+                amount = 1500
+                producer = MAC
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_defence_14
-        icon = GFX_goal_generic_army_doctrines
         x = 6
         y = 17
         cost = 5
-        prerequisite = { focus = MAC_defence_13 }
-        completion_reward = {
-            army_experience = 5
-            add_war_support = 0.01
-            add_manpower = 5000
+        prerequisite = {
+            focus = MAC_defence_13
         }
+        icon = GFX_BC_goal_army
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 4000
+            add_war_support = 0.02
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_01
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 5
         cost = 5
-        prerequisite = { focus = MAC_sovereignty }
-        completion_reward = {
-            add_political_power = 45
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_sovereignty
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_02
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 6
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_01 }
-        completion_reward = {
-            add_political_power = 35
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_diplomacy_01
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_03
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 7
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_02 }
-        completion_reward = {
-            add_political_power = 35
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_diplomacy_02
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_04
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 8
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_03 }
-        completion_reward = {
-            add_political_power = 45
-            add_stability = 0.02
+        prerequisite = {
+            focus = MAC_diplomacy_03
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_05
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 9
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_04 }
-        completion_reward = {
-            add_political_power = 35
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_diplomacy_04
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_06
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 10
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_05 }
-        completion_reward = {
-            add_political_power = 35
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_diplomacy_05
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_07
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 11
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_06 }
-        completion_reward = {
-            add_political_power = 45
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_diplomacy_06
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_08
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 12
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_07 }
-        completion_reward = {
-            add_political_power = 35
-            add_stability = 0.02
+        prerequisite = {
+            focus = MAC_diplomacy_07
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_09
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 13
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_08 }
-        completion_reward = {
-            add_political_power = 35
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_diplomacy_08
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_10
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 14
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_09 }
-        completion_reward = {
-            add_political_power = 45
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_diplomacy_09
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_11
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 15
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_10 }
-        completion_reward = {
-            add_political_power = 35
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_diplomacy_10
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_12
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 16
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_11 }
-        completion_reward = {
-            add_political_power = 35
-            add_stability = 0.02
+        prerequisite = {
+            focus = MAC_diplomacy_11
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
     focus = {
         id = MAC_diplomacy_13
-        icon = GFX_goal_generic_improve_relations
         x = 4
         y = 17
         cost = 5
-        prerequisite = { focus = MAC_diplomacy_12 }
-        completion_reward = {
-            add_political_power = 45
-            add_stability = 0.01
+        prerequisite = {
+            focus = MAC_diplomacy_12
         }
+        icon = GFX_BC_goal_diplomacy
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.02
+            add_opinion_modifier = {
+                target = SER
+                modifier = BC_regional_cooperation
+            }
+            set_country_flag = BC_open_to_federation
+        }
+        ai_will_do = {
+            factor = 1
+        }
+        cancel_if_invalid = no
     }
-
 }
