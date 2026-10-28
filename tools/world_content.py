@@ -61,7 +61,7 @@ LEADERS_1995 = {
     'CRO': ('Franjo Tuđman', 'despotism', ['tudjman'], 'CRO_TUDJMAN_DESC'),
     'SLV': ('Milan Kučan', 'centrism', ['kucan'], 'SLV_KUCAN_DESC'),
     'BOS': ('Alija Izetbegović', 'centrism', ['izetbegovic'], 'BOS_IZETBEGOVIC_DESC'),
-    'RSK': ('Momčilo Krajišnik', 'despotism', ['krajisnik'], 'RSK_KRAJISNIK_DESC'),
+    'RSK': ('Radovan Karadžić', 'despotism', ['karadzic'], 'RSK_KARADZIC_DESC'),
     'MNT': ('Momir Bulatović', 'despotism', ['bulatovic'], 'MNT_BULATOVIC_DESC'),
     'KOS': ('Ibrahim Rugova', 'centrism', ['rugova'], 'KOS_RUGOVA_DESC'),
     'FYR': ('Kiro Gligorov', 'centrism', ['gligorov'], 'FYR_GLIGOROV_DESC'),
@@ -502,6 +502,9 @@ def scenario_effects(scn, md_owner_of, leaders, portraits):
     # leaders of the scenario
     for tag in sorted(leaders):
         L.append(_leader_block(tag, leaders[tag], portraits))
+    if scn in ('bc_1995', 'bc_2026'):
+        L.append('SER = { set_country_flag = SER_tito_dead set_country_flag = SER_first_breakup_wave '
+                 'set_country_flag = SER_fry_formed }')
     if scn == 'bc_1995':
         L.append('SER = { remove_ideas = BC_tito_cult add_ideas = BC_war_footing BC_ethnic_tensions '
                  'set_stability = 0.35 set_war_support = 0.65 '

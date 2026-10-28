@@ -215,6 +215,8 @@ def convert_states(md_archive):
                 s['cores'].append('RSK')
             if sid == 1052:
                 s['cores'].append('HZG')
+            if sid == 127:
+                s['cores'].append('RKS')
             if sid in (130, 998):
                 s['cores'].append('VOJ')
             s['claims'] = []
@@ -375,6 +377,7 @@ def yml(lang, entries):
 def build_countries(md_repo, out, owners):
     tags = load_md_tags(md_repo)
     tags['DDR'] = 'countries/East Germany.txt'
+    tags['RKS'] = 'countries/BC_RKS.txt'      # Republic of Serbian Krajina (1991-1995)
     colors = parse_colors(md_repo)
     lines = ['# Country tags: Millennium Dawn tag set (CC BY-SA 4.0) + DDR for the 1980 scenario']
     for tag in tags:
@@ -594,7 +597,8 @@ def build_flags(md_repo, old_mod, out, tags_needed):
         img.resize((41, 26), Image.LANCZOS).save(os.path.join(fl, 'medium', name + '.tga'))
         img.resize((10, 7), Image.LANCZOS).save(os.path.join(fl, 'small', name + '.tga'))
 
-    special = {'SOV': 'SOV_USSR', 'CZE': 'CZE_SLO_czechoslovakia'}
+    special = {'SOV': 'SOV_USSR', 'CZE': 'CZE_SLO_czechoslovakia',
+               'RKS': 'CRO_Serbian_Krajina'}
     missing = []
     for tag in sorted(tags_needed):
         if tag in balkan_content.BALKAN_TAGS:
@@ -856,7 +860,7 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en, roo
     # generic focus tree for every country without its own
     gen_files = []
     for tag in tags:
-        if tag in balkan_content.BALKAN_TAGS:
+        if tag in balkan_content.HISTORIC_TAGS:
             continue
         path = os.path.join(out, 'common', 'national_focus', f'bc_gen_{tag}.txt')
         write(path, world_content.generic_tree(tag, f'BC_GEN_{tag}_tree'))
@@ -933,7 +937,7 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en, roo
     loc['english']['SOV_GORBACHEV_DESC'] = ('Mikhail Gorbachev - the last general secretary of the CPSU, '
                                             'leader of the Soviet Union until its collapse on 26 December 1991.')
     for tag in tags:
-        if tag in balkan_content.BALKAN_TAGS:
+        if tag in balkan_content.HISTORIC_TAGS:
             continue
         loc['russian'].update(world_content.generic_loc(tag, names_ru.get(tag, tag), 'russian'))
         loc['english'].update(world_content.generic_loc(tag, names_en.get(tag, tag), 'english'))
@@ -953,7 +957,7 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en, roo
     # ---- the three bookmarks --------------------------------------------
     scn = []
     for key, date, name, desc, hist, ide in (
-            ('bc_1995', '1995.1.1.12', 'BC_1995_NAME', 'BC_1995_DESC', 'BC_1995_HISTORY', 'neutrality'),
+            ('bc_1995', '1995.12.14.12', 'BC_1995_NAME', 'BC_1995_DESC', 'BC_1995_HISTORY', 'neutrality'),
             ('bc_2026', '2026.1.1.12', 'BC_2026_NAME', 'BC_2026_DESC', 'BC_2026_HISTORY', 'despotism')):
         leaders = world_content.LEADERS_1995 if key == 'bc_1995' else world_content.LEADERS_2026
         portraits = p1995 if key == 'bc_1995' else p2026
@@ -989,6 +993,25 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en, roo
     return copied
 
 
+def resolve_event_pictures(out, root, md_repo):
+    """Adds the picture of a leader to every create_country_leader block of the events."""
+    path = os.path.join(out, 'events', 'bc_yugoslavia.txt')
+    if not os.path.exists(path):
+        return
+    txt = read(path)
+    md_leaders = os.path.join(md_repo, 'gfx', 'leaders')
+
+    def repl(m):
+        tag, surname = m.group(1), m.group(2)
+        f = world_content.find_extra_portrait(root, tag, surname)
+        if not f:
+            f = world_content.find_portrait(md_leaders, tag, [surname.lower()])
+        return f'picture = "{f}"' if f else ''
+
+    txt = re.sub(r'picture = "__PIC__(\w+)__([^_"]+)__"', repl, txt)
+    write(path, txt)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--md-archive', required=True)
@@ -1018,11 +1041,12 @@ def main():
         if f:
             portrait_1980[tag] = f
     capitals, owned = build_history(a.md_archive, out, states, tags, portrait_1980)
-    missing = build_flags(a.md_repo, a.old_mod, out, set(owned) | set(balkan_content.BALKAN_TAGS)
+    missing = build_flags(a.md_repo, a.old_mod, out, set(owned) | set(balkan_content.HISTORIC_TAGS)
                           | set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026))
     if missing:
         print('flags without Millennium art:', len(missing), missing[:20])
     balkan_content.build(out, a.old_mod, states, capitals)
+    resolve_event_pictures(out, repo_root0, a.md_repo)
     names = country_names(a.md_repo, tags)
     repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     build_scenarios(out, a.md_repo, a.old_mod, states, tags,

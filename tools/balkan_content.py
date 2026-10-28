@@ -4,9 +4,14 @@ import os
 import shutil
 
 BALKAN_TAGS = ['SER', 'CRO', 'SLV', 'BOS', 'RSK', 'MNT', 'KOS', 'FYR']
-CAPITALS = {'SER': 131, 'CRO': 126, 'SLV': 124, 'BOS': 128, 'RSK': 1054, 'MNT': 134, 'KOS': 133, 'FYR': 136}
+# tags of the countries that existed only during the wars (1991-1995)
+WAR_TAGS = ['RKS', 'HZG']
+HISTORIC_TAGS = BALKAN_TAGS + WAR_TAGS
+CAPITALS = {'SER': 131, 'CRO': 126, 'SLV': 124, 'BOS': 128, 'RSK': 1054, 'MNT': 134, 'KOS': 133, 'FYR': 136,
+            'RKS': 127, 'HZG': 1052}
 COUNTRY_COLORS = {'SER': '160 35 40', 'CRO': '60 100 190', 'SLV': '80 160 90', 'BOS': '230 200 60',
-                  'RSK': '130 60 75', 'MNT': '200 120 50', 'KOS': '70 140 210', 'FYR': '225 95 40'}
+                  'RSK': '130 60 75', 'MNT': '200 120 50', 'KOS': '70 140 210', 'FYR': '225 95 40',
+                  'RKS': '95 55 130', 'HZG': '205 95 45'}
 YUGO_STATE_IDS = [124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 998, 1051, 1052, 1053, 1054]
 
 # --------------------------------------------------------------------------
@@ -63,7 +68,7 @@ HISTORY = {
     'BOS': TECH + politics('democratic', dict(democratic=55, fascism=5, communism=10, neutrality=30)) +
            'set_stability = 0.4\nset_war_support = 0.5\n' + leader('Borjana Krišto', 'conservatism', 'BOS_LEADER_DESC'),
     'RSK': TECH + politics('neutrality', dict(democratic=25, fascism=10, communism=10, neutrality=55), 'yes') +
-           'set_stability = 0.5\nset_war_support = 0.6\n' + leader('Siniša Karan', 'oligarchism', 'RSK_LEADER_DESC'),
+           'set_stability = 0.5\nset_war_support = 0.6\n' + leader('Milorad Dodik', 'oligarchism', 'RSK_LEADER_DESC'),
     'MNT': TECH + politics('democratic', dict(democratic=58, fascism=4, communism=8, neutrality=30)) +
            'set_stability = 0.6\nset_war_support = 0.2\n' + leader('Milojko Spajić', 'liberalism', 'MNT_LEADER_DESC'),
     'KOS': TECH + politics('democratic', dict(democratic=62, fascism=6, communism=4, neutrality=28)) +
@@ -105,6 +110,8 @@ EXTRA_OOB = {
     'BOS_1992': oob('BOS', 'Korpus ARBiH', [11899, 11899, 6614, 9894]),
     'MNT_2006': oob('MNT', 'Brigada Vojske Crne Gore', [9809]),
     'KOS_2008': oob('KOS', 'Brigada FSK', [9890]),
+    'RKS_1991': oob('RKS', 'Brigada SVK', [3924, 3924, 11564]),
+    'HZG_1992': oob('HZG', 'Hrvatska vojska Herceg-Bosne', [9894, 9894]),
 }
 
 # --------------------------------------------------------------------------
@@ -609,6 +616,56 @@ REPUBLICS = {
         army_goal=('Член НАТО', 'С 2020 года Северная Македония — член НАТО.', 'NATO Member'),
         army_goal_icon='GFX_goal_generic_alliance', army_goal_reward='army_experience = 20 add_war_support = 0.05',
         ai_west=3, ai_yugo=2),
+    'RKS': dict(
+        root_icon='GFX_focus_YUG_divide_bosnia',
+        root=('Самоуправление Сербской Краины',
+              '27 августа 1991 года в Книне провозглашена Самоуправляющаяся область Сербская Краина. 12 октября она становится Республикой Сербской Краиной.',
+              'The Autonomous Serb Krajina'),
+        gov=('Власти Краины', 'Милан Бабич и Милан Мартич — вожди Самоуправления Краины.', 'The Krajina Authorities'),
+        identity=('Линия по Уне', 'Граница, предложенная югославским генеральным штабом, делит Далмацию надвое.', 'The Una Line'),
+        west2=('Далмацкая экономика', 'Порты Шибеника и Биograd.', 'The Dalmatian Economy'),
+        yugo2=('Единство с Белградом', 'Краина связана с Сербией военными и экономическими нитями.', 'Unity with Belgrade'),
+        yugo2_reward='add_political_power = 50 ' + offer_to_serbia(),
+        goal=('Великая Краина', 'Краина хочет быть единственной сербской землёй на побережье.', 'A Greater Krajina'),
+        goal_icon='GFX_goal_generic_demand_territory',
+        goal_reward='add_stability = 0.08 add_war_support = 0.05 ' + claims([126]) + ' ' + wargoal('CRO'),
+        eco=('Экономика Краины', 'Контроль над трассой Загреб — Сплит.', 'The Krajina Economy'),
+        eco1=('Шибеникский порт', 'Единственный крупный порт сербской Далмации.', 'The Port of Šibenik'),
+        eco1_icon='GFX_focus_generic_merchant_fleet', eco1_reward=dock(1) + ' ' + civ(1),
+        eco2=('Нефть Далмации', 'Нефтепромыслы и заправки на трассе.', 'Dalmatian Oil'),
+        eco2_icon='GFX_goal_generic_oil_refinery', eco2_reward=refinery(),
+        army=('Армия Сербской Краины', 'СВК — армия без символов и флага.', 'The Army of the Serbian Krajina'),
+        army_icon='GFX_goal_generic_allies_build_infantry',
+        army2=('Линия Уны', 'Позиции на границе с Хорватией.', 'The Una Line'),
+        army2_icon='GFX_goal_generic_defence', army2_reward='army_experience = 25 add_manpower = 15000',
+        army_goal=('Присоединение к Сербии', 'Краина входит в состав Сербии как автономная область.', 'Union with Serbia'),
+        army_goal_icon='GFX_goal_generic_national_unity', army_goal_reward='army_experience = 20 add_stability = 0.05',
+        ai_west=0, ai_yugo=5),
+    'HZG': dict(
+        root_icon='GFX_focus_YUG_safeguard_bosnia',
+        root=('Хорватская Республика Герцеговина',
+              '8 апреля 1992 года в Мостаре провозглашена Хорватская Республика Герцеговина — хорватская община Боснии.',
+              'The Croatian Republic of Herzeg-Bosnia'),
+        gov=('Власти Герцеговины', 'Мате Бобан — президент, избранный хорватской общиной.', 'The Herzeg-Bosnia Government'),
+        identity=('Долина Неретвы', 'Герцеговина — хорватский край внутри Боснии.', 'The Neretva Valley'),
+        west2=('Союз с Загребом', 'Герцеговина связана с Хорватией.', 'Ties with Zagreb'),
+        yugo2=('Поддержка Белграда', 'Сербия и Хорватия делят Герцеговину.', "Belgrade's Support"),
+        yugo2_reward='add_political_power = 50',
+        goal=('Герцеговина в Хорватии', 'Единая хорватская государственность.', 'Herzeg-Bosnia in Croatia'),
+        goal_icon='GFX_focus_generic_annex_country',
+        goal_reward='if = { limit = { country_exists = CRO } CRO = { country_event = { id = bc_union.3 days = 1 } } }',
+        eco=('Экономика Герцеговины', 'Алюминий, виноделие и гидроэнергетика.', 'The Herzeg-Bosnia Economy'),
+        eco1=('Алюминий Мостара', 'Бокситы и глинозёмный комбинат.', 'Mostar Aluminium'),
+        eco1_icon='GFX_focus_generic_aluminum', eco1_reward='1052 = { add_resource = { type = aluminium amount = 5 } } ' + civ(1),
+        eco2=('Гидроэлектростанции Неретвы', 'Водные стены на карстовых полях.', 'Neretva Hydro Power'),
+        eco2_icon='GFX_focus_generic_hydroelectric_energy', eco2_reward=civ(2),
+        army=('Хорватское войско Герцеговины', 'ХВО — формирования хорватской общины.', 'The Herzeg-Bosnia Army'),
+        army_icon='GFX_goal_generic_allies_build_infantry',
+        army2=('Мостарский фронт', 'Линия обороны в Западной Герцеговине.', 'The Mostar Front'),
+        army2_icon='GFX_goal_generic_defence', army2_reward='army_experience = 20 add_ideas = BC_mountain_warfare',
+        army_goal=('Объединённая армия Хорватии', 'Все хорватские силы под одним командованием.', 'A United Croatian Army'),
+        army_goal_icon='GFX_goal_generic_national_unity', army_goal_reward='army_experience = 25 add_stability = 0.05',
+        ai_west=1, ai_yugo=2),
 }
 
 # --------------------------------------------------------------------------
@@ -654,6 +711,12 @@ def ideas_file():
 # --------------------------------------------------------------------------
 # Events
 # --------------------------------------------------------------------------
+def mk_leader(name, ide, desc, tag=None):
+    """create_country_leader; the picture is added by the builder when the art exists."""
+    pic = f' picture = "__PIC__{tag}__{name.split()[-1]}__"' if tag else ''
+    return f'create_country_leader = {{ name = "{name}"{pic} desc = "{desc}" ideology = {ide} traits = {{ }} }}'
+
+
 def release(tag, oob_name, extra=''):
     return (f'release = {tag} '
             f'every_state = {{ limit = {{ is_core_of = {tag} NOT = {{ is_core_of = RSK }} }} remove_core_of = SER add_claim_by = SER }} '
@@ -700,7 +763,7 @@ ev('serbia_collapse.2', S('1991.6.24', 'SER_first_breakup_wave', 'has_country_fl
    'The Break-up Begins', 'On 25 June 1991 Slovenia and Croatia declared independence. The SFRY is falling apart.',
    [('Югославия больше не будет прежней', 'Yugoslavia will never be the same',
      'set_country_flag = SER_first_breakup_wave add_stability = -0.1 add_war_support = 0.08 ' +
-     release('SLV', 'SLV_1991') + ' ' + release('CRO', 'CRO_1991'), 1)])
+     release('SLV', 'SLV_1991') + ' ' + release('CRO', 'CRO_1991') + ' SLV = { ' + mk_leader('Milan Kučan', 'democratic', 'SLV_KUCAN_DESC', 'SLV') + ' }' + ' CRO = { ' + mk_leader('Franjo Tuđman', 'despotism', 'CRO_TUDJMAN_DESC', 'CRO') + ' }', 1)])
 ev('serbia_collapse.3', 'tag = SER date > 1991.6.26 has_country_flag = SER_first_breakup_wave NOT = { has_country_flag = SER_slovenia_war_started } country_exists = SLV',
    'Десятидневная война', 'Части ЮНА выдвинулись к пограничным переходам Словении. Территориальная оборона оказывает сопротивление.',
    'The Ten-Day War', 'JNA units move towards the Slovenian border crossings. The Territorial Defence resists.',
@@ -723,7 +786,7 @@ ev('serbia_collapse.5', S('1991.9.7', 'SER_macedonia_referendum', 'has_country_f
 ev('serbia_collapse.19', 'tag = SER date > 1991.9.24 has_country_flag = SER_macedonia_referendum NOT = { has_country_flag = SER_macedonia_independent }',
    'Независимость Македонии', '25 сентября 1991 года Македония провозгласила независимость — единственная республика, ушедшая без войны.',
    'Macedonian Independence', 'On 25 September 1991 Macedonia declared independence — the only republic to leave without war.',
-   [('Отпустить мирно', 'Let it go peacefully', 'set_country_flag = SER_macedonia_independent add_stability = -0.03 ' + release('FYR', 'FYR_1991', 'remove_ideas = BC_war_damage'), 1)])
+   [('Отпустить мирно', 'Let it go peacefully', 'set_country_flag = SER_macedonia_independent add_stability = -0.03 ' + release('FYR', 'FYR_1991', 'remove_ideas = BC_war_damage') + ' FYR = { ' + mk_leader('Kiro Gligorov', 'democratic', 'FYR_GLIGOROV_DESC', 'FYR') + ' }', 1)])
 ev('serbia_collapse.18', S('1992.1.14', 'SER_ec_recognition', 'has_country_flag = SER_first_breakup_wave'),
    'Признание Словении и Хорватии', '15 января 1992 года Европейское сообщество признало независимость Словении и Хорватии.',
    'Recognition of Slovenia and Croatia', 'On 15 January 1992 the European Community recognised Slovenia and Croatia.',
@@ -732,11 +795,11 @@ ev('serbia_collapse.8', S('1992.1.8', 'SER_srp_proclaimed', 'has_country_flag = 
    'Республика Сербская', '9 января 1992 года сербы Боснии и Герцеговины провозгласили Республику сербского народа БиГ со столицей в Баня-Луке.',
    'Republika Srpska', 'On 9 January 1992 Bosnian Serbs proclaimed their republic with Banja Luka as capital.',
    [('Поддержать братьев', 'Support our brothers', 'set_country_flag = SER_srp_proclaimed ' + release('RSK', 'RSK_1992', 'add_war_support = 0.1') +
-     ' every_state = { limit = { is_core_of = RSK } remove_core_of = SER } ', 1)])
+     ' every_state = { limit = { is_core_of = RSK } remove_core_of = SER } ' + ' RSK = { ' + mk_leader('Radovan Karadžić', 'despotism', 'RSK_KARADZIC_DESC', 'RSK') + ' }', 1)])
 ev('serbia_collapse.10', S('1992.3.2', 'SER_bosnia_independent', 'has_country_flag = SER_first_breakup_wave'),
    'Независимость Боснии и Герцеговины', 'Референдум 29 февраля — 1 марта 1992 года. 3 марта Босния и Герцеговина провозгласила независимость.',
    'Bosnian Independence', 'Following the referendum, Bosnia and Herzegovina declared independence on 3 March 1992.',
-   [('Тёмные времена наступают', 'Dark times are coming', 'set_country_flag = SER_bosnia_independent add_stability = -0.05 ' + release('BOS', 'BOS_1992'), 1)])
+   [('Тёмные времена наступают', 'Dark times are coming', 'set_country_flag = SER_bosnia_independent add_stability = -0.05 ' + release('BOS', 'BOS_1992') + ' BOS = { ' + mk_leader('Alija Izetbegović', 'centrism', 'BOS_IZETBEGOVIC_DESC', 'BOS') + ' }', 1)])
 ev('serbia_collapse.11', 'tag = RSK date > 1992.4.5 NOT = { has_country_flag = RSK_bosnia_war_started } country_exists = BOS',
    'Война в Боснии', '6 апреля 1992 года. Начинается самая кровавая война в Европе после 1945 года.',
    'The Bosnian War', '6 April 1992. The bloodiest war in Europe since 1945 begins.',
@@ -761,10 +824,10 @@ ev('serbia_collapse.13', 'tag = SER date > 1995.11.11 has_war_with = CRO NOT = {
    'The Erdut Agreement', 'On 12 November 1995 the agreement on Eastern Slavonia is signed.',
    [('Подписать мир', 'Sign the peace', 'set_country_flag = SER_croatia_war_ended white_peace = CRO add_stability = 0.04', 1),
     ('Воевать дальше', 'Fight on', 'set_country_flag = SER_croatia_war_ended add_stability = -0.05', 0)])
-ev('serbia_collapse.14', 'tag = RSK date > 1995.12.13 has_war_with = BOS NOT = { has_country_flag = RSK_dayton }',
+ev('serbia_collapse.14', 'tag = RSK date > 1995.12.13 NOT = { has_country_flag = RSK_dayton }',
    'Дейтонское соглашение', '14 декабря 1995 года в Париже подписан мир. Босния разделена на два энтитета.',
    'The Dayton Agreement', 'On 14 December 1995 peace is signed in Paris. Bosnia is divided into two entities.',
-   [('Подписать', 'Sign', 'set_country_flag = RSK_dayton white_peace = BOS add_stability = 0.08 add_war_support = -0.1', 1),
+   [('Подписать', 'Sign', 'set_country_flag = RSK_dayton if = { limit = { has_war_with = BOS } white_peace = BOS } add_stability = 0.08 add_war_support = -0.1 if = { limit = { country_exists = HZG } BOS = { annex_country = { target = HZG transfer_troops = yes } } every_state = { limit = { is_core_of = HZG } remove_core_of = HZG } }', 1),
     ('Отказаться', 'Refuse', 'set_country_flag = RSK_dayton add_stability = -0.08', 0)])
 ev('serbia_collapse.33', S('1999.3.23', 'SER_nato_bombing', 'has_country_flag = SER_fry_formed'),
    'Бомбардировки НАТО', '24 марта 1999 года НАТО начало бомбардировки Югославии из-за конфликта в Косово. 78 дней авиаударов.',
@@ -779,7 +842,7 @@ ev('serbia_collapse.16', S('2008.2.16', 'SER_kosovo_independent', 'has_country_f
    'Косово провозглашает независимость', '17 февраля 2008 года Скупщина Косово провозгласила независимость. Сербия её не признаёт.',
    'Kosovo Declares Independence', 'On 17 February 2008 Kosovo declared independence. Serbia does not recognise it.',
    [('Косово — это Сербия', 'Kosovo is Serbia',
-     'set_country_flag = SER_kosovo_independent release = KOS KOS = { set_country_flag = BALKANS_INDEPENDENT load_oob = "KOS_2008" } add_stability = -0.05 add_war_support = 0.05', 1)])
+     'set_country_flag = SER_kosovo_independent KOS = { set_country_flag = BALKANS_INDEPENDENT load_oob = "KOS_2008" transfer_state = 133 add_ideas = BC_war_damage } 133 = { add_core_of = KOS } add_stability = -0.05 add_war_support = 0.05', 1)])
 ev('serbia_collapse.34', S('2026.10.24', 'SER_student_election', 'has_country_flag = SER_fry_formed'),
    'Победа «Студенческого списка»', '25 октября 2026 года после двух лет студенческих протестов «Студенческий список» получил большинство в парламенте. Вучич признал поражение.',
    'The Student List Wins', 'On 25 October 2026, after two years of student protests, the Student List won a parliamentary majority. Vučić conceded defeat.',
@@ -788,6 +851,237 @@ ev('serbia_collapse.34', S('2026.10.24', 'SER_student_election', 'has_country_fl
      'set_popularities = { democratic = 52 fascism = 4 communism = 5 neutrality = 39 } '
      'create_country_leader = { name = "Ilija Srdanović" desc = "SER_STUDENTS_DESC" ideology = liberalism traits = { } } add_stability = 0.05', 1),
     ('Вучич остаётся', 'Vučić stays', 'set_country_flag = SER_student_election add_stability = -0.15 add_war_support = 0.05', 0)])
+
+
+ev('serbia_collapse.67', S('1990.12.8', 'SER_serbia_elections_1990'),
+   'Президентские выборы в Сербии',
+   '9 декабря 1990 года в Сербии проходят выборы президента. Слободан Милошевич побеждает с обширной программой, и югославская партия впервые теряет власть в одной из республик.',
+   'The Serbian Presidential Elections',
+   'On 9 December 1990 Serbia goes to the polls. Slobodan Milošević wins with a far-reaching programme, and the Yugoslav party loses power in one of the republics for the first time.',
+   [('Не вмешиваться', 'Stay out of it',
+     'set_country_flag = SER_serbia_elections_1990 add_stability = -0.02 add_war_support = 0.03', 1)])
+
+# --------------------------------------------------------------------------
+# The historical chain: the wall falls, the elections, the declarations,
+# the wars (Croatia, Bosnia, Kosovo) and the peace of Dayton
+# --------------------------------------------------------------------------
+ev('serbia_collapse.40', S('1989.11.8', 'SER_berlin_wall'),
+   'Падение Берлинской стены',
+   '9 ноября 1989 года рухнула Берлинская стена. Восточная Европа выходит из тени Москвы — и у Югославии остаётся меньше времени, чтобы договориться о своём будущем.',
+   'The Fall of the Berlin Wall',
+   'On 9 November 1989 the Berlin Wall came down. Eastern Europe steps out of the shadow of Moscow - and Yugoslavia has less time to settle its own future.',
+   [('Наша очередь не настанет', 'Our turn will never come',
+     'set_country_flag = SER_berlin_wall add_stability = 0.02 add_political_power = 25', 1)])
+ev('serbia_collapse.41', S('1990.4.26', 'SER_elections_1990'),
+   'Первые свободные выборы',
+   '27 апреля 1990 года в Словении, а в апреле и мае — в Хорватии проходят первые многопартийные выборы. Югославия перестаёт быть коммунистическим парламентом: у каждой республики теперь свой президент и своя программа.',
+   'The First Free Elections',
+   'On 27 April 1990 Slovenia goes to the polls, and so does Croatia in April and May. Yugoslavia stops being a communist parliament - every republic now has its own president and its own programme.',
+   [('Пусть решают люди', 'Let the people decide',
+     'set_country_flag = SER_elections_1990 add_popularity = { ideology = democratic popularity = 0.08 } '
+     'add_political_power = 25', 1)])
+ev('serbia_collapse.42', S('1990.11.3', 'SER_elections_bosnia'),
+   'Выборы в Боснии и Македонии',
+   'В ноябре 1990 года президентом Боснии и Герцеговины избран Алия Изетбегович, а в Македонии — Иво Стройковский. Югославские республики расходятся всё дальше.',
+   'The Elections in Bosnia and Macedonia',
+   'In November 1990 Alija Izetbegovic is elected president of Bosnia and Herzegovina, and Ivo Strashkovski wins in Macedonia. The Yugoslav republics drift further apart.',
+   [('Это ещё не развод', 'This is not a divorce yet',
+     'set_country_flag = SER_elections_bosnia add_stability = -0.02', 1)])
+ev('serbia_collapse.43', S('1991.3.20', 'SER_racak'),
+   'Рачак', 'В марте 1991 года в косовском селе Рачак произошло кровопролитие между албанской полицией и подразделениями ЮНА. Национальная напряжённость достигает предела.',
+   'Račak', 'In March 1991 there is bloodshed between the Albanian police and JNA units in the village of Račak. The national tension reaches its limit.',
+   [('Подавить мятеж', 'Crush the revolt',
+     'set_country_flag = SER_racak add_stability = -0.03 add_war_support = 0.03', 1)])
+ev('serbia_collapse.44', S('1991.6.30', 'SER_plitvice'),
+   'Плитвицкая война', '1 июля 1991 года хорватская полиция и сербские силы ЮНА столкнулись на Плитвицких переходах. Первая кровь войны за независимость.',
+   'The Plitvice War', 'On 1 July 1991 the Croatian police and Serb JNA forces clash at the Plitvice crossings. The first blood of the war for independence is spilled.',
+   [('Наказать хорватов', 'Punish the Croats',
+     'set_country_flag = SER_plitvice add_stability = -0.02 add_war_support = 0.04', 1)])
+ev('serbia_collapse.45', 'tag = CRO date > 1991.8.26 NOT = { has_country_flag = CRO_krajina }',
+   'Самоуправление Сербской Краины',
+   '27 августа 1991 года в Книне сербское население Далмации провозглашает Самоуправляющуюся область Сербскую Краину. ЮНА остаётся на её стороне.',
+   'The Autonomous Serb Krajina',
+   'On 27 August 1991 the Serb population of Dalmatia proclaims the Autonomous Serb Krajina in Knin. The JNA stays on its side.',
+   [('Позволить им отделение', 'Let them have their region',
+     'set_country_flag = CRO_krajina add_stability = -0.04 CRO = { release = RKS } '
+     'RKS = { set_country_flag = BALKANS_INDEPENDENT load_oob = "RKS_1991" add_ideas = BC_war_damage '
+     + mk_leader('Milan Babić', 'despotism', 'RKS_BABIC_DESC', 'RKS') + ' }', 1),
+    ('Ввести войска', 'Send in the troops',
+     'set_country_flag = CRO_krajina add_stability = -0.02 add_war_support = 0.05 '
+     'CRO = { release = RKS } '
+     'RKS = { set_country_flag = BALKANS_INDEPENDENT load_oob = "RKS_1991" add_ideas = BC_war_damage '
+     + mk_leader('Milan Babić', 'despotism', 'RKS_BABIC_DESC', 'RKS') + ' } '
+     'RKS = { declare_war_on = { target = CRO type = annex_everything } }', 0)])
+ev('serbia_collapse.46', S('1991.10.11', 'SER_rsk_proclaimed'),
+   'Республика Српска Краина',
+   '12 октября 1991 года Самоуправление преобразуется в Республику Сербскую Краину. Между Белградом и Загребом начинается война за Далмацию.',
+   'The Republic of Serbian Krajina',
+   'On 12 October 1991 the autonomous region becomes the Republic of Serbian Krajina. The war between Belgrade and Zagreb over Dalmatia begins.',
+   [('Крайя под защитой Белграда', 'The Krajina under Belgrade\'s protection',
+     'set_country_flag = SER_rsk_proclaimed add_stability = -0.03 add_war_support = 0.05 '
+     'RKS = { declare_war_on = { target = CRO type = annex_everything } }', 1),
+    ('Оставить как есть', 'Leave it as it is',
+     'set_country_flag = SER_rsk_proclaimed add_stability = 0.02', 0)])
+ev('serbia_collapse.47', S('1991.10.24', 'SER_slovenia_recognised'),
+   'Признание Словении',
+   '25 октября 1991 года, в день Святого Виктора, шестнадцать государств признали независимость Словении. ООН принимает её в свои ряды.',
+   'Slovenia is Recognised',
+   'On 25 October 1991, St Vitus Day, sixteen states recognise Slovenian independence. The UN admits it as a member.',
+   [('Это не конец федерации', 'This is not the end of the federation',
+     'set_country_flag = SER_slovenia_recognised add_stability = -0.03 add_war_support = 0.03', 1)])
+ev('serbia_collapse.48', S('1992.4.7', 'SER_herzeg_bosnia'),
+   'Хорватская Республика Герцеговина',
+   '8 апреля 1992 года хорватская община Герцеговины провозглашает Хорватскую Республику Герцеговина со столицей в Мостаре. Третья сторона конфликта оформляется.',
+   'The Croatian Republic of Herzeg-Bosnia',
+   'On 8 April 1992 the Croat community of Herzegovina proclaims the Croatian Republic of Herzeg-Bosnia with Mostar as its capital. The third side of the conflict takes shape.',
+   [('Поддержать Герцеговину', 'Back Herzegovina',
+     'set_country_flag = SER_herzeg_bosnia add_stability = -0.02 '
+     'BOS = { release = HZG } '
+     'HZG = { set_country_flag = BALKANS_INDEPENDENT load_oob = "HZG_1992" add_ideas = BC_war_damage '
+     + mk_leader('Mate Boban', 'despotism', 'HZG_BOBAN_DESC', 'HZG') + ' } '
+     'HZG = { declare_war_on = { target = BOS type = annex_everything } }', 1),
+    ('Не вмешиваться', 'Stay out of it',
+     'set_country_flag = SER_herzeg_bosnia add_stability = 0.02', 0)])
+ev('serbia_collapse.49', S('1992.5.16', 'SER_jna_withdrawal'),
+   'Референдум о ЮНА',
+   '17 мая 1992 года Сербия и Черногория голосуют за вывод Югославской народной армии из других республик. Армия, созданная для социализма, становится армией войны.',
+   'The Referendum on the JNA',
+   'On 17 May 1992 Serbia and Montenegro vote to withdraw the Yugoslav People\'s Army from the other republics. An army built for socialism becomes an army of war.',
+   [('ЮНА остаётся нашей армией', 'The JNA stays our army',
+     'set_country_flag = SER_jna_withdrawal add_stability = -0.03 add_war_support = 0.05 '
+     'add_ideas = BC_war_footing', 1)])
+ev('serbia_collapse.50', S('1992.9.21', 'SER_un_membership'),
+   'Босния и Герцеговина в ООН',
+   '22 сентября 1992 года Генеральная Ассамблея ООН принимает Боснию и Герцеговину и Хорватию. Югославия теряет место в Совете Безопасности.',
+   'Bosnia and Herzegovina joins the UN',
+   'On 22 September 1992 the UN General Assembly admits Bosnia and Herzegovina and Croatia. Yugoslavia loses its seat in the Security Council.',
+   [('Мы ещё в ООН', 'We are still in the UN',
+     'set_country_flag = SER_un_membership add_stability = -0.02', 1)])
+ev('serbia_collapse.51', S('1993.1.24', 'SER_vance_owen'),
+   'План Вэнса — Оуэна',
+   '25 января 1993 года в Женеве генерал Сайрус Вэнс и посол Ливи Оуэн предлагают план раздела Боснии на мусульманскую, хорватскую и сербскую части. План провалится.',
+   'The Vance-Owen Plan',
+   'On 25 January 1993 in Geneva General Cyrus Vance and Ambassador Lovett Owen propose a plan to partition Bosnia into Muslim, Croat and Serb parts. The plan collapses.',
+   [('Требовать ещё одну встречу', 'Ask for another meeting',
+     'set_country_flag = SER_vance_owen add_stability = -0.02', 1)])
+ev('serbia_collapse.52', S('1993.3.19', 'SER_no_fly_zone'),
+   'Резолюция 827',
+   '20 марта 1993 года Совет Безопасности ООН запрещает полёты над Боснией. Впервые после Кореи в небо над Европой вводят авиацию НАТО.',
+   'UN Resolution 827',
+   'On 20 March 1993 the Security Council bans flights over Bosnia. For the first time since Korea, NATO aircraft are sent over European soil.',
+   [('Сбить самолёт НАТО', 'Shoot down a NATO aircraft',
+     'set_country_flag = SER_no_fly_zone add_stability = -0.05 add_war_support = 0.08', 1),
+    ('Соблюдать резолюцию', 'Respect the resolution',
+     'set_country_flag = SER_no_fly_zone add_stability = 0.02', 0)])
+ev('serbia_collapse.53', S('1993.5.24', 'SER_icty'),
+   'Международный трибунал',
+   '25 мая 1993 года Совет Безопасности ООН учреждает Международный уголовный трибунал по Югославии. Югославские полковники получают обвинения в Гааге.',
+   'The International Tribunal',
+   'On 25 May 1993 the Security Council establishes the International Criminal Tribunal for Yugoslavia. Yugoslav colonels are summoned to The Hague.',
+   [('Дело не начнётся', 'The case will never start',
+     'set_country_flag = SER_icty add_stability = -0.02', 1)])
+ev('serbia_collapse.54', S('1994.2.2', 'SER_washington_agreement'),
+   'Вашингтонское соглашение',
+   '3 февраля 1994 года в Вашингтоне подписано соглашение о прекращении огня: Хорватия отказывается от Херцеговины, наступает перемирие.',
+   'The Washington Agreement',
+   'On 3 February 1994 the Washington Agreement is signed: Croatia gives up Herzegovina and a ceasefire follows.',
+   [('Соблюдать перемирие', 'Honour the ceasefire',
+     'set_country_flag = SER_washington_agreement add_stability = 0.04 add_war_support = -0.04', 1)])
+ev('serbia_collapse.55', S('1995.4.9', 'SER_easter_bombing'),
+   'Пасхальный теракт в Сараево',
+   '10 апреля 1995 года в центре Сараева взрывается бомба в кафе «Армен». Мёртвые идут на кладбище, Сараево восстаёт.',
+   'The Easter Bombing of Sarajevo',
+   'On 10 April 1995 a bomb explodes in the Arzen cafe in central Sarajevo. The dead are buried in a public procession and the city rises up.',
+   [('Найти виновных', 'Find the guilty',
+     'set_country_flag = SER_easter_bombing add_stability = -0.05 add_war_support = 0.06', 1)])
+ev('serbia_collapse.56', S('1995.7.10', 'SER_srebrenica'),
+   'Сребреница',
+   '11 июля 1995 года в осаждённой Сребренице погибли около восьми тысяч мусульманских мужчин. Международное сообщество называет это геноцидом.',
+   'Srebrenica',
+   'On 11 July 1995 around eight thousand Muslim men are killed in the besieged enclave of Srebrenica. The world calls it genocide.',
+   [('Это не наша война', 'This is not our war',
+     'set_country_flag = SER_srebrenica add_stability = -0.06 add_war_support = 0.05', 1)])
+ev('serbia_collapse.57', 'tag = CRO date > 1995.8.5 NOT = { has_country_flag = CRO_krajina_fell }',
+   'Крах Сербской Краины',
+   '6 августа 1995 года хорватская армия входит в Книн. Республика Српска Краина перестаёт существовать, её территории возвращаются Хорватии.',
+   'The Fall of the Serbian Krajina',
+   'On 6 August 1995 the Croatian army enters Knin. The Republic of Serbian Krajina ceases to exist and its territory returns to Croatia.',
+   [('Взять Книн', 'Take Knin',
+     'set_country_flag = CRO_krajina_fell add_stability = 0.06 add_war_support = 0.06 '
+     'if = { limit = { country_exists = RKS } CRO = { annex_country = { target = RKS transfer_troops = yes } } '
+     'every_state = { limit = { is_core_of = RKS } remove_core_of = RKS } }', 1)])
+ev('serbia_collapse.58', S('1996.12.20', 'SER_elections_1996'),
+   'Выборы в Сербии',
+   'В декабре 1996 года в Сербии проходят первые свободные выборы: правящая партия теряет голоса, побеждает оппозиция. Югославия перестаёт быть однопартийной.',
+   'The Elections in Serbia',
+   'In December 1996 Serbia holds its first free elections: the ruling party loses votes and the opposition wins. Yugoslavia stops being a one-party state.',
+   [('Принять результат', 'Accept the result',
+     'set_country_flag = SER_elections_1996 set_politics = { ruling_party = democratic elections_allowed = yes } '
+     'add_popularity = { ideology = democratic popularity = 0.1 } add_stability = 0.03', 1)])
+ev('serbia_collapse.59', S('1998.3.14', 'SER_kosovo_war'),
+   'Начало Косовской войны',
+   '15 марта 1998 года Армия освобождения Косово атакует деревню Преказ. Ответ ЮНА превращает конфликт в открытую войну.',
+   'The Kosovo War Begins',
+   'On 15 March 1998 the Kosovo Liberation Army attacks the village of Prekaz. The response of the JNA turns the conflict into an open war.',
+   [('Навести порядок в Косово', 'Restore order in Kosovo',
+     'set_country_flag = SER_kosovo_war add_stability = -0.05 add_war_support = 0.08 '
+     'declare_war_on = { target = KOS type = annex_everything }', 1),
+    ('Договариваться', 'Negotiate',
+     'set_country_flag = SER_kosovo_war add_stability = 0.02', 0)])
+ev('serbia_collapse.60', S('1999.2.14', 'SER_rambouillet'),
+   'Рамбулейские переговоры',
+   'В феврале-марте 1999 года во Франции идут переговоры под эгидой НАТО. Соглашение о мире в Косово срывается: требуется вывод войск Югославии.',
+   'The Rambouillet Talks',
+   'From February to March 1999 talks are held in France under NATO auspices. The Kosovo peace deal collapses: the withdrawal of Yugoslav troops is demanded.',
+   [('Подписать любой вариант', 'Sign any version of it',
+     'set_country_flag = SER_rambouillet add_stability = 0.02 add_war_support = -0.05', 1),
+    ('Никаких уступок', 'No concessions',
+     'set_country_flag = SER_rambouillet add_stability = -0.04 add_war_support = 0.05', 0)])
+ev('serbia_collapse.61', S('1999.6.9', 'SER_ks1244'),
+   'Резолюция 1244',
+   '10 июня 1999 года Совет Безопасности ООН принимает резолюцию 1244: Косово переходит под международную администрацию, в страну входят миротворцы ООН.',
+   'UN Resolution 1244',
+   'On 10 June 1999 the Security Council adopts Resolution 1244: Kosovo passes under international administration and UN peacekeepers arrive.',
+   [('Принять миротворцев', 'Accept the peacekeepers',
+     'set_country_flag = SER_ks1244 white_peace = KOS add_stability = -0.03 add_war_support = -0.08 '
+     'KOS = { set_stability = 0.4 add_political_power = 50 }', 1)])
+ev('serbia_collapse.62', S('2000.10.4', 'SER_bulldozer'),
+   '«Бульдозерная революция»',
+   '5 октября 2000 года в Белграде начинаются студенческие протесты. Площадь заполняют десятки тысяч человек, и режим Miloševića падает.',
+   'The Bulldozer Revolution',
+   'On 5 October 2000 student protests begin in Belgrade. Tens of thousands fill the squares and Milošević\'s regime falls.',
+   [('Отступить', 'Step back',
+     'set_country_flag = SER_bulldozer set_politics = { ruling_party = democratic elections_allowed = yes } '
+     'add_popularity = { ideology = democratic popularity = 0.15 } add_stability = 0.05', 1)])
+ev('serbia_collapse.63', S('2003.2.3', 'SER_state_union'),
+   'Союзная Республика Сербия и Черногория',
+   '4 февраля 2003 года Сербия и Черногория подписывают соглашение: вместо Союзной Республики Югославии появляется Союзная Республика Сербия и Черногория.',
+   'The State Union of Serbia and Montenegro',
+   'On 4 February 2003 Serbia and Montenegro sign an agreement: the Federal Republic of Yugoslavia is replaced by the State Union of Serbia and Montenegro.',
+   [('Обновить федерацию', 'Renew the federation',
+     'set_country_flag = SER_state_union add_stability = 0.02 add_political_power = 50', 1)])
+ev('serbia_collapse.64', S('2009.7.21', 'SER_icj_kosovo'),
+   'Решение Международного суда по Косово',
+   '22 июля 2009 года Международный суд в Гааге выносит консультативное заключение: одностороннее провозглашение независимости Косово не нарушает международное право.',
+   'The ICJ Opinion on Kosovo',
+   'On 22 July 2009 the International Court of Justice delivers its advisory opinion: the unilateral declaration of Kosovar independence does not violate international law.',
+   [('Не признавать решение', 'Do not accept the ruling',
+     'set_country_flag = SER_icj_kosovo add_stability = -0.03 add_war_support = 0.04', 1)])
+ev('serbia_collapse.65', S('2010.7.21', 'SER_eu_application'),
+   'Заявка в Европейский союз',
+   '22 июля 2010 года Сербия подаёт заявку на вступление в ЕС. Брюссель отвечает: сначала диалог с Косово.',
+   'The Application to the European Union',
+   'On 22 July 2010 Serbia applies for EU membership. Brussels replies: first, a dialogue with Kosovo.',
+   [('Подать заявку', 'Submit the application',
+     'set_country_flag = SER_eu_application add_ideas = BC_eu_candidate add_stability = 0.03', 1)])
+ev('serbia_collapse.66', S('2012.2.28', 'SER_eu_candidate'),
+   'Кандидат в члены ЕС',
+   '1 марта 2012 года Европейский совет даёт Сербии статус кандидата. Вопрос Косово по-прежнему стоит на пути к членству.',
+   'EU Candidate Status',
+   'On 1 March 2012 the European Council grants Serbia candidate status. The Kosovo question still blocks the way to membership.',
+   [('Продолжать реформы', 'Continue the reforms',
+     'set_country_flag = SER_eu_candidate add_ideas = BC_eu_candidate add_stability = 0.03 '
+     'add_political_power = 50', 1)])
 
 # triggered-only union events
 ev('bc_union.1', None, 'Приглашение из Белграда', 'Белград предлагает нам вступить в союз бывших югославских республик.',
@@ -849,6 +1143,8 @@ def country_name_overrides(lang):
         'MNT': ('Черногория', 'черногорский', 'Montenegro', 'Montenegrin'),
         'KOS': ('Косово', 'косовский', 'Kosovo', 'Kosovar'),
         'FYR': ('Северная Македония', 'македонский', 'North Macedonia', 'Macedonian'),
+        'RKS': ('Республика Српска Краина', 'краинский', 'Republic of Serbian Krajina', 'Krajina Serb'),
+        'HZG': ('Хорватская Республика Герцеговина', 'герцеговинский', 'Croatian Republic of Herzeg-Bosnia', 'Herzeg-Bosnian'),
     }
     for tag, (rn, ra, en, ea) in names.items():
         n, a = (rn, ra) if ru else (en, ea)
@@ -889,16 +1185,18 @@ LOC_COMMON = {
         'CRO_LEADER_DESC': 'Андрей Пленкович — премьер-министр Хорватии в 2026 году.',
         'SLV_LEADER_DESC': 'Янез Янша — премьер-министр Словении в 2026 году.',
         'BOS_LEADER_DESC': 'Борьяна Кришто — председатель Совета министров Боснии и Герцеговины в 2026 году.',
-        'RSK_LEADER_DESC': 'Синиша Каран — президент Республики Сербской в 2026 году.',
+        'RSK_LEADER_DESC': 'Милорад Додик — президент Республики Сербской в 2026 году.',
+        'RKS_BABIC_DESC': 'Милан Бабич — первый президент Республки Сербской Краины в 1991-1992 годах.',
+        'HZG_BOBAN_DESC': 'Мате Бобан — президент Хорватской Республики Герцеговина.',
         'MNT_LEADER_DESC': 'Милойко Спаич — премьер-министр Черногории в 2026 году.',
         'KOS_LEADER_DESC': 'Альбин Курти — премьер-министр Косово в 2026 году.',
         'FYR_LEADER_DESC': 'Християн Мицкоский — премьер-министр Северной Македонии в 2026 году.',
         'SER_1980_tree': 'Югославия: распад и возрождение',
         'BC_1995_NAME': 'После Дейтона — 1995',
-        'BC_1995_DESC': '1 января 1995 года. Хорватская война и осада Сараева только что закончились: республики хорваты и боснийцы получили независимость, но Югославия не умерла — она продолжает разваливаться. СССР прекратил существование в декабре 1991 года, и пятнадцать его республик стали отдельными государствами.',
-        'BC_1995_HISTORY': 'Союзная Республика Югославия: Сербия и Черногория без Косово, изолированная Санкция, долгая зима. Сможете ли вы собрать страну заново — или вам придётся смириться с её смертью?',
+        'BC_1995_DESC': '14 декабря 1995 года. В Париже подписано Дейтонское соглашение: война в Хорватии и осада Сараева закончены, Босния разделена на два энтитета, Сербская Краина стёрта с карты. Югославия не умерла — она продолжает разваливаться. СССР прекратил существование в декабре 1991 года, и пятнадцать его республик стали отдельными государствами.',
+        'BC_1995_HISTORY': 'Союзная Республика Югославия: Сербия и Черногория без Косово, под санкциями ООН, в долгой зиме. Босния разделена надвое, бывшая Краина стёрта с карты. Сможете ли вы собрать страну заново — или придётся смириться с её смертью?',
         'BC_2026_NAME': 'Сербия — 2026',
-        'BC_2026_DESC': '1 января 2026 года. Югославия давно не существует, а её народы живут по разные стороны границ, которые никто не признал окончательными. Балканы — члены ЕС и НАТО, но Белград снова мечтает о великой державе. Нацисты, «Студенческий список» и старые обиды ждут своего часа.',
+        'BC_2026_DESC': '1 января 2026 года. Югославия давно не существует, а её народы живут по разные стороны границ, которые никто не признал окончательными. Балканы — члены ЕС и НАТО, но Белград снова мечтает о великой державе. Народные фронты, «Студенческий список» и старые обиды ждут своего часа.',
         'BC_2026_HISTORY': 'Республика Сербия без Косово, независимая Черногория, объединённая Босния. Александру Вучичу удалось собрать вокруг Белграда единый «Студенческий список» — и на выборах 25 октября 2026 года он получил рекордное большинство. Теперь решайте, что будет дальше.',
         'OTHER_GRAND_DESC': 'Остальной мир: холодная война подходит к концу, но её тени останутся на десятилетия.',
     },
@@ -918,14 +1216,16 @@ LOC_COMMON = {
         'CRO_LEADER_DESC': 'Andrej Plenković, Prime Minister of Croatia in 2026.',
         'SLV_LEADER_DESC': 'Janez Janša, Prime Minister of Slovenia in 2026.',
         'BOS_LEADER_DESC': 'Borjana Krišto, Chair of the Council of Ministers of Bosnia and Herzegovina in 2026.',
-        'RSK_LEADER_DESC': 'Siniša Karan, President of Republika Srpska in 2026.',
+        'RSK_LEADER_DESC': 'Milorad Dodik, President of Republika Srpska in 2026.',
+        'RKS_BABIC_DESC': 'Milan Babic, the first president of the Republic of Serbian Krajina, 1991-1992.',
+        'HZG_BOBAN_DESC': 'Mate Boban, president of the Croatian Republic of Herzeg-Bosnia.',
         'MNT_LEADER_DESC': 'Milojko Spajić, Prime Minister of Montenegro in 2026.',
         'KOS_LEADER_DESC': 'Albin Kurti, Prime Minister of Kosovo in 2026.',
         'FYR_LEADER_DESC': 'Hristijan Mickoski, Prime Minister of North Macedonia in 2026.',
         'SER_1980_tree': 'Yugoslavia: Break-up and Rebirth',
         'BC_1995_NAME': 'After Dayton — 1995',
-        'BC_1995_DESC': '1 January 1995. The war in Croatia and the siege of Sarajevo are over: the Croats and the Bosnians have their own states, but Yugoslavia did not die - it keeps falling apart. The USSR ceased to exist in December 1991 and its fifteen republics are independent countries.',
-        'BC_1995_HISTORY': 'The Federal Republic of Yugoslavia: Serbia and Montenegro without Kosovo, a sealed country, a long winter. Can you still put the country back together - or will you have to accept its death?',
+        'BC_1995_DESC': '14 December 1995. The Dayton Agreement is signed in Paris: the war in Croatia and the siege of Sarajevo are over, Bosnia is split into two entities and the Serbian Krajina has vanished from the map. Yugoslavia did not die - it keeps falling apart. The USSR ceased to exist in December 1991 and its fifteen republics are independent countries.',
+        'BC_1995_HISTORY': 'The Federal Republic of Yugoslavia: Serbia and Montenegro without Kosovo, under UN sanctions, in a long winter. Bosnia is divided in two and the former Krajina is gone. Can you still put the country back together - or will you have to accept its death?',
         'BC_2026_NAME': 'Serbia — 2026',
         'BC_2026_DESC': '1 January 2026. Yugoslavia has been gone for decades and its peoples live on different sides of borders nobody ever accepted. The Balkans are in the EU and NATO, but Belgrade dreams of a great power once more. The nationalists, the "Student List" and the old wounds are waiting.',
         'BC_2026_HISTORY': 'The Republic of Serbia without Kosovo, an independent Montenegro, a united Bosnia. Aleksandar Vucic managed to gather a single "Student List" around Belgrade - and on 25 October 2026 it won a record majority. Now it is up to you to decide what comes next.',
@@ -995,7 +1295,7 @@ GFX = """spriteTypes = {
 
 
 def descriptor(path=None):
-    L = ['name="Балканы 1980: распад Югославии"', 'version="3.0"', 'supported_version="1.*"',
+    L = ['name="Балканы 1980: распад Югославии"', 'version="3.1"', 'supported_version="1.*"',
          'tags={', '\t"Alternative History"', '\t"Historical"', '\t"Map"', '\t"National Focuses"', '\t"Events"', '}',
          'picture="thumbnail.png"']
     for p in ['history/states', 'history/countries', 'history/units', 'history/general', 'map/strategicregions',
