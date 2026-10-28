@@ -2,6 +2,10 @@
 """Balkan Collapse content: Yugoslav countries, focus trees, events, ideas, bookmark."""
 import os
 import shutil
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import md_arsenal  # noqa: E402
 
 BALKAN_TAGS = ['SER', 'CRO', 'SLV', 'BOS', 'RSK', 'MNT', 'KOS', 'FYR']
 # tags of the countries that existed only during the wars (1991-1995)
@@ -17,31 +21,36 @@ YUGO_STATE_IDS = [124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 13
 # --------------------------------------------------------------------------
 # Leaders (2026) and history
 # --------------------------------------------------------------------------
-TECH = """set_research_slots = 3
-set_technology = {
-	infantry_weapons = 1
-	infantry_weapons1 = 1
-	infantry_weapons2 = 1
-	tech_support = 1
-	tech_engineers = 1
-	tech_recon = 1
-	tech_mountaineers = 1
-	gw_artillery = 1
-	interwar_artillery = 1
-	interwar_antiair = 1
-	interwar_antitank = 1
-	support_weapons = 1
-	motorised_infantry = 1
-	basic_train = 1
-	early_fighter = 1
-	electronic_mechanical_engineering = 1
-	radio = 1
-	basic_machine_tools = 1
-	construction1 = 1
-	fuel_silos = 1
-	trench_warfare = 1
-}
-"""
+# The special projects that the modern armies need (Millennium Dawn)
+MD_PROJECTS = ['sp_armoured_vehicle_project', 'sp_awacs_project', 'sp_aircraft_project', 'sp_space_program',
+               'sp_microchip_production', 'sp_helicopter_project', 'sp_missile_project', 'sp_naval_vessel_project']
+
+
+def md_technology(slots=3, blocks=None):
+    """The modern starting technology of the armies (the Millennium Dawn tree)."""
+    L = [f'set_research_slots = {slots}']
+    L += [f'complete_special_project = sp:{p}' for p in MD_PROJECTS]
+    for cond, names in (blocks if blocks is not None else md_arsenal.TECH_BLOCKS):
+        body = '\n'.join(f'\t{n} = 1' for n in names)
+        if cond:
+            L.append(f'if = {{\n\tlimit = {{ {cond} }}\n\tset_technology = {{\n{body}\n\t}}\n}}')
+        else:
+            L.append(f'set_technology = {{\n{body}\n}}')
+    return '\n'.join(L) + '\n'
+
+
+def md_variants():
+    """Equipment variants of the Yugoslav army: M-84, BOV, Zastava, Orao, Kotor, ..."""
+    L = []
+    for cond, text in md_arsenal.EQUIPMENT_VARIANTS:
+        if cond:
+            L.append(f'if = {{\n\tlimit = {{ {cond} }}\n{text}\n}}')
+        else:
+            L.append(text)
+    return '\n'.join(L) + '\n'
+
+
+TECH = md_technology()
 
 
 def leader(name, ideology, desc, picture=None):
@@ -57,10 +66,13 @@ def politics(ruling, pops, elections='yes'):
 
 
 HISTORY = {
-    'SER': 'oob = "SER_1980"\n' + TECH + politics('communism', dict(democratic=6, fascism=2, communism=80, neutrality=12), 'no') +
+    'SER': ('oob = "SER_1980"\n'
+            'if = { limit = { has_dlc = "By Blood Alone" } set_air_oob = "SER_1980_air" }\n'
+            'if = { limit = { has_dlc = "Man the Guns" } set_naval_oob = "SER_1980_naval" }\n'
+            + TECH + md_variants() + politics('communism', dict(democratic=6, fascism=2, communism=80, neutrality=12), 'no') +
            'set_stability = 0.7\nset_war_support = 0.3\nset_country_flag = SER_tito_alive\n'
            'add_ideas = { BC_tito_cult BC_jna BC_debt_crisis }\n' +
-           leader('Josip Broz Tito', 'marxism', 'SER_TITO_DESC', 'joska_broz.dds'),
+           leader('Josip Broz Tito', 'marxism', 'SER_TITO_DESC', 'joska_broz.dds')),
     'CRO': TECH + politics('democratic', dict(democratic=60, fascism=8, communism=10, neutrality=22)) +
            'set_stability = 0.55\nset_war_support = 0.5\n' + leader('Andrej Plenković', 'conservatism', 'CRO_LEADER_DESC', 'CRO_Andrej_Plenkovic.dds'),
     'SLV': TECH + politics('democratic', dict(democratic=68, fascism=4, communism=8, neutrality=20)) +
@@ -82,36 +94,136 @@ STATE_VP = {124: 9627, 125: 9596, 126: 11581, 127: 3924, 128: 11899, 129: 11741,
             133: 9890, 134: 9809, 135: 3882, 136: 11857, 998: 11787, 1051: 6614, 1052: 9894, 1053: 13934, 1054: 9588}
 
 
-def oob(tag, template_name, placements, equipment_mult=1):
-    L = ['division_template = {', f'\tname = "{template_name}"', '\tregiments = {',
-         '\t\tinfantry = { x = 0 y = 0 }', '\t\tinfantry = { x = 0 y = 1 }', '\t\tinfantry = { x = 0 y = 2 }',
-         '\t\tinfantry = { x = 1 y = 0 }', '\t\tinfantry = { x = 1 y = 1 }', '\t\tinfantry = { x = 1 y = 2 }',
-         '\t}', '\tsupport = {', '\t\tengineer = { x = 0 y = 0 }', '\t\tartillery = { x = 0 y = 1 }',
-         '\t\trecon = { x = 0 y = 2 }', '\t}', '}', 'units = {']
+# The brigades of the modern Yugoslav People's Army (Millennium Dawn battalions)
+MD_TEMPLATES = {
+    'Motorised': ('Motorizovana brigada', [('Mot_Inf_Bat', 3), ('Mech_Inf_Bat', 1), ('Arty_Bat', 2)],
+                  [('L_Engi_Comp', 1), ('SP_AA_Battery', 1)]),
+    'Tank': ('Tenkovska brigada', [('armor_Bat', 2), ('Arm_Inf_Bat', 1), ('Mech_Inf_Bat', 2), ('SP_Arty_Bat', 2)],
+             [('H_Engi_Comp', 1), ('SP_AA_Battery', 1)]),
+    'Mechanised': ('Mehanizovana brigada', [('armor_Bat', 1), ('Mech_Inf_Bat', 3), ('SP_Arty_Bat', 2)],
+                   [('H_Engi_Comp', 1), ('SP_AA_Battery', 1)]),
+    'Infantry': ('Pesadijska brigada', [('L_Inf_Bat', 2), ('Militia_Bat', 1), ('Arty_Bat', 1)],
+                 [('L_Engi_Comp', 1), ('Weapons_company', 1)]),
+}
+
+# The modern arsenal of every army: rifles, artillery, optics, vehicles
+MD_STOCKPILE = [('infantry_weapons_4', 500), ('artillery_equipment', 60), ('util_vehicle_2', 40),
+                ('Anti_tank_2', 20), ('AA_Equipment', 10)]
+
+
+def md_division_templates():
+    """The division templates of the modern armies."""
+    L = []
+    templates = list(MD_TEMPLATES.items())
+    # the names that the vanilla AI plans refer to
+    templates += [('Infantry', ('Infantry Division', MD_TEMPLATES['Infantry'][1], MD_TEMPLATES['Infantry'][2])),
+                  ('Armour', ('Armour Division', MD_TEMPLATES['Tank'][1], MD_TEMPLATES['Tank'][2]))]
+    for key, (name, regs, sup) in templates:
+        L.append('division_template = {')
+        L.append(f'\tname = "{name}"')
+        L.append('\tregiments = {')
+        i = 0
+        for bat, n in regs:
+            for _ in range(n):
+                L.append(f'\t\t{bat} = {{ x = {i // 3} y = {i % 3} }}')
+                i += 1
+        L.append('\t}')
+        L.append('\tsupport = {')
+        j = 0
+        for comp, n in sup:
+            for _ in range(n):
+                L.append(f'\t\t{comp} = {{ x = {j // 3} y = {j % 3} }}')
+                j += 1
+        L.append('\t}')
+        L.append('}')
+    return '\n'.join(L)
+
+
+def oob(tag, placements, mix=('Motorised', 'Tank', 'Mechanised'), equipment_mult=1):
+    """Order of battle of a modern army (the style of Millennium Dawn)."""
+    L = [md_division_templates(), 'units = {']
     for i, prov in enumerate(placements):
-        L += ['\tdivision = {', f'\t\tname = "{i + 1}. {template_name}"', f'\t\tlocation = {prov}',
-              f'\t\tdivision_template = "{template_name}"', '\t\tstart_experience_factor = 0.3', '\t}']
-    n = len(placements) * equipment_mult
-    L += ['}', 'instant_effect = {',
-          f'\tadd_equipment_to_stockpile = {{ type = infantry_equipment_1 amount = {500 * n} producer = {tag} }}',
-          f'\tadd_equipment_to_stockpile = {{ type = artillery_equipment_1 amount = {60 * n} producer = {tag} }}',
-          f'\tadd_equipment_to_stockpile = {{ type = support_equipment_1 amount = {60 * n} producer = {tag} }}', '}']
+        name = MD_TEMPLATES[mix[i % len(mix)]][0]
+        L += ['\tdivision = {', f'\t\tname = "{i + 1}. {name}"', f'\t\tlocation = {prov}',
+              f'\t\tdivision_template = "{name}"', '\t\tstart_experience_factor = 0.3', '\t}']
+    n = max(1, len(placements) * equipment_mult)
+    L += ['}', 'instant_effect = {']
+    for eq, amount in MD_STOCKPILE:
+        L.append(f'\tadd_equipment_to_stockpile = {{ type = {eq} amount = {amount * n} producer = {tag} }}')
+    L.append('}')
+    return '\n'.join(L) + '\n'
+
+
+
+
+def air_oob(tag, wings):
+    """The air force: the wings of the modern air force (the "By Blood Alone" aircraft)."""
+    L = ['instant_effect = {']
+    for prov, name, planes in wings:
+        for eq, variant, amount in planes:
+            L.append(f'\tadd_equipment_to_stockpile = {{ type = {eq} variant_name = "{variant}" '
+                     f'amount = {amount} producer = {tag} }}')
+    L += ['}', 'air_wings = {']
+    for prov, name, planes in wings:
+        L.append(f'\t{prov} = {{')
+        for eq, variant, amount in planes:
+            L.append(f'\t\t{eq} = {{ owner = "{tag}" creator = "{tag}" amount = {amount} '
+                     f'version_name = "{variant}" }}')
+            L.append(f'\t\tname = "{name}"')
+            L.append('\t\tstart_experience_factor = 0.4')
+        L.append('\t}')
+    L += ['}']
+    return '\n'.join(L) + '\n'
+
+
+def naval_oob(tag, fleet, base, ships):
+    """The navy: the fleet of the modern navy (the "Man the Guns" ships)."""
+    L = ['units = {', '\tfleet = {', f'\t\tname = "{fleet}"', f'\t\tnaval_base = {base}',
+         '\t\ttask_force = {', f'\t\t\tname = "{fleet}"', f'\t\t\tlocation = {base}']
+    for name, definition, hull, variant in ships:
+        L.append(f'\t\t\tship = {{ name = "{name}" definition = {definition} start_experience_factor = 0.25 '
+                 f'equipment = {{ {hull} = {{ amount = 1 owner = {tag} version_name = "{variant}" }} }} }}')
+    L += ['\t\t}', '\t}', '}']
     return '\n'.join(L) + '\n'
 
 
 OOB = {
-    'SER': oob('SER', 'Pešadijska divizija JNA', [STATE_VP[s] for s in YUGO_STATE_IDS] + [11586, 11586, 3617, 11581, 11899, 11857], 2),
+    'SER': oob('SER', [STATE_VP[s] for s in YUGO_STATE_IDS] + [11586, 11586, 3617, 11581, 11899, 11857],
+               equipment_mult=2),
+}
+
+# The Yugoslav Air Force: the J-22 Orao, the G-2 Galeb and the G-4 Super Galeb
+AIR_OOB = {
+    'SER_1980_air': air_oob('SER', [
+        (11586, '204. Lovacka avijacijska eskadrila',
+         [('small_plane_strike_airframe_1', 'J-22 Orao', 24)]),
+        (11887, '252. Lovacko-bombarderska avijacijska eskadrila',
+         [('small_plane_strike_airframe_1', 'G-2 Galeb', 12)]),
+        (11581, '306. Mornaricka avijacijska eskadrila',
+         [('small_plane_strike_airframe_1', 'J-21 Jastreb', 12)]),
+        (3617, '204. Lovacka avijacijska eskadrila Kurjaci sa Usca',
+         [('small_plane_strike_airframe_2', 'G-4 Super Galeb', 8)]),
+    ]),
+}
+
+# The Yugoslav Navy: the Kotor class corvettes and the Heroj class submarines
+NAVAL_OOB = {
+    'SER_1980_naval': naval_oob('SER', 'Jugoslavenska ratna mornarica', 11581, [
+        ('Beograd', 'corvette', 'corvette_hull_2', 'Kotor Class'),
+        ('Pula', 'corvette', 'corvette_hull_2', 'Kotor Class'),
+        ('Heroj', 'attack_submarine', 'attack_submarine_hull_1', 'Heroj Class'),
+    ]),
 }
 EXTRA_OOB = {
-    'CRO_1991': oob('CRO', 'Gardijska brigada HV', [11581, 11581, 3924, 3924, 11581]),
-    'SLV_1991': oob('SLV', 'Brigada TO Slovenije', [9627, 9627, 9596]),
-    'FYR_1991': oob('FYR', 'Pešadiska divizija ARM', [11857, 3882]),
-    'RSK_1992': oob('RSK', 'Korpus VRS', [9588, 9588, 11741, 13934]),
-    'BOS_1992': oob('BOS', 'Korpus ARBiH', [11899, 11899, 6614, 9894]),
-    'MNT_2006': oob('MNT', 'Brigada Vojske Crne Gore', [9809]),
-    'KOS_2008': oob('KOS', 'Brigada FSK', [9890]),
-    'RKS_1991': oob('RKS', 'Brigada SVK', [3924, 3924, 11564]),
-    'HZG_1992': oob('HZG', 'Hrvatska vojska Herceg-Bosne', [9894, 9894]),
+    'CRO_1991': oob('CRO', [11581, 11581, 3924, 3924, 11581], ('Motorised', 'Infantry')),
+    'SLV_1991': oob('SLV', [9627, 9627, 9596], ('Infantry', 'Motorised')),
+    'FYR_1991': oob('FYR', [11857, 3882], ('Infantry', 'Motorised')),
+    'RSK_1992': oob('RSK', [9588, 9588, 11741, 13934], ('Motorised', 'Tank')),
+    'BOS_1992': oob('BOS', [11899, 11899, 6614, 9894], ('Infantry', 'Motorised')),
+    'MNT_2006': oob('MNT', [9809], ('Infantry',)),
+    'KOS_2008': oob('KOS', [9890], ('Infantry',)),
+    'RKS_1991': oob('RKS', [3924, 3924, 11564], ('Infantry', 'Motorised')),
+    'HZG_1992': oob('HZG', [9894, 9894], ('Infantry',)),
 }
 
 # --------------------------------------------------------------------------
@@ -146,8 +258,23 @@ def airbase():
     return ('capital_scope = { add_building_construction = { type = air_base level = 2 instant_build = yes } }')
 
 
+# The research categories of the vanilla game are replaced by the Millennium Dawn ones
+TECH_BONUS = {
+    'land_doctrine': ('land_doctrine', 'combined_arms'),
+    'infantry_weapons': ('infantry', 'infantry_weapons_1'),
+    'electronics': ('engineering', 'computing_1'),
+    'industry': ('industry', 'construction1'),
+    'artillery': ('artillery', 'tech_arty_0'),
+    'air_doctrine': ('fixed_wing', 'early_fighter'),
+    'support_weapons': ('infantry', 'support_weapons'),
+    'armor': ('armor', 'Early_APC'),
+    'naval': ('naval', 'corvette_hull_1'),
+}
+
+
 def bonus(cat, name):
-    return f'add_tech_bonus = {{ name = {name} bonus = 0.5 uses = 1 category = {cat} }}'
+    category, tech = TECH_BONUS.get(cat, (cat, cat))
+    return f'add_tech_bonus = {{ name = {tech} bonus = 0.5 uses = 1 category = {category} }}'
 
 
 def wargoal(tag):
@@ -1295,11 +1422,17 @@ GFX = """spriteTypes = {
 
 
 def descriptor(path=None):
-    L = ['name="Балканы 1980: распад Югославии"', 'version="3.1"', 'supported_version="1.*"',
+    L = ['name="Балканы 1980: распад Югославии"', 'version="3.2"', 'supported_version="1.*"',
          'tags={', '\t"Alternative History"', '\t"Historical"', '\t"Map"', '\t"National Focuses"', '\t"Events"', '}',
          'picture="thumbnail.png"']
     for p in ['history/states', 'history/countries', 'history/units', 'history/general', 'map/strategicregions',
-              'map/supplyareas', 'common/bookmarks', 'gfx/loadingscreens']:
+              'map/supplyareas', 'common/bookmarks', 'gfx/loadingscreens',
+              'common/units', 'common/units/equipment', 'common/units/equipment/upgrades',
+              'common/units/names_divisions', 'common/units/names_ships', 'common/units/codenames_operatives',
+              'common/technologies', 'common/special_projects', 'common/special_projects/project_tags',
+              'common/special_projects/projects', 'common/doctrines', 'common/equipment_groups',
+              'common/technology_tags', 'common/technology_sharing', 'common/ai_equipment',
+              'common/ai_templates', 'common/countries']:
         L.append(f'replace_path="{p}"')
     if path:
         L.append(f'path="{path}"')
@@ -1321,6 +1454,8 @@ def build(out, old_mod, states, capitals):
     write(os.path.join(out, 'common', 'bookmarks', 'bc_1980.txt'), bookmark())
     write(os.path.join(out, 'interface', 'bc_balkan.gfx'), GFX)
     for name, text in EXTRA_OOB.items():
+        write(os.path.join(out, 'history', 'units', f'{name}.txt'), text)
+    for name, text in list(AIR_OOB.items()) + list(NAVAL_OOB.items()):
         write(os.path.join(out, 'history', 'units', f'{name}.txt'), text)
     for lang in ('russian', 'english'):
         write(os.path.join(out, 'localisation', lang, f'bc_balkan_l_{lang}.yml'), localisation(lang), bom=True)

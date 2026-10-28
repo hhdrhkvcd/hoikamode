@@ -214,7 +214,98 @@ for t in owners:
     if not os.path.exists(os.path.join(mod, 'gfx/flags', t + '.tga')):
         warnings.append(f'no flag {t}')
 
-print(f'states={len(state_provs)} owners={len(owners)} tags={len(tags)} focuses={len(all_focus)} events={len(ev_ids)}')
+# 11. the modern arsenal of Millennium Dawn
+def walk_keys(blk, key, out):
+    for k, _op, v in blk:
+        if isinstance(v, list):
+            if k == key:
+                out.update(kk for kk, _, _ in v if kk)
+            walk_keys(v, key, out)
+
+
+def walk_blocks(blk, key, out=None):
+    out = [] if out is None else out
+    for k, _op, v in blk:
+        if isinstance(v, list):
+            if k == key:
+                out.append(v)
+            walk_blocks(v, key, out)
+    return out
+
+
+techs = set()
+categories = set()
+for p in glob.glob(os.path.join(mod, 'common/technologies/*.txt')):
+    categories.add(os.path.splitext(os.path.basename(p))[0])
+    for k, _op, v in (pdx.get(pdx.parse(read(p)), 'technologies', []) or []):
+        if isinstance(v, list):
+            techs.add(k)
+sub_units = set()
+for p in glob.glob(os.path.join(mod, 'common/units/*.txt')):
+    for k, _op, v in (pdx.get(pdx.parse(read(p)), 'sub_units', []) or []):
+        if isinstance(v, list):
+            sub_units.add(k)
+equip = set()
+for p in glob.glob(os.path.join(mod, 'common/units/equipment/*.txt')):
+    b = pdx.parse(read(p))
+    for key in ('equipments', 'duplicate_archetypes'):
+        for k, _op, v in (pdx.get(b, key, []) or []):
+            if isinstance(v, list):
+                equip.add(k)
+
+
+def known_equipment(name):
+    """The numbered copies of the archetypes (the game creates them automatically)."""
+    return name in equip or re.sub(r'_\d+$', '', name) in equip
+
+for p in glob.glob(os.path.join(mod, 'history/countries/*.txt')):
+    got = set()
+    walk_keys(pdx.parse(read(p)), 'set_technology', got)
+    for x in sorted(got):
+        if x not in techs:
+            errors.append(f'{os.path.basename(p)}: unknown technology {x}')
+    for blk in walk_blocks(pdx.parse(read(p)), 'create_equipment_variant'):
+        eq = pdx.get(blk, 'type')
+        if eq and not known_equipment(eq):
+            errors.append(f'{os.path.basename(p)}: unknown equipment of the variant {eq}')
+
+for p in glob.glob(os.path.join(mod, 'history/units/*.txt')):
+    name = os.path.basename(p)
+    b = pdx.parse(read(p))
+    for key in ('regiments', 'support'):
+        for blk in walk_blocks(b, key):
+            for k, _op, v in blk:
+                if k and k not in sub_units:
+                    errors.append(f'{name}: unknown battalion {k}')
+    for blk in walk_blocks(b, 'add_equipment_to_stockpile'):
+        eq = pdx.get(blk, 'type')
+        if eq and not known_equipment(eq):
+            errors.append(f'{name}: unknown equipment {eq}')
+    for blk in walk_blocks(b, 'air_wings'):
+        for prov, _op, wings in blk:
+            if not isinstance(wings, list):
+                continue
+            for k, _op, v in wings:
+                if k in ('name', 'start_experience_factor'):
+                    continue
+                if not known_equipment(k):
+                    errors.append(f'{name}: unknown aircraft {k}')
+    for blk in walk_blocks(b, 'ship'):
+        for blk2 in walk_blocks(blk, 'equipment'):
+            for k, _op, v in blk2:
+                if not known_equipment(k):
+                    errors.append(f'{name}: unknown ship hull {k}')
+
+for p in glob.glob(os.path.join(mod, 'common/national_focus/*.txt')):
+    txt = read(p)
+    for tname, cat in re.findall(r'add_tech_bonus\s*=\s*\{\s*name\s*=\s*(\w+)[^}]*category\s*=\s*(\w+)', txt):
+        if tname not in techs:
+            errors.append(f'{os.path.basename(p)}: bonus for unknown technology {tname}')
+        if cat not in categories:
+            errors.append(f'{os.path.basename(p)}: bonus for unknown category {cat}')
+
+print(f'states={len(state_provs)} owners={len(owners)} tags={len(tags)} focuses={len(all_focus)} events={len(ev_ids)} '
+      f'techs={len(techs)} battalions={len(sub_units)} equipment={len(equip)}')
 print('WARNINGS', len(warnings))
 for w in warnings[:30]:
     print('  W', w)

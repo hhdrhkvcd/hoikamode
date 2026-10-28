@@ -455,30 +455,228 @@ def build_localisation(md_repo, out, tags):
 
 
 # --------------------------------------------------------------------------
+# The modern arsenal of Millennium Dawn
+# --------------------------------------------------------------------------
+MD_ARSENAL_DIRS = ['common/units', 'common/technologies', 'common/special_projects', 'common/doctrines',
+                    'common/equipment_groups', 'common/technology_tags', 'common/technology_sharing',
+                    'common/ai_equipment', 'common/ai_templates']
+MD_ARSENAL_LOC = ['equipment_l_{lang}.yml', 'equip_air_l_{lang}.yml', 'equip_naval_l_{lang}.yml',
+                  'tank_modules_l_{lang}.yml', 'plane_designer_l_{lang}.yml', 'research_l_{lang}.yml',
+                  'MD_techs_l_{lang}.yml', 'MD_units_l_{lang}.yml', 'MD_new_unit_categories_l_{lang}.yml',
+                  'MD_missiles_l_{lang}.yml', 'MD_missiles_models_l_{lang}.yml',
+                  'attack_helicopter_modules_l_{lang}.yml', 'MD_new_traits_l_{lang}.yml',
+                  'MD_traits_l_{lang}.yml', 'MD_doctrines_ncns_l_{lang}.yml']
+MD_ARSENAL_LOC_REPLACE = ['replaced_from_special_projects_l_{lang}.yml',
+                          'replaced_from_vanilla_equipment_l_{lang}.yml',
+                          'replaced_from_vanilla_air_l_{lang}.yml',
+                          'replaced_from_vanilla_designer_l_{lang}.yml',
+                          'replaced_from_unit_names_l_{lang}.yml',
+                          'replaced_from_doctrines_l_{lang}.yml']
+
+
+def copy_tree(src, dst):
+    for root, _dirs, files in os.walk(src):
+        rel = os.path.relpath(root, src)
+        target = os.path.join(dst, rel) if rel != '.' else dst
+        os.makedirs(target, exist_ok=True)
+        for f in files:
+            shutil.copy2(os.path.join(root, f), os.path.join(target, f))
+
+
+def dump_block(block, indent='\t'):
+    """Serialise a parsed Paradox block."""
+    L = []
+    for k, _op, v in block:
+        if isinstance(v, list):
+            L.append(f'{indent}{k} = {{')
+            L.extend(dump_block(v, indent + '\t'))
+            L.append(f'{indent}}}')
+        elif v is None:
+            L.append(f'{indent}{k}')
+        else:
+            L.append(f'{indent}{k} = {v}')
+    return L
+
+
+def md_scripted(md_repo, out):
+    """The scripted effects and triggers that the Millennium Dawn technologies use."""
+    effects, triggers = {}, {}
+    for folder, store in (('scripted_effects', effects), ('scripted_triggers', triggers)):
+        for p in glob.glob(os.path.join(md_repo, 'common', folder, '*.txt')):
+            for k, _op, v in pdx.parse(read(p)):
+                if isinstance(v, list):
+                    store[k] = v
+    used = set()
+
+    def collect(blk):
+        for k, _op, v in blk:
+            if k:
+                used.add(k)
+            if isinstance(v, list):
+                collect(v)
+
+    for p in glob.glob(os.path.join(md_repo, 'common', 'technologies', '*.txt')):
+        for _k, _op, techs in (pdx.get(pdx.parse(read(p)), 'technologies', []) or []):
+            if not isinstance(techs, list):
+                continue
+            collect(techs)
+    # only the effects of the technology tree itself (the economy of Millennium Dawn is not needed)
+    used = {n for n in used if n.startswith('md_') or n.startswith('EH_')}
+    wanted = set()
+    queue = list(used)
+    while queue:
+        name = queue.pop()
+        if name in wanted:
+            continue
+        blk = effects.get(name)
+        kind = 'effects'
+        if blk is None:
+            blk = triggers.get(name)
+            kind = 'triggers'
+        if blk is None:
+            continue
+        wanted.add(name)
+        sub = set()
+
+        def collect2(b):
+            for k, _op, v in b:
+                if k:
+                    sub.add(k)
+                if isinstance(v, list):
+                    collect2(v)
+
+        collect2(blk)
+        queue.extend(n for n in sub - wanted if n.startswith('md_') or n.startswith('EH_'))
+        lines = dump_block([(name, '=', blk)])
+        if kind == 'effects':
+            os.makedirs(os.path.join(out, 'common', 'scripted_effects'), exist_ok=True)
+            with open(os.path.join(out, 'common', 'scripted_effects', 'bc_md_tech_effects.txt'), 'a',
+                      encoding='utf-8') as f:
+                f.write('\n'.join(lines) + '\n\n')
+        else:
+            os.makedirs(os.path.join(out, 'common', 'scripted_triggers'), exist_ok=True)
+            with open(os.path.join(out, 'common', 'scripted_triggers', 'bc_md_tech_triggers.txt'), 'a',
+                      encoding='utf-8') as f:
+                f.write('\n'.join(lines) + '\n\n')
+
+
+LOC_LINE = re.compile(r'^\s*([A-Za-z0-9_.\-]+):(\d+)?\s*"(.*)"\s*(#.*)?$')
+
+
+def clean_loc(text):
+    """The localisation of the vanilla style: one " key:0 \"value\"" per line."""
+    out = []
+    for ln in text.splitlines():
+        if not ln.strip() or ln.lstrip().startswith('#') or ln.strip().startswith('l_'):
+            out.append(ln)
+            continue
+        m = LOC_LINE.match(ln)
+        if m:
+            out.append(f' {m.group(1)}:0 "{m.group(3)}"')
+        else:
+            out.append(ln)
+    return '\n'.join(out) + '\n'
+
+
+def build_md_arsenal(md_repo, out):
+    """Copy the modern arsenal of Millennium Dawn: units, equipment, technologies, projects."""
+    for d in MD_ARSENAL_DIRS:
+        src = os.path.join(md_repo, d)
+        if os.path.isdir(src):
+            copy_tree(src, os.path.join(out, d))
+    for lang in ('english', 'russian'):
+        for name in MD_ARSENAL_LOC + MD_ARSENAL_LOC_REPLACE:
+            fn = name.format(lang=lang)
+            src = os.path.join(md_repo, 'localisation', lang, fn)
+            if not os.path.exists(src):
+                src = os.path.join(md_repo, 'localisation', lang, 'replace', fn)
+            if not os.path.exists(src):
+                continue
+            sub = 'replace' if 'replaced_from' in fn else ''
+            dst_dir = os.path.join(out, 'localisation', lang, sub)
+            os.makedirs(dst_dir, exist_ok=True)
+            with open(src, encoding='utf-8-sig') as f:
+                text = f.read()
+            with open(os.path.join(dst_dir, 'bc_md_' + fn), 'w', encoding='utf-8-sig', newline='\n') as f:
+                f.write(clean_loc(text))
+    md_scripted(md_repo, out)
+
+
+# --------------------------------------------------------------------------
 # Country history + OOB
 # --------------------------------------------------------------------------
-BASE_TECH = ['infantry_weapons', 'infantry_weapons1', 'infantry_weapons2', 'tech_support', 'tech_engineers',
-             'tech_recon', 'tech_mountaineers', 'gw_artillery', 'interwar_artillery', 'interwar_antiair',
-             'interwar_antitank', 'support_weapons', 'motorised_infantry', 'basic_train', 'gwtank',
-             'basic_light_tank_chassis', 'early_fighter', 'early_bomber', 'electronic_mechanical_engineering',
-             'radio', 'basic_machine_tools', 'construction1', 'fuel_silos', 'early_destroyer', 'early_submarine',
-             'early_light_cruiser', 'trench_warfare', 'fleet_in_being']
-ADVANCED_TECH = ['infantry_weapons', 'improved_infantry_weapons', 'support_weapons2', 'artillery1', 'artillery2',
-                 'antitank1', 'antiair1', 'tech_military_police', 'paratroopers', 'marines', 'mechanised_infantry',
-                 'basic_medium_tank_chassis', 'improved_light_tank_chassis', 'fighter1', 'cas1', 'tactical_bomber1',
-                 'improved_machine_tools', 'construction2', 'mechanical_computing', 'improved_radio', 'radio_detection',
-                 'synth_oil_experiments', 'basic_destroyer', 'basic_light_cruiser', 'basic_submarine',
-                 'grand_battle_plan', 'superior_firepower', 'mobile_warfare', 'mass_assault']
 MAJORS = set('USA SOV ENG FRA GER CHI JAP ITA'.split())
 DEVELOPED = MAJORS | set('DDR CZE POL HUN ROM BUL SER SWE SWI CAN AST HOL BEL ISR SPR TUR RAJ BRA ARG KOR TAI'.split())
 
 
-def base_country_body(tag, ruling, developed=True):
+MD_COUNTRY_TECH = {}
+
+
+def dlc_condition(limit_block):
+    """The DLC condition of a limit block."""
+    if not limit_block:
+        return None
+    s = pdx.dump(limit_block)
+    for key, val in (('No Step Back', 'has_dlc = "No Step Back"'), ('By Blood Alone', 'has_dlc = "By Blood Alone"'),
+                     ('La Resistance', 'NOT = { has_dlc = "La Resistance" }'),
+                     ('Man the Guns', 'NOT = { has_dlc = "Man the Guns" }'),
+                     ('Gotterdammerung', 'has_dlc = "Gotterdammerung"')):
+        if key in s:
+            return val
+    return None
+
+
+def extract_tech_blocks(path):
+    """The technology blocks of a Millennium Dawn country history."""
+    found = []
+
+    def walk(blk, cond=None):
+        for k, _op, v in blk:
+            if isinstance(v, list):
+                if k == 'set_technology':
+                    found.append((cond, [kk for kk, _, _ in v if kk]))
+                elif k == 'if':
+                    walk(v, dlc_condition(pdx.get(v, 'limit')) or cond)
+                else:
+                    walk(v, cond)
+
+    walk(pdx.parse(read(path)))
+    merged, order = {}, []
+    for cond, names in found:
+        key = cond or ''
+        if key not in merged:
+            merged[key] = []
+            order.append(key)
+        for n in names:
+            if n not in merged[key]:
+                merged[key].append(n)
+    return [(k if k else None, merged[k]) for k in order]
+
+
+def md_country_tech(md_repo, tag):
+    """The technology of the country in Millennium Dawn (the Serbian base if there is none)."""
+    if tag in MD_COUNTRY_TECH:
+        return MD_COUNTRY_TECH[tag]
+    blocks = []
+    paths = sorted(glob.glob(os.path.join(md_repo, 'history', 'countries', f'{tag} - *.txt')))
+    for path in paths:
+        try:
+            blocks = extract_tech_blocks(path)
+        except Exception:
+            blocks = []
+        if blocks:
+            break
+    if not blocks:
+        blocks = balkan_content.md_arsenal.TECH_BLOCKS
+    MD_COUNTRY_TECH[tag] = blocks
+    return blocks
+
+
+def base_country_body(tag, ruling, developed=True, md_repo=None):
     pops = {'communism': dict(democratic=5, fascism=2, communism=80, neutrality=13),
             'democratic': dict(democratic=60, fascism=5, communism=15, neutrality=20),
             'neutrality': dict(democratic=15, fascism=8, communism=12, neutrality=65)}[ruling]
-    tech = BASE_TECH + (ADVANCED_TECH if developed else [])
-    L = ['set_research_slots = 3', 'set_technology = {'] + [f'\t{t} = 1' for t in dict.fromkeys(tech)] + ['}',
+    L = balkan_content.md_technology(3, md_country_tech(md_repo, tag)).rstrip('\n').split('\n') + [
          'set_politics = {', f'\truling_party = {ruling}', '\tlast_election = "1980.1.1"',
          '\telection_frequency = 48', '\telections_allowed = yes', '}',
          'set_popularities = { ' + ' '.join(f'{k} = {v}' for k, v in pops.items()) + ' }',
@@ -486,7 +684,7 @@ def base_country_body(tag, ruling, developed=True):
     return '\n'.join(L) + '\n'
 
 
-def build_history(md_archive, out, states, tags, portrait_1980=None):
+def build_history(md_archive, out, states, tags, portrait_1980=None, md_repo=None):
     portrait_1980 = portrait_1980 or {}
     owned = collections.defaultdict(list)
     for s in states.values():
@@ -522,7 +720,8 @@ def build_history(md_archive, out, states, tags, portrait_1980=None):
             cap = md_capitals.get(tag)
             if cap is None or cap not in [s['id'] for s in own]:
                 cap = max(own, key=lambda s: (sum(v for _, v in s['vps']), s['id']))['id'] if own else 0
-            text = (f'capital = {cap}\n' + base_country_body(tag, 'democratic', developed=False))
+            text = (f'capital = {cap}\n' +
+                    base_country_body(tag, 'democratic', developed=False, md_repo=md_repo))
         elif tag not in owned:
             continue          # a landless autonomous region (folded into its mother country)
         else:
@@ -531,10 +730,9 @@ def build_history(md_archive, out, states, tags, portrait_1980=None):
             pops = {'communism': dict(democratic=5, fascism=2, communism=80, neutrality=13),
                     'democratic': dict(democratic=65, fascism=3, communism=10, neutrality=22),
                     'neutrality': dict(democratic=15, fascism=8, communism=12, neutrality=65)}[ruling]
-            tech = BASE_TECH + (ADVANCED_TECH if tag in DEVELOPED else [])
-            L = [f'capital = {cap}', f'oob = "{tag}_1980"',
-                 f'set_research_slots = {4 if tag in MAJORS else 3 if tag in DEVELOPED else 2}',
-                 'set_technology = {'] + [f'\t{t} = 1' for t in dict.fromkeys(tech)] + ['}',
+            slots = 4 if tag in MAJORS else 3 if tag in DEVELOPED else 2
+            L = [f'capital = {cap}', f'oob = "{tag}_1980"'] + \
+                balkan_content.md_technology(slots, md_country_tech(md_repo, tag)).rstrip('\n').split('\n') + [
                  'set_politics = {', f'\truling_party = {ruling}', '\tlast_election = "1978.1.1"',
                  '\telection_frequency = 48', f'\telections_allowed = {"yes" if ruling == "democratic" else "no"}', '}',
                  'set_popularities = { ' + ' '.join(f'{k} = {v}' for k, v in pops.items()) + ' }',
@@ -566,20 +764,8 @@ def write_oob(out, tag, cap, states, sts):
         manpower = sum(s['manpower'] for s in sts)
         n = max(1, min(24, manpower // 3_000_000 + (6 if tag in MAJORS else 0)))
         prov = capital_province(states[cap])
-        L = ['division_template = {', '\tname = "Infantry Division"', '\tregiments = {',
-             '\t\tinfantry = { x = 0 y = 0 }', '\t\tinfantry = { x = 0 y = 1 }', '\t\tinfantry = { x = 0 y = 2 }',
-             '\t\tinfantry = { x = 1 y = 0 }', '\t\tinfantry = { x = 1 y = 1 }', '\t\tinfantry = { x = 1 y = 2 }',
-             '\t}', '\tsupport = {', '\t\tengineer = { x = 0 y = 0 }', '\t\tartillery = { x = 0 y = 1 }', '\t}', '}',
-             'units = {']
-        for i in range(n):
-            L += ['\tdivision = {', f'\t\tname = "{i + 1}. Infantry Division"',
-                  f'\t\tlocation = {prov}', '\t\tdivision_template = "Infantry Division"',
-                  '\t\tstart_experience_factor = 0.3', '\t}']
-        L += ['}', 'instant_effect = {',
-              f'\tadd_equipment_to_stockpile = {{ type = infantry_equipment_1 amount = {400 * n} producer = {tag} }}',
-              f'\tadd_equipment_to_stockpile = {{ type = artillery_equipment_1 amount = {50 * n} producer = {tag} }}',
-              f'\tadd_equipment_to_stockpile = {{ type = support_equipment_1 amount = {40 * n} producer = {tag} }}', '}']
-        text = '\n'.join(L) + '\n'
+        mix = ('Infantry', 'Motorised') if tag not in DEVELOPED else ('Motorised', 'Tank', 'Mechanised')
+        text = balkan_content.oob(tag, [prov] * n, mix)
     write(os.path.join(out, 'history', 'units', f'{tag}_1980.txt'), text)
 
 
@@ -1076,6 +1262,7 @@ def main():
     build_map(a.md_archive, out)
     tags = build_countries(a.md_repo, out, None)
     build_localisation(a.md_repo, out, tags)
+    build_md_arsenal(a.md_repo, out)
     md_leaders = os.path.join(a.md_repo, 'gfx', 'leaders')
     portrait_1980 = {}
     for tag, patterns in world_content.PORTRAITS_1980.items():
@@ -1087,7 +1274,7 @@ def main():
         f = world_content.find_extra_portrait(repo_root0, tag, name)
         if f:
             portrait_1980[tag] = f
-    capitals, owned = build_history(a.md_archive, out, states, tags, portrait_1980)
+    capitals, owned = build_history(a.md_archive, out, states, tags, portrait_1980, a.md_repo)
     resolve_history_pictures(out, repo_root0, a.md_repo)
     missing = build_flags(a.md_repo, a.old_mod, out, set(owned) | set(balkan_content.HISTORIC_TAGS)
                           | set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026))
