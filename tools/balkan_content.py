@@ -139,7 +139,7 @@ def md_division_templates():
     return '\n'.join(L)
 
 
-def oob(tag, placements, mix=('Motorised', 'Tank', 'Mechanised'), equipment_mult=1):
+def oob(tag, placements, mix=('Motorised', 'Tank', 'Mechanised'), equipment_mult=1, air=None):
     """Order of battle of a modern army (the style of Millennium Dawn)."""
     L = [md_division_templates(), 'units = {']
     for i, prov in enumerate(placements):
@@ -151,6 +151,14 @@ def oob(tag, placements, mix=('Motorised', 'Tank', 'Mechanised'), equipment_mult
     for eq, amount in MD_STOCKPILE:
         L.append(f'\tadd_equipment_to_stockpile = {{ type = {eq} amount = {amount * n} producer = {tag} }}')
     L.append('}')
+    if air:
+        prov, planes = air
+        L += ['air_wings = {', f'\t{prov} = {{']
+        for i, (eq, variant, amount) in enumerate(planes):
+            L.append(f'\t\t{eq} = {{ owner = "{tag}" creator = "{tag}" amount = {amount} }}')
+            L.append(f'\t\tname = "{i + 1}. Air Regiment"')
+            L.append('\t\tstart_experience_factor = 0.3')
+        L += ['\t}', '}']
     return '\n'.join(L) + '\n'
 
 

@@ -765,7 +765,9 @@ def write_oob(out, tag, cap, states, sts):
         n = max(1, min(24, manpower // 3_000_000 + (6 if tag in MAJORS else 0)))
         prov = capital_province(states[cap])
         mix = ('Infantry', 'Motorised') if tag not in DEVELOPED else ('Motorised', 'Tank', 'Mechanised')
-        text = balkan_content.oob(tag, [prov] * n, mix)
+        air = (prov, [('small_plane_strike_airframe_1', 'F-16', 24),
+                      ('small_plane_airframe_1', 'F-16', 12)]) if tag in DEVELOPED else None
+        text = balkan_content.oob(tag, [prov] * n, mix, air=air)
     write(os.path.join(out, 'history', 'units', f'{tag}_1980.txt'), text)
 
 
