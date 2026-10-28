@@ -6,6 +6,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import md_arsenal  # noqa: E402
+import world_2026  # noqa: E402
 
 BALKAN_TAGS = ['SER', 'CRO', 'SLV', 'BOS', 'RSK', 'MNT', 'KOS', 'FYR']
 # tags of the countries that existed only during the wars (1991-1995)
@@ -15,7 +16,8 @@ CAPITALS = {'SER': 131, 'CRO': 126, 'SLV': 124, 'BOS': 128, 'RSK': 1054, 'MNT': 
             'RKS': 127, 'HZG': 1052}
 COUNTRY_COLORS = {'SER': '160 35 40', 'CRO': '60 100 190', 'SLV': '80 160 90', 'BOS': '230 200 60',
                   'RSK': '130 60 75', 'MNT': '200 120 50', 'KOS': '70 140 210', 'FYR': '225 95 40',
-                  'RKS': '95 55 130', 'HZG': '205 95 45'}
+                  'RKS': '95 55 130', 'HZG': '205 95 45',
+                  'SRF': '150 40 45', 'NUG': '35 115 60'}
 YUGO_STATE_IDS = [124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 998, 1051, 1052, 1053, 1054]
 
 # --------------------------------------------------------------------------
@@ -232,6 +234,8 @@ EXTRA_OOB = {
     'KOS_2008': oob('KOS', [9890], ('Infantry',)),
     'RKS_1991': oob('RKS', [3924, 3924, 11564], ('Infantry', 'Motorised')),
     'HZG_1992': oob('HZG', [9894, 9894], ('Infantry',)),
+    'SRF_2026': oob('SRF', [10739, 10739, 11052], ('Infantry', 'Motorised')),
+    'NUG_2026': oob('NUG', [11966, 11966, 4147], ('Infantry', 'Motorised')),
 }
 
 # --------------------------------------------------------------------------
@@ -831,6 +835,25 @@ IDEAS = {
                              'political_power_gain = 0.15 stability_factor = 0.02'),
     'BC_post_soviet': ('Общесоюзное наследие', 'Common Soviet Legacy',
                        'stability_factor = -0.05 political_power_gain = 0.05'),
+    # ---- the conflicts that are still going on in 2026 --------------------
+    'BC_2026_ukraine_war': ('Война на Украине', 'The War in Ukraine',
+                            'war_support_factor = 0.1 stability_factor = -0.05 conscription = 0.01'),
+    'BC_2026_sanctions': ('Санкции Запада', 'Western Sanctions',
+                          'industrial_capacity_factory = -0.05 political_power_gain = -0.05'),
+    'BC_2026_starshield': ('План «Звёздный щит»', 'Operation Starshield',
+                           'industrial_capacity_factory = 0.05 war_support_factor = 0.05'),
+    'BC_2026_gaza_frozen': ('Замороженный конфликт в Гаре', 'The Frozen Conflict in Gaza',
+                            'stability_factor = -0.05 war_support_factor = 0.05'),
+    'BC_2026_lebanon_war': ('Ливанская война', 'The War in Lebanon',
+                            'war_support_factor = 0.1 stability_factor = -0.05'),
+    'BC_2026_sudan_war': ('Гражданская война в Судане', 'The Civil War in Sudan',
+                          'war_support_factor = 0.1 stability_factor = -0.1 conscription = 0.01'),
+    'BC_2026_myanmar_war': ('Гражданская война в Мьянме', 'The Civil War in Myanmar',
+                            'war_support_factor = 0.1 stability_factor = -0.1 conscription = 0.01'),
+    'BC_2026_student_government': ('Правительство «Студенческого списка»', 'The Student List Government',
+                                   'political_power_gain = 0.1 stability_factor = 0.05'),
+    'BC_2026_clean_up': ('Чистка в госслужбах', 'The Purge in the Security Services',
+                         'stability_factor = 0.05 political_power_gain = 0.05'),
 }
 
 
@@ -1241,6 +1264,20 @@ ev('bc_union.4', None, 'Косово просит об объединении', 
     ('Не сейчас', 'Not now', 'add_political_power = 25', 'base = 50')], hidden_trigger_only=True)
 
 
+def _load_world_2026_events():
+    """The events of the new Serbian government (October 2026 and later)."""
+    for e in world_2026.SERBIA_EVENTS:
+        opts = []
+        for o in e['options']:
+            opts.append(o if len(o) == 4 else (o[0], o[1], o[2], 1))
+        EVENTS.append(dict(id=e['id'], trigger=e['trigger'], title_ru=e['title_ru'],
+                           desc_ru=e['desc_ru'], title_en=e['title_en'], desc_en=e['desc_en'],
+                           options=opts, triggered_only=False))
+
+
+_load_world_2026_events()
+
+
 def events_file():
     L = ['add_namespace = serbia_collapse', 'add_namespace = bc_union', '']
     for e in EVENTS:
@@ -1280,6 +1317,8 @@ def country_name_overrides(lang):
         'FYR': ('Северная Македония', 'македонский', 'North Macedonia', 'Macedonian'),
         'RKS': ('Республика Српска Краина', 'краинский', 'Republic of Serbian Krajina', 'Krajina Serb'),
         'HZG': ('Хорватская Республика Герцеговина', 'герцеговинский', 'Croatian Republic of Herzeg-Bosnia', 'Herzeg-Bosnian'),
+        'SRF': ('Силы быстрой поддержки', 'сил быстрой поддержки', 'Rapid Support Forces', 'RSF'),
+        'NUG': ('Национальное единство', 'национального единства', 'National Unity Government', 'NUG'),
     }
     for tag, (rn, ra, en, ea) in names.items():
         n, a = (rn, ra) if ru else (en, ea)
@@ -1331,8 +1370,8 @@ LOC_COMMON = {
         'BC_1995_DESC': '14 декабря 1995 года. В Париже подписано Дейтонское соглашение: война в Хорватии и осада Сараева закончены, Босния разделена на два энтитета, Сербская Краина стёрта с карты. Югославия не умерла — она продолжает разваливаться. СССР прекратил существование в декабре 1991 года, и пятнадцать его республик стали отдельными государствами.',
         'BC_1995_HISTORY': 'Союзная Республика Югославия: Сербия и Черногория без Косово, под санкциями ООН, в долгой зиме. Босния разделена надвое, бывшая Краина стёрта с карты. Сможете ли вы собрать страну заново — или придётся смириться с её смертью?',
         'BC_2026_NAME': 'Сербия — 2026',
-        'BC_2026_DESC': '1 января 2026 года. Югославия давно не существует, а её народы живут по разные стороны границ, которые никто не признал окончательными. Балканы — члены ЕС и НАТО, но Белград снова мечтает о великой державе. Народные фронты, «Студенческий список» и старые обиды ждут своего часа.',
-        'BC_2026_HISTORY': 'Республика Сербия без Косово, независимая Черногория, объединённая Босния. Александру Вучичу удалось собрать вокруг Белграда единый «Студенческий список» — и на выборах 25 октября 2026 года он получил рекордное большинство. Теперь решайте, что будет дальше.',
+        'BC_2026_DESC': '28 октября 2026 года. Югославии не существует уже больше тридцати лет, а её народы живут по разные стороны границ, которые никто не признал окончательными. Балканы — члены ЕС и НАТО, но Белград снова мечтает о великой державе. В тот же день, когда «Студенческий список» выиграл выборы с результатом в 138 мест из 250, на планете идут четыре войны: на Украине, в Ливане, в Судане и в Мьянме.',
+        'BC_2026_HISTORY': 'Республика Сербия без Косово, независимая Черногория, объединённая Босния. «Студенческий список» пришёл к власти не в результате революции, а в результате выборов — и теперь должен решить, что делать с Югославией, которая всё ещё живёт в головах её жителей. За спиной — война на Украине, израильская война в Ливане, гражданская война в Судане и горящий Мьянма. Движуха не заканчивается.',
         'OTHER_GRAND_DESC': 'Остальной мир: холодная война подходит к концу, но её тени останутся на десятилетия.',
     },
     'english': {
@@ -1362,8 +1401,8 @@ LOC_COMMON = {
         'BC_1995_DESC': '14 December 1995. The Dayton Agreement is signed in Paris: the war in Croatia and the siege of Sarajevo are over, Bosnia is split into two entities and the Serbian Krajina has vanished from the map. Yugoslavia did not die - it keeps falling apart. The USSR ceased to exist in December 1991 and its fifteen republics are independent countries.',
         'BC_1995_HISTORY': 'The Federal Republic of Yugoslavia: Serbia and Montenegro without Kosovo, under UN sanctions, in a long winter. Bosnia is divided in two and the former Krajina is gone. Can you still put the country back together - or will you have to accept its death?',
         'BC_2026_NAME': 'Serbia — 2026',
-        'BC_2026_DESC': '1 January 2026. Yugoslavia has been gone for decades and its peoples live on different sides of borders nobody ever accepted. The Balkans are in the EU and NATO, but Belgrade dreams of a great power once more. The nationalists, the "Student List" and the old wounds are waiting.',
-        'BC_2026_HISTORY': 'The Republic of Serbia without Kosovo, an independent Montenegro, a united Bosnia. Aleksandar Vucic managed to gather a single "Student List" around Belgrade - and on 25 October 2026 it won a record majority. Now it is up to you to decide what comes next.',
+        'BC_2026_DESC': '28 October 2026. Yugoslavia has been gone for more than thirty years and its peoples live on different sides of borders nobody ever accepted. The Balkans are in the EU and NATO, but Belgrade dreams of a great power once more. On the very day the Student List won the election with 138 of the 250 seats, four wars are being fought on this planet: in Ukraine, in Lebanon, in Sudan and in Myanmar.',
+        'BC_2026_HISTORY': 'The Republic of Serbia without Kosovo, an independent Montenegro, a united Bosnia. The Student List came to power not through a revolution but through an election - and now it has to decide what to do with the Yugoslavia that still lives in the heads of its people. Behind it: the war in Ukraine, the Israeli war in Lebanon, the civil war in Sudan and burning Myanmar. The action does not stop.',
         'OTHER_GRAND_DESC': 'The rest of the world: the Cold War is coming to an end, but its shadows will remain for decades.',
     },
 }
@@ -1412,7 +1451,10 @@ def bookmark():
     for tag, ide in minors:
         L += [f'\t\t"{tag}" = {{', '\t\t\tminor = yes', f'\t\t\thistory = "{tag}_BOOKMARK_HISTORY"', f'\t\t\tideology = {ide}',
               '\t\t\tideas = { }', '\t\t\tfocuses = { }', '\t\t}']
-    L += ['\t\teffect = {', '\t\t\trandomize_weather = 19800501', '\t\t}', '\t}', '}']
+    L += ['\t\teffect = {', '\t\t\trandomize_weather = 19800501',
+          '\t\t\tevery_state = { limit = { is_core_of = SRF } remove_core_of = SRF }',
+          '\t\t\tevery_state = { limit = { is_core_of = NUG } remove_core_of = NUG }',
+          '\t\t}', '\t}', '}']
     return '\n'.join(L) + '\n'
 
 
@@ -1430,7 +1472,7 @@ GFX = """spriteTypes = {
 
 
 def descriptor(path=None):
-    L = ['name="Балканы 1980: распад Югославии"', 'version="3.2"', 'supported_version="1.*"',
+    L = ['name="Балканы 1980: распад Югославии"', 'version="3.3"', 'supported_version="1.*"',
          'tags={', '\t"Alternative History"', '\t"Historical"', '\t"Map"', '\t"National Focuses"', '\t"Events"', '}',
          'picture="thumbnail.png"']
     for p in ['history/states', 'history/countries', 'history/units', 'history/general', 'map/strategicregions',

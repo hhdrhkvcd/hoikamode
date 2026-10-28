@@ -22,8 +22,69 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pdx  # noqa: E402
 import balkan_content  # noqa: E402
 import world_content  # noqa: E402
+import world_2026  # noqa: E402
 
 IDEOLOGIES = ['democratic', 'communism', 'fascism', 'neutrality']
+
+# the news of 2026: the condition and the monthly probability of every item
+NEWS_COND = {
+    'bc_2026.ua_pokrovsk': 'SOV = { has_war_with = UKR }',
+    'bc_2026.ua_border': 'SOV = { has_war_with = UKR }',
+    'bc_2026.ua_sea': 'SOV = { has_war_with = UKR }',
+    'bc_2026.ua_peace': 'SOV = { has_war_with = UKR }',
+    'bc_2026.lebanon_front': 'ISR = { has_war_with = HEZ }',
+    'bc_2026.sudan_obeid': 'SUD = { has_war_with = SRF }',
+    'bc_2026.myanmar_indaw': 'BRM = { has_war_with = NUG }',
+}
+NEWS_GUARD = {
+    'bc_2026.ua_pokrovsk': 'SOV', 'bc_2026.ua_border': 'UKR', 'bc_2026.ua_sea': 'SOV',
+    'bc_2026.ua_peace': 'UKR', 'bc_2026.gaza_strike': 'HAM', 'bc_2026.gaza_board': 'HAM',
+    'bc_2026.lebanon_front': 'HEZ', 'bc_2026.lebanon_diplomacy': 'LEB',
+    'bc_2026.syria_strikes': 'SYR', 'bc_2026.iran_power': 'PER',
+    'bc_2026.sudan_obeid': 'SUD', 'bc_2026.sudan_sanctions': 'SRF',
+    'bc_2026.myanmar_indaw': 'NUG', 'bc_2026.myanmar_china': 'NUG',
+    'bc_2026.brazil': 'BRA', 'bc_2026.un_race': 'USA', 'bc_2026.red_sea': 'HOU',
+}
+NEWS_CHANCE = {
+    'bc_2026.ua_pokrovsk': 70, 'bc_2026.ua_border': 35, 'bc_2026.ua_sea': 30,
+    'bc_2026.ua_peace': 25, 'bc_2026.gaza_strike': 55, 'bc_2026.gaza_board': 25,
+    'bc_2026.lebanon_front': 55, 'bc_2026.lebanon_diplomacy': 20,
+    'bc_2026.syria_strikes': 20, 'bc_2026.iran_power': 15,
+    'bc_2026.sudan_obeid': 55, 'bc_2026.sudan_sanctions': 20,
+    'bc_2026.myanmar_indaw': 55, 'bc_2026.myanmar_china': 20,
+    'bc_2026.brazil': 12, 'bc_2026.un_race': 12, 'bc_2026.red_sea': 25,
+}
+
+
+def news_events_file():
+    """The world news of 2026 (fired by the monthly on_action)."""
+    L = ['# the ids are already namespaced (bc_2026.*) and are fired by id from the on_action', '']
+    for n in world_2026.NEWS:
+        L += ['news_event = {', f'\tid = {n["id"]}', f'\ttitle = {n["id"]}.t',
+              f'\tdesc = {n["id"]}.d']
+        if n.get('major'):
+            L.append('\tmajor = yes')
+        guard = NEWS_GUARD.get(n['id'], 'USA')
+        flag = 'BC_2026_NEWS_' + n['id'].split('.')[-1]
+        L += ['\timmediate = {', '\t\tif = {',
+              f'\t\t\tlimit = {{ NOT = {{ {guard} = {{ has_country_flag = {flag} }} }} }}',
+              f'\t\t\t{guard} = {{ set_country_flag = {flag} }}',
+              f'\t\t\t{n["effect"]}', '\t\t}', '\t}', '\tis_triggered_only = yes',
+              '\ttrigger = { always = yes }', f'\toption = {{ name = {n["id"]}.a }}', '}', '']
+    return '\n'.join(L) + '\n'
+
+
+def news_localisation(lang):
+    ru = lang == 'russian'
+    L = [f'l_{lang}:']
+    for n in world_2026.NEWS:
+        t = n['title_ru'] if ru else n['title_en']
+        d = n['desc_ru'] if ru else n['desc_en']
+        a = 'Продолжить' if ru else 'Continue'
+        L.append(f' {n["id"]}.t:0 "{t}"')
+        L.append(f' {n["id"]}.d:0 "{d}"')
+        L.append(f' {n["id"]}.a:0 "{a}"')
+    return '\n'.join(L) + '\n'
 
 # --------------------------------------------------------------------------
 # 1980 world: owners of the year-2000 Millennium map remapped to May 1980
@@ -222,6 +283,14 @@ def convert_states(md_archive):
             if sid in (130, 998):
                 s['cores'].append('VOJ')
             s['claims'] = []
+    # the cores of the two rebel states of 2026: the Rapid Support Forces in
+    # Sudan and the Burmese resistance.  The 1980 and 1995 scenarios remove
+    # them again, the 2026 scenario releases the two countries.
+    for sid, tag in ((224, 'SRF'), (614, 'SRF'), (576, 'SRF'), (223, 'SRF'),
+                     (499, 'NUG'), (500, 'NUG'), (502, 'NUG'), (930, 'NUG')):
+        s = states.get(sid)
+        if s is not None and tag not in s['cores']:
+            s['cores'].append(tag)
     return states
 
 
@@ -380,6 +449,8 @@ def build_countries(md_repo, out, owners):
     tags = load_md_tags(md_repo)
     tags['DDR'] = 'countries/East Germany.txt'
     tags['RKS'] = 'countries/BC_RKS.txt'      # Republic of Serbian Krajina (1991-1995)
+    tags['SRF'] = 'countries/BC_SRF.txt'      # the Rapid Support Forces (Sudan, 2026)
+    tags['NUG'] = 'countries/BC_NUG.txt'      # the Burmese resistance (2026)
     colors = parse_colors(md_repo)
     lines = ['# Country tags: Millennium Dawn tag set (CC BY-SA 4.0) + DDR for the 1980 scenario']
     for tag in tags:
@@ -675,6 +746,7 @@ def md_country_tech(md_repo, tag):
 def base_country_body(tag, ruling, developed=True, md_repo=None):
     pops = {'communism': dict(democratic=5, fascism=2, communism=80, neutrality=13),
             'democratic': dict(democratic=60, fascism=5, communism=15, neutrality=20),
+            'despotism': dict(democratic=10, fascism=5, communism=30, neutrality=55),
             'neutrality': dict(democratic=15, fascism=8, communism=12, neutrality=65)}[ruling]
     L = balkan_content.md_technology(3, md_country_tech(md_repo, tag)).rstrip('\n').split('\n') + [
          'set_politics = {', f'\truling_party = {ruling}', '\tlast_election = "1980.1.1"',
@@ -706,7 +778,7 @@ def build_history(md_archive, out, states, tags, portrait_1980=None, md_repo=Non
             cap = max(sts, key=lambda s: (sum(v for _, v in s['vps']), s['manpower']))['id']
         capitals[tag] = cap
     balkan = balkan_content.HISTORY
-    extra_tags = set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026)
+    extra_tags = set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026) | {'SRF', 'NUG'}
     for tag in sorted((set(owned) | set(balkan) | extra_tags)):
         if tag not in tags:
             raise SystemExit(f'owner tag {tag} not defined')
@@ -714,6 +786,11 @@ def build_history(md_archive, out, states, tags, portrait_1980=None, md_repo=Non
             body = balkan[tag]
             cap = capitals.get(tag, balkan_content.CAPITALS[tag])
             text = f'capital = {balkan_content.CAPITALS.get(tag, cap)}\n' + body
+        elif tag in ('SRF', 'NUG'):
+            # the two rebel states of 2026 (Sudan and Myanmar)
+            cap = 224 if tag == 'SRF' else 499
+            text = (f'capital = {cap}\n' +
+                    base_country_body(tag, 'despotism', developed=False, md_repo=md_repo))
         elif tag in world_content.SOV_SUCCESSORS:
             # a republic of the USSR: it only becomes a country after the 1991 collapse
             own = [s for s in states.values() if s['md_owner'] == tag]
@@ -788,7 +865,7 @@ def build_flags(md_repo, old_mod, out, tags_needed):
         img.resize((10, 7), Image.LANCZOS).save(os.path.join(fl, 'small', name + '.tga'))
 
     special = {'SOV': 'SOV_USSR', 'CZE': 'CZE_SLO_czechoslovakia',
-               'RKS': 'CRO_Serbian_Krajina'}
+               'RKS': 'CRO_Serbian_Krajina', 'SRF': 'SUD_SRF', 'NUG': 'BRM_REB'}
     missing = []
     for tag in sorted(tags_needed):
         if tag in balkan_content.BALKAN_TAGS:
@@ -1139,6 +1216,9 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en, roo
     for tag, (name, ide, patterns, dkey) in world_content.LEADERS_2026.items():
         ru_c = names_ru.get(tag, tag)
         en_c = names_en.get(tag, tag)
+        if dkey in world_2026.LEADER_DESCS:
+            loc['russian'][dkey], loc['english'][dkey] = world_2026.LEADER_DESCS[dkey]
+            continue
         loc['russian'][dkey] = f'{name} \u2014 \u0433\u043b\u0430\u0432\u0430 \u0433\u043e\u0441\u0443\u0434\u0430\u0440\u0441\u0442\u0432\u0430 {ru_c} \u0432 2026 \u0433\u043e\u0434\u0443.'
         loc['english'][dkey] = f'{name} - head of state of {en_c} in 2026.'
     loc['russian']['SOV_GORBACHEV_DESC'] = ('Mikhail Gorbachev - the last general secretary of the CPSU, '
@@ -1157,17 +1237,35 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en, roo
     # ---- the collapse of the USSR on 26 December 1991 --------------------
     p1991 = scenario_portraits(md_repo, world_content.LEADERS_1991)
     diss = world_content.sov_dissolve(md_owner_of, world_content.LEADERS_1991, p1991)
+    monthly = []
+    for n in world_2026.NEWS:
+        flag = 'BC_2026_NEWS_' + n['id'].split('.')[-1]
+        monthly.append(f'\t\t\t\tevery_country = {{ clr_country_flag = {flag} }}')
+    for n in world_2026.NEWS:
+        cond = NEWS_COND.get(n['id'], 'always = yes')
+        chance = NEWS_CHANCE.get(n['id'], 20)
+        monthly.append(f'\t\t\t\tif = {{ limit = {{ {cond} }} random = {{ chance = {chance} '
+                       f'news_event = {{ id = {n["id"]} }} }} }}')
     write(os.path.join(out, 'common', 'on_actions', 'bc_actions.txt'),
           'on_actions = {\n\ton_daily = {\n\t\teffect = {\n\t\t\tif = {\n'
           '\t\t\t\tlimit = { date > 1991.12.25 NOT = { SOV = { has_country_flag = BC_SOV_COLLAPSE } } }\n'
           '\t\t\t\tSOV = { set_country_flag = BC_SOV_COLLAPSE ' + diss + ' }\n'
-          '\t\t\t}\n\t\t}\n\t}\n}\n')
+          '\t\t\t}\n\t\t}\n\t}\n'
+          '\ton_monthly = {\n\t\teffect = {\n\t\t\tif = {\n'
+          '\t\t\t\tlimit = { has_global_flag = BC_2026_ACTIVE }\n'
+          + '\n'.join(monthly) +
+          '\n\t\t\t}\n\t\t}\n\t}\n}\n')
+    # the news of the world
+    write(os.path.join(out, 'events', 'bc_2026_news.txt'), news_events_file())
+    for lang in ('russian', 'english'):
+        write(os.path.join(out, 'localisation', lang, f'bc_2026_l_{lang}.yml'),
+              news_localisation(lang), bom=True)
 
     # ---- the three bookmarks --------------------------------------------
     scn = []
     for key, date, name, desc, hist, ide in (
             ('bc_1995', '1995.12.14.12', 'BC_1995_NAME', 'BC_1995_DESC', 'BC_1995_HISTORY', 'neutrality'),
-            ('bc_2026', '2026.1.1.12', 'BC_2026_NAME', 'BC_2026_DESC', 'BC_2026_HISTORY', 'despotism')):
+            ('bc_2026', '2026.10.28.12', 'BC_2026_NAME', 'BC_2026_DESC', 'BC_2026_HISTORY', 'despotism')):
         leaders = world_content.LEADERS_1995 if key == 'bc_1995' else world_content.LEADERS_2026
         portraits = p1995 if key == 'bc_1995' else p2026
         effect = world_content.scenario_effects(key, md_owner_of, leaders, portraits)
@@ -1279,7 +1377,8 @@ def main():
     capitals, owned = build_history(a.md_archive, out, states, tags, portrait_1980, a.md_repo)
     resolve_history_pictures(out, repo_root0, a.md_repo)
     missing = build_flags(a.md_repo, a.old_mod, out, set(owned) | set(balkan_content.HISTORIC_TAGS)
-                          | set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026))
+                          | set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026)
+                          | {'SRF', 'NUG'})
     if missing:
         print('flags without Millennium art:', len(missing), missing[:20])
     balkan_content.build(out, a.old_mod, states, capitals)

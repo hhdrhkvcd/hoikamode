@@ -11,6 +11,10 @@ Leader portraits and focus icons come from Millennium Dawn (CC BY-SA 4.0).
 import os
 import re
 import shutil
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import world_2026  # noqa: E402
 
 # --------------------------------------------------------------------------
 # helpers
@@ -127,11 +131,28 @@ LEADERS_2026 = {
     'FRA': ('Emmanuel Macron', 'liberalism', ['macron'], 'FRA_MACRON_DESC'),
     'GER': ('Friedrich Merz', 'conservatism', ['merz'], 'GER_MERZ_DESC'),
     'ITA': ('Giorgia Meloni', 'despotism', ['meloni'], 'ITA_MELONI_DESC'),
-    'CHN': ('Xi Jinping', 'leninism', ['jinping'], 'CHN_XI_DESC'),
-    'JPN': ('Sanae Takaichi', 'conservatism', ['takaichi'], 'JPN_TAKAICHI_DESC'),
-    'ESP': ('Pedro Sánchez', 'socialism', ['sanchez'], 'ESP_SANCHEZ_DESC'),
+    'CHI': ('Xi Jinping', 'leninism', ['jinping'], 'CHI_XI_DESC'),
+    'JAP': ('Sanae Takaichi', 'conservatism', ['takaichi'], 'JAP_TAKAICHI_DESC'),
+    'SPR': ('Pedro Sánchez', 'socialism', ['sanchez'], 'SPR_SANCHEZ_DESC'),
     'TUR': ('Recep Tayyip Erdoğan', 'despotism', ['erdogan'], 'TUR_ERDOGAN_DESC'),
     'POL': ('Donald Tusk', 'liberalism', ['tusk'], 'POL_TUSK_DESC'),
+}
+
+# the leaders of the countries that are missing above (the world of 2026)
+LEADERS_2026.update(world_2026.LEADERS_EXTRA)
+
+# the ideas of the conflicts that are still going on in 2026
+WORLD_2026_IDEAS = {
+    'SOV': 'BC_2026_ukraine_war BC_2026_sanctions',
+    'UKR': 'BC_2026_ukraine_war BC_2026_starshield',
+    'HAM': 'BC_2026_gaza_frozen',
+    'ISR': 'BC_2026_lebanon_war',
+    'HEZ': 'BC_2026_lebanon_war',
+    'LEB': 'BC_2026_lebanon_war',
+    'SUD': 'BC_2026_sudan_war',
+    'SRF': 'BC_2026_sudan_war',
+    'BRM': 'BC_2026_myanmar_war',
+    'NUG': 'BC_2026_myanmar_war',
 }
 
 # --------------------------------------------------------------------------
@@ -499,6 +520,16 @@ def scenario_effects(scn, md_owner_of, leaders, portraits):
         L.append('SOV = { ' + _dissolve_sov(md_owner_of, leaders, portraits) + ' }')
         if scn == 'bc_2026':
             L.append(_fold_autonomous(md_owner_of, FOLD_2026))
+    if scn == 'bc_2026':
+        # the world of 28 October 2026
+        L.append('set_global_flag = BC_2026_ACTIVE')
+        # two new rebel states: the Rapid Support Forces and the Burmese resistance
+        L.append('SUD = { release = SRF every_state = { limit = { is_core_of = SRF } '
+                 'remove_core_of = SUD add_claim_by = SUD } }')
+        L.append('BRM = { release = NUG every_state = { limit = { is_core_of = NUG } '
+                 'remove_core_of = BRM add_claim_by = BRM } }')
+        L.append('SRF = { load_oob = "SRF_2026" }')
+        L.append('NUG = { load_oob = "NUG_2026" }')
     # leaders of the scenario
     for tag in sorted(leaders):
         L.append(_leader_block(tag, leaders[tag], portraits))
@@ -506,6 +537,9 @@ def scenario_effects(scn, md_owner_of, leaders, portraits):
         L.append('SER = { set_country_flag = SER_tito_dead set_country_flag = SER_first_breakup_wave '
                  'set_country_flag = SER_fry_formed }')
     if scn == 'bc_1995':
+        # no rebel states in 1995
+        L.append('every_state = { limit = { is_core_of = SRF } remove_core_of = SRF }')
+        L.append('every_state = { limit = { is_core_of = NUG } remove_core_of = NUG }')
         L.append('SER = { remove_ideas = BC_tito_cult add_ideas = BC_war_footing BC_ethnic_tensions '
                  'set_stability = 0.35 set_war_support = 0.65 '
                  'set_politics = { ruling_party = neutrality last_election = "1994.12.1" election_frequency = 48 '
@@ -514,10 +548,25 @@ def scenario_effects(scn, md_owner_of, leaders, portraits):
         L.append('KOS = { add_ideas = BC_ethnic_tensions }')
         L.append('RSK = { set_stability = 0.3 set_war_support = 0.6 }')
     if scn == 'bc_2026':
-        L.append('SER = { ' + BAL_2026_IDEAS + ' set_stability = 0.55 set_war_support = 0.25 '
-                 'set_politics = { ruling_party = neutrality last_election = "2024.1.1" election_frequency = 48 '
+        # the real borders of 28 October 2026
+        for owner, ids, _comment in world_2026.BORDERS:
+            tr = ' '.join(f'transfer_state = {sid}' for sid in ids)
+            L.append(f'{owner} = {{ {tr} }}')
+        # the claims of the occupiers
+        for sid in (669, 693, 1075, 1076, 694):
+            L.append(f'every_state = {{ limit = {{ id = {sid} }} add_claim_by = SOV }}')
+        L.append('every_state = { limit = { is_core_of = LEB } add_claim_by = ISR }')
+        # the wars that are still going on
+        for atk, tgt, wtype, _comment in world_2026.WARS:
+            L.append(f'{atk} = {{ declare_war_on = {{ target = {tgt} type = {wtype} }} }}')
+        # the ideas of the conflicts
+        for tag, ideas in WORLD_2026_IDEAS.items():
+            L.append(f'{tag} = {{ add_ideas = {ideas} }}')
+        L.append('SER = { ' + BAL_2026_IDEAS + ' set_stability = 0.6 set_war_support = 0.3 '
+                 'set_politics = { ruling_party = neutrality last_election = "2026.10.25" election_frequency = 48 '
                  'elections_allowed = yes } '
-                 'set_popularities = { democratic = 35 fascism = 10 communism = 15 neutrality = 40 } }')
+                 'set_popularities = { democratic = 45 fascism = 5 communism = 10 neutrality = 40 } '
+                 'add_ideas = BC_2026_student_government }')
         L.append('CRO = { set_stability = 0.6 }')
         L.append('SLV = { set_stability = 0.65 }')
         L.append('BOS = { set_stability = 0.45 }')
