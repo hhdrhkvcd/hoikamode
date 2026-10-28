@@ -210,9 +210,11 @@ def convert_states(md_archive):
             s = states[sid]
             s['owner'] = 'SER'
             s['cores'] = [c for c in s['cores'] if c not in ('SER', 'BOS', 'RSK', 'HZG', 'VOJ', 'CRO', 'SLV', 'KOS', 'MNT', 'FYR')]
-            s['cores'] += sorted({tag, 'SER'})
             if sid in RSK_STATES:
-                s['cores'].append('RSK')
+                # Republika Srpska is an entity of its own, not a part of the Federation of BiH
+                s['cores'] += ['RSK', 'SER']
+            else:
+                s['cores'] += sorted({tag, 'SER'})
             if sid == 1052:
                 s['cores'].append('HZG')
             if sid == 127:

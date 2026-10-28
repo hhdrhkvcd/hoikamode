@@ -719,7 +719,7 @@ def mk_leader(name, ide, desc, tag=None):
 
 def release(tag, oob_name, extra=''):
     return (f'release = {tag} '
-            f'every_state = {{ limit = {{ is_core_of = {tag} NOT = {{ is_core_of = RSK }} }} remove_core_of = SER add_claim_by = SER }} '
+            f'every_state = {{ limit = {{ is_core_of = {tag} }} remove_core_of = SER add_claim_by = SER }} '
             f'{tag} = {{ set_country_flag = BALKANS_INDEPENDENT load_oob = "{oob_name}" add_ideas = BC_war_damage {extra} }}')
 
 
