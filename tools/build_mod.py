@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import tempfile
 import zipfile
+from contextlib import ExitStack
 from pathlib import Path
 
 from validate_mod import MOD, ROOT, require, validate_package, validate_source
@@ -30,6 +31,7 @@ def build(output: Path):
         output
         not in [
             ROOT / "assets/millennium_map.zip",
+            ROOT / "assets/compatibility_flags.zip",
             ROOT / "Balkan_Collapse_RECOVERY_V3.zip",
         ],
         "Cannot overwrite a source archive",
@@ -54,18 +56,21 @@ def build(output: Path):
         for file in (ROOT / folder).rglob("*"):
             if file.is_file():
                 entries[file.relative_to(ROOT).as_posix()] = file
-    for name in ["MAP_SOURCE.json", "ARTWORK_SOURCE.json"]:
+    for name in ["MAP_SOURCE.json", "ARTWORK_SOURCE.json", "FLAGS_SOURCE.json"]:
         entries["assets/" + name] = ROOT / "assets" / name
-    payload = ROOT / "assets/millennium_map.zip"
-    with zipfile.ZipFile(payload) as source:
-        for file in source.namelist():
-            name = "Balkan_Collapse/" + file
-            if name in entries:
-                require(
-                    entries[name].read_bytes() == source.read(file),
-                    f"Unpacked local map differs from its source payload: {file}",
-                )
-            entries[name] = ("payload", file)
+    with ExitStack() as stack:
+        for payload_name in ["millennium_map.zip", "compatibility_flags.zip"]:
+            source = stack.enter_context(
+                zipfile.ZipFile(ROOT / "assets" / payload_name)
+            )
+            for file in source.namelist():
+                name = "Balkan_Collapse/" + file
+                if name in entries:
+                    require(
+                        entries[name].read_bytes() == source.read(file),
+                        f"Local asset differs from source payload: {file}",
+                    )
+                entries[name] = (source, file)
         temporary = None
         try:
             with tempfile.NamedTemporaryFile(
@@ -77,7 +82,7 @@ def build(output: Path):
             ) as archive:
                 for name, file in sorted(entries.items()):
                     content = (
-                        source.read(file[1])
+                        file[0].read(file[1])
                         if isinstance(file, tuple)
                         else file.read_bytes()
                     )

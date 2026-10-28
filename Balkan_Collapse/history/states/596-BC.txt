@@ -30,6 +30,9 @@ state = {
             1168 = {
                 naval_base = 3
             }
+            14936 = {
+                naval_base = 5
+            }
             nuclear_reactor = 1
         }
     }

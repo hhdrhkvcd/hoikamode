@@ -13,6 +13,7 @@ def test_release_archive_matches_sources_and_expands_the_map():
     "output",
     [
         ROOT / "assets/millennium_map.zip",
+        ROOT / "assets/compatibility_flags.zip",
         ROOT / "Balkan_Collapse_RECOVERY_V3.zip",
         MOD / "nested.zip",
         ROOT / ".git/bad.zip",

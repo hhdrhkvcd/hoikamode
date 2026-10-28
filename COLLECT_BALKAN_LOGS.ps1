@@ -40,7 +40,7 @@ try {
     foreach ($entry in @(@($paths.LoadFile, 'dlc_load.json'), @((Join-Path $paths.ModDirectory 'Balkan_Collapse\descriptor.mod'), 'installed_descriptor.mod'))) {
         if (Test-Path -LiteralPath $entry[0] -PathType Leaf) { Copy-Item -LiteralPath $entry[0] -Destination (Join-Path $stage $entry[1]) }
     }
-    @('Balkan Collapse diagnostic bundle — 2.0.2', "Collected: $(Get-Date -Format o)",
+    @('Balkan Collapse diagnostic bundle — 2.0.3', "Collected: $(Get-Date -Format o)",
       'No saves, memory dumps, browser data or credentials were collected.',
       'Review before sending: game logs can contain your Windows username, paths and system details.',
       'Please also state HOI4 version, DLC list, selected bookmark, and the last visible loading step.') |

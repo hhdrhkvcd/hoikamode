@@ -62,10 +62,12 @@ def generate():
     replacements = [
         "common/bookmarks",
         "common/country_tags",
-        "common/characters",
         "common/national_focus",
         "common/on_actions",
         "common/decisions",
+        "common/decisions/categories",
+        "common/ai_strategy",
+        "common/ai_strategy_plans",
         "history/countries",
         "history/states",
         "history/units",
@@ -98,7 +100,7 @@ NDefines.NDiplomacy.TENSION_TIME_SCALE_START_DATE = "1980.5.1.12"
     )
     put(
         "common/characters/00_bc_characters.txt",
-        "# Leaders are defined explicitly in country histories. Vanilla 1936 characters are not loaded.",
+        "# Leaders are recruited by our histories only. Retain base character definitions for DLC/script references.",
     )
     put(
         "history/general/00_bc_scenario.txt",
@@ -108,6 +110,11 @@ NDefines.NDiplomacy.TENSION_TIME_SCALE_START_DATE = "1980.5.1.12"
         "map/supplyareas/00_bc_unused.txt",
         "# Legacy pre-NSB supply areas are intentionally not used.",
     )
+    for folder in ["common/ai_strategy", "common/ai_strategy_plans"]:
+        put(
+            folder + "/00_bc_generic.txt",
+            "# Use native AI and focus weights; no 1936 national plans on the converted map.",
+        )
     for tag in COUNTRIES:
         put(
             f"common/countries/{tag}.txt",

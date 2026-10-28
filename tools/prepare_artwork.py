@@ -197,6 +197,14 @@ def prepare():
                 flag.resize(size, Image.Resampling.LANCZOS).save(
                     directory / f"{cosmetic}{suffix}.tga", compression=None
                 )
+    # Preserve all supplied pixels but use the engine's preferred 32-bpp flag format.
+    for file in (MOD / "gfx/flags").rglob("*.tga"):
+        with Image.open(file) as image:
+            rgba = image.convert("RGBA")
+        rgba.save(file, compression=None)
+    from flag_assets import prepare as prepare_compatibility_flags
+
+    prepare_compatibility_flags()
     # Preserve the supplied loading screens and panorama asset. Leave native menu UI alone.
     # load_1 = Tito / Serbia 1980; load_2 = Serbia; the game chooses loading images randomly.
     manifest = {

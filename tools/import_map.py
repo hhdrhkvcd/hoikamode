@@ -20,6 +20,7 @@ from copy import deepcopy
 from pathlib import Path
 
 from clausewitz import Block, Entry, quote, read, write
+from map_geometry import ProvinceRaster, prepare_buildings, repair_unitstacks
 
 ROOT = Path(__file__).resolve().parents[1]
 MOD = ROOT / "Balkan_Collapse"
@@ -188,6 +189,14 @@ def import_map(source: Path):
         )
         if r and r[0].isdigit()
     }
+    raster = ProvinceRaster((source / "map/provinces.bmp").read_bytes(), definitions)
+    coastal_changes = []
+    for province, row in definitions.items():
+        if province and row[4] == "land":
+            correct = "true" if province in raster.coastal else "false"
+            if row[5] != correct:
+                coastal_changes.append([province, row[5], correct])
+                row[5] = correct
     states = {}
     for file in sorted((source / "history/states").glob("*.txt")):
         state = read(file, legacy=True).block("state")
@@ -205,6 +214,8 @@ def import_map(source: Path):
         match = re.match(r"([A-Z0-9]{3})\s*-\s*(.+)", f.stem)
         if match:
             tags[match[1]] = (match[2].strip(), read(f, legacy=True))
+    for tag in DATA.get("compatibility_tags", []):
+        tags.setdefault(tag, (tag, Block()))
     referenced = {"SER"}
     for _, state in states.values():
         history = state.block("history")
@@ -254,6 +265,11 @@ def import_map(source: Path):
         buildings = filtered_buildings(
             h.get("buildings", Block()), set(provinces), definitions, removed
         )
+        if buildings.get("dockyard") and not any(
+            p in raster.coastal for p in provinces
+        ):
+            buildings.remove("dockyard")
+            removed["landlocked_dockyard"] += 1
         history.add("buildings", buildings)
         # State histories also initialise the 2008 quick-start without replaying old events.
         if state_id in UNION and owner != "SER":
@@ -444,12 +460,15 @@ def import_map(source: Path):
             and f.name != "unitstacks.txt"
         ):
             if f.name == "buildings.txt":
-                lines = [
-                    line
-                    for line in text(f).splitlines()
-                    if len(line.split(";")) > 1 and line.split(";")[1] in BUILDINGS
-                ]
-                (map_dir / f.name).write_text("\n".join(lines) + "\n", encoding="utf-8")
+                province_states = {
+                    int(p): i
+                    for i, state in converted.items()
+                    for p in state.block("provinces").atoms()
+                }
+                placements, ports, placement_repairs = prepare_buildings(
+                    text(f), set(BUILDINGS), raster, province_states
+                )
+                (map_dir / f.name).write_text(placements, encoding="utf-8")
             elif f.name == "definition.csv":
                 vanilla_terrain = {
                     "unknown",
@@ -464,7 +483,7 @@ def import_map(source: Path):
                     "ocean",
                     "lakes",
                 }
-                rows = list(csv.reader(text(f).splitlines(), delimiter=";"))
+                rows = [list(definitions[p]) for p in sorted(definitions)]
                 for row in rows:
                     if len(row) > 6 and row[6] not in vanilla_terrain:
                         row[6] = {
@@ -536,6 +555,10 @@ def import_map(source: Path):
     ]
     binary_files.sort()
     payload = assets / "millennium_map.zip"
+    repaired_stacks, stack_repairs = repair_unitstacks(
+        text(source / "map/unitstacks.txt"), raster
+    )
+    payload_hashes = {}
     with zipfile.ZipFile(
         payload, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9
     ) as archive:
@@ -544,9 +567,13 @@ def import_map(source: Path):
             info = zipfile.ZipInfo(name, date_time=(2026, 10, 28, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
+            content = (
+                repaired_stacks if file.name == "unitstacks.txt" else file.read_bytes()
+            )
+            payload_hashes[name] = hashlib.sha256(content).hexdigest()
             archive.writestr(
                 info,
-                file.read_bytes(),
+                content,
                 compress_type=zipfile.ZIP_DEFLATED,
                 compresslevel=9,
             )
@@ -556,8 +583,14 @@ def import_map(source: Path):
         "source_archives": {p.name: checksum(p) for p in sorted(ROOT.glob("*.rar"))},
         "payload": payload.relative_to(ROOT).as_posix(),
         "payload_sha256": checksum(payload),
-        "payload_files": {
-            p.relative_to(source).as_posix(): checksum(p) for p in binary_files
+        "payload_files": payload_hashes,
+        "geometry": {
+            "building_positions_sha256": checksum(map_dir / "buildings.txt"),
+            "ports": ports,
+            "placement_repairs": placement_repairs,
+            "coastal_flag_changes": coastal_changes,
+            "repaired_unitstacks": stack_repairs,
+            "coordinate_system": "x = bitmap column; z = height - 1 - bitmap row (integer sampling)",
         },
         "states": len(states),
         "strategic_regions": region_count,
@@ -573,7 +606,7 @@ def import_map(source: Path):
             {
                 k: v
                 for k, v in manifest.items()
-                if k not in ["payload_files", "source_archives"]
+                if k not in ["payload_files", "source_archives", "geometry"]
             },
             ensure_ascii=False,
             indent=2,

@@ -6,6 +6,7 @@ Python 3.10+ is required for the tools. A normal player only needs Windows Power
 
 - `Balkan_Collapse/`: game text, local artwork, flags and small map text files.
 - `assets/millennium_map.zip`: **required source asset**, containing large map bitmaps/textures and unit placements once, compressed. `START_BALKAN.ps1` expands it when installing from a Git checkout.
+- `assets/compatibility_flags.zip`: compressed technical fallback flags; installers/builders expand it just like the map payload. `FLAGS_SOURCE.json` records its source and per-member hashes.
 - `assets/MAP_SOURCE.json`: original RAR hashes, payload hashes, file inventory and compatibility changes.
 - `data/balkans.json`: the regional state/capital roster, dates and leader choices.
 - `tools/`: strict Clausewitz parser, import/configuration tools, artwork cropping, validator and package builder.
@@ -70,3 +71,9 @@ Follow [TESTING_RU.md](TESTING_RU.md), on a fresh game and with no other mods en
 ## Bootstrap compatibility
 
 Keep the scenario overrides in `common/defines/zz_balkan_collapse.lua`, after vanilla bootstrap files. Never add `NDefines = {}` or replace a complete namespace to suppress a nil error. Use `country_exists = TAG` for country references; `exists = yes/no` is a different scoped trigger. The validator rejects the former broken syntax and the obsolete early Lua file. See [the redacted 1.19.4 diagnosis](DIAGNOSIS_1_19_RU.md).
+
+## Native placement schema
+
+The importer needs Pillow/NumPy for province-raster checks. Normal release building remains stdlib-only. `map_geometry.py` distinguishes state-history buildings from `spawn_points`. Never filter `naval_base_spawn` through the state-building allowlist. Its last field is an adjacent sea ID; `floating_harbor` instead references coastal land. Placement records contain seven fields and no terminal empty record. Province x/z projection is checked against the supplied bitmap, including ocean adjacency. `unitstacks.txt` is transformed only to fix non-finite/out-of-bounds coordinates; the corrected bytes and hashes are stored in the compressed map payload.
+
+Base character prototypes must remain available to inherited DLC scripts; only our histories recruit leaders. Old national AI strategies/plans are hidden because their state/focus references do not match this conversion. Technical fallback flags use existing supplied image pixels and are explicitly not national artwork. Keep both payload ZIPs compressed in Git rather than committing thousands of duplicates.

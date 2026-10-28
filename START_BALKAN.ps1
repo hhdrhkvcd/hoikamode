@@ -18,6 +18,8 @@ try {
     $sourceDescriptor = Join-Path $PSScriptRoot 'Balkan_Collapse.mod'
     $payload = Join-Path $PSScriptRoot 'assets\millennium_map.zip'
     $manifest = Join-Path $PSScriptRoot 'assets\MAP_SOURCE.json'
+    $flagPayload = Join-Path $PSScriptRoot 'assets/compatibility_flags.zip'
+    $flagManifest = Join-Path $PSScriptRoot 'assets/FLAGS_SOURCE.json'
     $targetMod = Join-Path $paths.ModDirectory 'Balkan_Collapse'
     $targetDescriptor = Join-Path $paths.ModDirectory 'Balkan_Collapse.mod'
     if (!(Test-Path -LiteralPath $sourceMod -PathType Container) -or !(Test-Path -LiteralPath $sourceDescriptor -PathType Leaf)) {
@@ -33,7 +35,7 @@ try {
     # Parse BEFORE modifying the installed mod. Malformed JSON is never overwritten.
     $settings = Read-BalkanSettings $paths.LoadFile
     if ($GamePath) { $null = Find-BalkanGame $GamePath }
-    Write-Host 'Balkan Collapse 2.0.2 — современная карта, 1980 / 2008' -ForegroundColor Cyan
+    Write-Host 'Balkan Collapse 2.0.3 — современная карта, 1980 / 2008' -ForegroundColor Cyan
     Write-Host "Данные игры: $($paths.Data)"
     Write-Host 'Будет включён ТОЛЬКО Balkan Collapse. DLC сохраняются. Полный Millennium Dawn включать одновременно нельзя.'
     Write-Host 'Старая версия мода и список модов будут сохранены. Сохранения, настройки и файлы игры не удаляются.'
@@ -54,14 +56,38 @@ try {
         Remove-Item -LiteralPath $obsoleteDefine -Force
         Write-Warning 'Убрана устаревшая ранняя Lua-настройка из устанавливаемой копии.'
     }
-    if (!$sourceHasMap) {
+    if (!(Test-Path -LiteralPath $manifest -PathType Leaf) -or !(Test-Path -LiteralPath $flagManifest -PathType Leaf)) {
+        throw 'Неполная сборка: отсутствуют данные проверки карты или флагов. Распакуй весь новый ZIP.'
+    }
+    $mapInfo = Get-Content -LiteralPath $manifest -Raw -Encoding UTF8 | ConvertFrom-Json
+    $flagInfo = Get-Content -LiteralPath $flagManifest -Raw -Encoding UTF8 | ConvertFrom-Json
+    if (Test-Path -LiteralPath $payload -PathType Leaf) {
         if (!(Test-Path -LiteralPath $manifest -PathType Leaf)) { throw 'Нет assets\MAP_SOURCE.json для проверки архива карты.' }
-        $mapInfo = Get-Content -LiteralPath $manifest -Raw -Encoding UTF8 | ConvertFrom-Json
         $actualHash = (Get-FileHash -LiteralPath $payload -Algorithm SHA256).Hash.ToLowerInvariant()
         if ($actualHash -ne $mapInfo.payload_sha256) { throw 'Контрольная сумма архива карты не совпадает. Скачай архив заново.' }
         Write-Host 'Распаковываю карту из GitHub...' -ForegroundColor Cyan
         Expand-Archive -LiteralPath $payload -DestinationPath $stagedMod -Force
     }
+    if (Test-Path -LiteralPath $flagPayload -PathType Leaf) {
+        $actualHash = (Get-FileHash -LiteralPath $flagPayload -Algorithm SHA256).Hash.ToLowerInvariant()
+        if ($actualHash -ne $flagInfo.payload_sha256) { throw 'Повреждён исходный архив совместимости флагов.' }
+        Expand-Archive -LiteralPath $flagPayload -DestinationPath $stagedMod -Force
+    }
+    foreach ($member in $flagInfo.payload_files.PSObject.Properties) {
+        if (!(Test-Path -LiteralPath (Join-Path $stagedMod $member.Name) -PathType Leaf)) {
+            throw "Неполная сборка флагов: $($member.Name). Распакуй весь новый ZIP."
+        }
+    }
+    $placementFile = Join-Path $stagedMod 'map/buildings.txt'
+    $stackFile = Join-Path $stagedMod 'map/unitstacks.txt'
+    $placementHash = (Get-FileHash -LiteralPath $placementFile -Algorithm SHA256).Hash.ToLowerInvariant()
+    $stackHash = (Get-FileHash -LiteralPath $stackFile -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($placementHash -ne $mapInfo.geometry.building_positions_sha256 -or $stackHash -ne $mapInfo.payload_files.'map/unitstacks.txt') {
+        throw 'В папке смешаны старые и новые данные размещения карты. Распакуй новый ZIP в пустую папку.'
+    }
+    $portCount = @(Select-String -LiteralPath $placementFile -Pattern ';naval_base_spawn;').Count
+    if ($portCount -ne $mapInfo.geometry.ports.Count) { throw 'В карте не хватает точек портов. Установка отменена.' }
+    Write-Host "Проверены точки портов: $portCount. Проверены файлы совместимости флагов." -ForegroundColor Cyan
     foreach ($required in @('common\defines\zz_balkan_collapse.lua','map\provinces.bmp','map\definition.csv','map\rivers.bmp','map\heightmap.bmp','map\terrain_morecities.bmp','map\trees.bmp','map\supply_nodes.txt','history\states\107-BC.txt','descriptor.mod')) {
         if (!(Test-Path -LiteralPath (Join-Path $stagedMod $required) -PathType Leaf)) { throw "Неполная сборка: $required" }
     }
@@ -78,7 +104,7 @@ try {
     Write-BalkanJson $stagedLoad $settings
     $null = Read-BalkanSettings $stagedLoad
     Write-BalkanJson (Join-Path $paths.Backups "transaction-$stamp.json") ([pscustomobject]@{
-        version = '2.0.2'; previous_load_existed = $oldLoadExists
+        version = '2.0.3'; previous_load_existed = $oldLoadExists
         previous_descriptor_existed = $oldDescriptorExists; target = $targetMod
     })
     # Transaction: only now replace an existing install, after all staging checks succeeded.
@@ -94,7 +120,7 @@ try {
     $loadTouched = $true
     Copy-Item -LiteralPath $stagedLoad -Destination $paths.LoadFile -Force
     $transactionStarted = $false
-    Write-Host 'Мод 2.0.2 установлен. Доступны сценарии 1980 и 2008.' -ForegroundColor Green
+    Write-Host 'Мод 2.0.3 установлен. Доступны сценарии 1980 и 2008.' -ForegroundColor Green
     Write-Host "Резервные копии: $($paths.Backups)"
     Write-Host 'Используй НОВУЮ игру: сохранения прежней карты несовместимы.'
 } catch {

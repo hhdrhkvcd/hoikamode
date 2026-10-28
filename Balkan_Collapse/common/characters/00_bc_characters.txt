@@ -1,1 +1,1 @@
-# Leaders are defined explicitly in country histories. Vanilla 1936 characters are not loaded.
+# Leaders are recruited by our histories only. Retain base character definitions for DLC/script references.

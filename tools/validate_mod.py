@@ -8,6 +8,7 @@ import ast
 import csv
 import hashlib
 import json
+import math
 import re
 import zipfile
 from collections import Counter
@@ -15,6 +16,9 @@ from io import BytesIO
 from pathlib import Path, PurePosixPath
 
 from clausewitz import Block, read, unquote, walk
+from flag_assets import validate_payload as validate_flag_payload
+from flag_assets import validate_tga
+from map_geometry import SEA_TARGET_TYPES, SPAWN_TYPES, ProvinceRaster
 
 ROOT = Path(__file__).resolve().parents[1]
 MOD = ROOT / "Balkan_Collapse"
@@ -214,6 +218,11 @@ def validate_source(*, deep_images=False):
             require(p not in province_states, f"{p}: assigned to two states")
             province_states[p] = i
         h = s.block("history")
+        if h.get("buildings", Block()).get("dockyard"):
+            require(
+                any(definitions[p][5] == "true" for p in provinces),
+                f"{i}: landlocked dockyard",
+            )
         require(h.scalar("owner") in tags, f"{i}: unregistered owner")
         for key in ["add_core_of", "add_claim_by"]:
             for tag in h.values(key):
@@ -292,13 +301,60 @@ def validate_source(*, deep_images=False):
         if line.strip():
             level, p = map(int, line.split())
             require(level > 0 and p in land, f"Invalid supply node {p}")
-    for n, line in enumerate((MOD / "map/buildings.txt").read_text().splitlines(), 1):
-        row = line.split(";")
-        i, p = int(row[0]), int(row[-1])
-        require(i in states and row[1] in BUILDINGS, f"Invalid map building line {n}")
+    info = json.loads((ROOT / "assets/MAP_SOURCE.json").read_text("utf-8"))
+    geometry = info["geometry"]
+    placement_bytes = (MOD / "map/buildings.txt").read_bytes()
+    require(
+        hashlib.sha256(placement_bytes).hexdigest()
+        == geometry["building_positions_sha256"],
+        "Stale map placement metadata",
+    )
+    require(
+        not placement_bytes.endswith(b"\n"), "Empty terminal building-placement record"
+    )
+    placement_rows = [
+        line.split(";") for line in placement_bytes.decode("utf-8").splitlines()
+    ]
+    port_index = {line: p for line, p in geometry["ports"]}
+    coastal = {
+        p for p, r in definitions.items() if p and r[4] == "land" and r[5] == "true"
+    }
+    found_ports = set()
+    for n, row in enumerate(placement_rows, 1):
+        require(len(row) == 7, f"Invalid native placement column count at {n}")
+        state, kind, target = int(row[0]), row[1], int(row[6])
         require(
-            not p or province_states.get(p) == i, f"Misplaced map building line {n}"
+            state in states and kind in BUILDINGS | SPAWN_TYPES,
+            f"Invalid map building line {n}",
         )
+        x, y, z, angle = map(float, row[2:6])
+        require(
+            all(math.isfinite(v) for v in (x, y, z, angle))
+            and 0 <= x < 5632
+            and 0 <= z < 2048,
+            f"Out-of-bounds placement {n}",
+        )
+        if kind in SEA_TARGET_TYPES:
+            require(
+                target in definitions and definitions[target][4] == "sea",
+                f"Port {n} must target a SEA province",
+            )
+        else:
+            require(
+                not target or province_states.get(target) == state,
+                f"Misplaced map building line {n}",
+            )
+        if kind == "naval_base_spawn":
+            p = port_index.get(n)
+            require(
+                p in coastal and province_states[p] == state and p not in found_ports,
+                f"Invalid coastal port coverage at {n}",
+            )
+            found_ports.add(p)
+    require(
+        found_ports == coastal and len(port_index) == len(coastal),
+        "Every coastal province needs one native port spawn",
+    )
 
     histories = {}
     for name, doc in parsed.items():
@@ -450,10 +506,10 @@ def validate_source(*, deep_images=False):
     outer = read(ROOT / "Balkan_Collapse.mod")
     for descriptor in [inner, outer]:
         require(
-            not {"common", "common/defines"}.intersection(
+            not {"common", "common/defines", "common/characters"}.intersection(
                 unquote(value) for value in descriptor.values("replace_path")
             ),
-            "The descriptor must preserve the vanilla defines bootstrap",
+            "Preserve vanilla defines and character prototypes; replace their histories, not their definitions",
         )
     require(outer.scalar("path") == "mod/Balkan_Collapse", "Wrong launcher path")
     require(
@@ -467,6 +523,9 @@ def validate_source(*, deep_images=False):
         "events",
         "map/strategicregions",
         "common/national_focus",
+        "common/ai_strategy",
+        "common/ai_strategy_plans",
+        "common/decisions/categories",
     }
     require(
         required_replace.issubset({unquote(v) for v in inner.values("replace_path")}),
@@ -549,10 +608,40 @@ def validate_source(*, deep_images=False):
                 == info["payload_files"][member.filename],
                 f"Map member hash mismatch: {member.filename}",
             )
+        for n, line in enumerate(
+            z.read("map/unitstacks.txt").decode("utf-8").splitlines(), 1
+        ):
+            row = line.split(";")
+            require(
+                len(row) == 7 and int(row[0]) in definitions,
+                f"Invalid unit-stack record {n}",
+            )
+            x, y, height, angle, scale = map(float, row[2:])
+            require(
+                all(math.isfinite(v) for v in (x, y, height, angle, scale))
+                and 0 <= x < 5632
+                and 0 <= height < 2048,
+                f"Out-of-bounds unit-stack record {n}",
+            )
         if deep_images:
             from PIL import Image
 
             im = Image.open(BytesIO(z.read("map/provinces.bmp")))
+            raster = ProvinceRaster(im, definitions)
+            require(
+                raster.coastal == coastal,
+                "Coastal flags differ from actual ocean adjacency",
+            )
+            for line, province in geometry["ports"]:
+                row = placement_rows[line - 1]
+                require(
+                    raster.province_at(float(row[2]), float(row[4])) == province,
+                    f"Port {line} is not on its assigned land province",
+                )
+                require(
+                    (province, int(row[6])) in raster.shore_pairs,
+                    f"Port {line} targets a non-adjacent sea",
+                )
             require(
                 im.mode == "RGB" and im.size == (5632, 2048),
                 "Wrong province BMP format",
@@ -574,6 +663,16 @@ def validate_source(*, deep_images=False):
                     image.size == im.size and image.mode in ["P", "L"],
                     f"{name}: bad indexed bitmap format",
                 )
+    try:
+        flag_info = validate_flag_payload()
+        require(
+            set(flag_info["fallback_tags"]).issubset(tags),
+            "Unknown compatibility flag tag",
+        )
+        for file in (MOD / "gfx/flags").rglob("*.tga"):
+            validate_tga(file.read_bytes(), file.as_posix())
+    except ValueError as error:
+        raise ValidationError(str(error)) from error
     if deep_images:
         from PIL import Image
 
@@ -599,6 +698,8 @@ def validate_source(*, deep_images=False):
         "land_provinces": len(land),
         "strategic_regions": len(regions),
         "country_tags": len(tags),
+        "coastal_port_spawns": len(found_ports),
+        "compatibility_flag_files": len(flag_info["payload_files"]),
         "national_focuses": 400,
         "generic_focuses": 15,
         "events": len(events),
@@ -663,6 +764,16 @@ def validate_package(path):
                 hashlib.sha256(z.read("Balkan_Collapse/" + name)).hexdigest() == sha,
                 f"Packaged map is stale: {name}",
             )
+        flag_info = json.loads((ROOT / "assets/FLAGS_SOURCE.json").read_text("utf-8"))
+        require(
+            "assets/compatibility_flags.zip" not in names,
+            "Nested flag payload in distribution",
+        )
+        for name, sha in flag_info["payload_files"].items():
+            require(
+                hashlib.sha256(z.read("Balkan_Collapse/" + name)).hexdigest() == sha,
+                f"Stale packaged flag: {name}",
+            )
         for file in MOD.rglob("*"):
             if file.is_file() and "__pycache__" not in file.parts:
                 name = "Balkan_Collapse/" + file.relative_to(MOD).as_posix()
@@ -684,6 +795,7 @@ def validate_package(path):
                 "NOTICE.md",
                 "assets/MAP_SOURCE.json",
                 "assets/ARTWORK_SOURCE.json",
+                "assets/FLAGS_SOURCE.json",
             ]
         ]
         for file in support:

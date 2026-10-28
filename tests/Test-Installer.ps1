@@ -26,13 +26,15 @@ try {
     Assert-Test ($settings.disabled_dlcs[0] -eq 'dlc/test.dlc' -and $settings.custom_setting -eq 'preserve me') 'DLC/custom settings were lost'
     Assert-Test ((Get-ChildItem -LiteralPath (Join-Path $target 'history\states') -Filter '*.txt' -File).Count -eq 1493) 'Missing states'
     Assert-Test (Test-Path -LiteralPath (Join-Path $target 'map\provinces.bmp')) 'Map was not expanded'
+    Assert-Test (Test-Path -LiteralPath (Join-Path $target 'gfx/flags/A24.tga')) 'Compatibility flags were not expanded'
+    Assert-Test (@(Select-String -LiteralPath (Join-Path $target 'map/buildings.txt') -Pattern ';naval_base_spawn;').Count -eq 2496) 'Native port markers missing'
     [IO.File]::WriteAllText((Join-Path $target 'stale.marker'), 'old version', $utf8)
     Invoke-Check 'START_BALKAN.ps1' 0 @('-NoLaunch','-Yes')
     Assert-Test (!(Test-Path -LiteralPath (Join-Path $target 'stale.marker'))) 'Old files survived a clean replacement'
     $backups = Join-Path $data 'Balkan_Collapse_backups'
     Assert-Test (@(Get-ChildItem -LiteralPath $backups -Filter 'stale.marker' -Recurse -File).Count -eq 1) 'Old version was not backed up'
 
-    # Simulate extracting 2.0.2 over old sources, without changing the real repository.
+    # Simulate extracting 2.0.3 over old sources, without changing the real repository.
     $overlay = Join-Path $work 'source-overlay'
     New-Item -ItemType Directory -Path $overlay -Force | Out-Null
     foreach ($name in @('Balkan_Collapse','Balkan_Collapse.mod','START_BALKAN.ps1','scripts')) {
@@ -40,7 +42,7 @@ try {
     }
     $overlayAssets = Join-Path $overlay 'assets'
     New-Item -ItemType Directory -Path $overlayAssets | Out-Null
-    foreach ($name in @('millennium_map.zip','MAP_SOURCE.json')) {
+    foreach ($name in @('millennium_map.zip','MAP_SOURCE.json','compatibility_flags.zip','FLAGS_SOURCE.json')) {
         Copy-Item -LiteralPath (Join-Path $repo "assets\$name") -Destination $overlayAssets
     }
     $legacy = Join-Path $overlay 'Balkan_Collapse\common\defines\00_balkan_collapse.lua'
