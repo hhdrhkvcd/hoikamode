@@ -95,6 +95,9 @@ LEADERS_1995 = {
     'JPN': ('Tomichi Murayama', 'centrism', ['murayama'], 'JPN_MURAYAMA_DESC'),
     'ESP': ('Felipe González', 'socialism', ['gonzalez'], 'ESP_GONZALEZ_DESC'),
     'TUR': ('Tansu Çiller', 'liberalism', ['ciller'], 'TUR_CILLER_DESC'),
+    # the Middle East
+    'PAL': ('Yasser Arafat', 'national_socialism', ['arafat'], 'PAL_ARAFAT_DESC'),
+    'HEZ': ('Hassan Nasrallah', 'national_socialism', ['nasrallah'], 'HEZ_NASRALLAH_DESC'),
 }
 
 # the leaders of the Soviet republics on the day the USSR collapsed (26 December 1991)
@@ -503,7 +506,8 @@ def sov_dissolve(md_owner_of, leaders, portraits):
     return lead + diss
 
 
-def scenario_effects(scn, md_owner_of, leaders, portraits):
+def scenario_effects(scn, md_owner_of, leaders, portraits, owner_1980=None,
+                     cores_of=None):
     """The effect block of one scenario."""
     L = []
     if scn != 'bc_1980':
@@ -523,6 +527,18 @@ def scenario_effects(scn, md_owner_of, leaders, portraits):
     if scn == 'bc_2026':
         # the world of 28 October 2026
         L.append('set_global_flag = BC_2026_ACTIVE')
+        # the modern countries that the map of 1980 folded into their mother country
+        owner_1980 = owner_1980 or {}
+        cores_of = cores_of or {}
+        for tag in world_2026.RESTORE_MODERN:
+            ids = [sid for sid, cs in cores_of.items() if tag in (cs or [])]
+            if not ids:
+                continue
+            overlord = owner_1980.get(ids[0])
+            if not overlord:
+                continue
+            L.append(f'{overlord} = {{ release = {tag} every_state = {{ limit = {{ is_core_of = {tag} }} '
+                     f'remove_core_of = {overlord} add_claim_by = {overlord} }} }}')
         # two new rebel states: the Rapid Support Forces and the Burmese resistance
         L.append('SUD = { release = SRF every_state = { limit = { is_core_of = SRF } '
                  'remove_core_of = SUD add_claim_by = SUD } }')
@@ -530,6 +546,8 @@ def scenario_effects(scn, md_owner_of, leaders, portraits):
                  'remove_core_of = BRM add_claim_by = BRM } }')
         L.append('SRF = { load_oob = "SRF_2026" }')
         L.append('NUG = { load_oob = "NUG_2026" }')
+        for tag in world_2026.MODERN_2026:
+            L.append(f'{tag} = {{ load_oob = "{tag}_2026" }}')
     # leaders of the scenario
     for tag in sorted(leaders):
         L.append(_leader_block(tag, leaders[tag], portraits))
@@ -537,9 +555,18 @@ def scenario_effects(scn, md_owner_of, leaders, portraits):
         L.append('SER = { set_country_flag = SER_tito_dead set_country_flag = SER_first_breakup_wave '
                  'set_country_flag = SER_fry_formed }')
     if scn == 'bc_1995':
-        # no rebel states in 1995
-        L.append('every_state = { limit = { is_core_of = SRF } remove_core_of = SRF }')
-        L.append('every_state = { limit = { is_core_of = NUG } remove_core_of = NUG }')
+        # no rebel states and no modern entities in 1995
+        for tag in ('SRF', 'NUG', 'HAM', 'HOU', 'SSU'):
+            L.append(f'every_state = {{ limit = {{ is_core_of = {tag} }} remove_core_of = {tag} }}')
+        # the Palestinian Authority returned to Gaza and the West Bank in 1994,
+        # Hezbollah holds the south of Lebanon and the Bekaa
+        L.append('ISR = { release = PAL every_state = { limit = { is_core_of = PAL } '
+                 'remove_core_of = ISR add_claim_by = ISR } }')
+        L.append('PAL = { transfer_state = 209 }')
+        L.append('LEB = { release = HEZ every_state = { limit = { is_core_of = HEZ } '
+                 'remove_core_of = LEB add_claim_by = LEB } }')
+        L.append('PAL = { load_oob = "PAL_2026" }')
+        L.append('HEZ = { load_oob = "HEZ_2026" }')
         L.append('SER = { remove_ideas = BC_tito_cult add_ideas = BC_war_footing BC_ethnic_tensions '
                  'set_stability = 0.35 set_war_support = 0.65 '
                  'set_politics = { ruling_party = neutrality last_election = "1994.12.1" election_frequency = 48 '
@@ -548,6 +575,10 @@ def scenario_effects(scn, md_owner_of, leaders, portraits):
         L.append('KOS = { add_ideas = BC_ethnic_tensions }')
         L.append('RSK = { set_stability = 0.3 set_war_support = 0.6 }')
     if scn == 'bc_2026':
+        # what the governments keep
+        for owner, ids in world_2026.RESTORE_BACK:
+            tr = ' '.join(f'transfer_state = {sid}' for sid in ids)
+            L.append(f'{owner} = {{ {tr} }}')
         # the real borders of 28 October 2026
         for owner, ids, _comment in world_2026.BORDERS:
             tr = ' '.join(f'transfer_state = {sid}' for sid in ids)

@@ -291,6 +291,15 @@ def convert_states(md_archive):
         s = states.get(sid)
         if s is not None and tag not in s['cores']:
             s['cores'].append(tag)
+    # the modern countries of 2026 hold exactly the states they hold in 2026
+    for tag, ids in world_2026.MODERN_CORES.items():
+        for s in states.values():
+            if tag in s['cores']:
+                s['cores'].remove(tag)
+        for sid in ids:
+            s = states.get(sid)
+            if s is not None and tag not in s['cores']:
+                s['cores'].append(tag)
     return states
 
 
@@ -743,12 +752,16 @@ def md_country_tech(md_repo, tag):
     return blocks
 
 
-def base_country_body(tag, ruling, developed=True, md_repo=None):
+def base_country_body(tag, ruling, developed=True, md_repo=None, tech_parent=None):
     pops = {'communism': dict(democratic=5, fascism=2, communism=80, neutrality=13),
             'democratic': dict(democratic=60, fascism=5, communism=15, neutrality=20),
             'despotism': dict(democratic=10, fascism=5, communism=30, neutrality=55),
+            'fascism': dict(democratic=10, fascism=70, communism=10, neutrality=10),
             'neutrality': dict(democratic=15, fascism=8, communism=12, neutrality=65)}[ruling]
-    L = balkan_content.md_technology(3, md_country_tech(md_repo, tag)).rstrip('\n').split('\n') + [
+    tech = md_country_tech(md_repo, tag)
+    if not tech and tech_parent:
+        tech = md_country_tech(md_repo, tech_parent)
+    L = balkan_content.md_technology(3, tech).rstrip('\n').split('\n') + [
          'set_politics = {', f'\truling_party = {ruling}', '\tlast_election = "1980.1.1"',
          '\telection_frequency = 48', '\telections_allowed = yes', '}',
          'set_popularities = { ' + ' '.join(f'{k} = {v}' for k, v in pops.items()) + ' }',
@@ -778,7 +791,8 @@ def build_history(md_archive, out, states, tags, portrait_1980=None, md_repo=Non
             cap = max(sts, key=lambda s: (sum(v for _, v in s['vps']), s['manpower']))['id']
         capitals[tag] = cap
     balkan = balkan_content.HISTORY
-    extra_tags = set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026) | {'SRF', 'NUG'}
+    extra_tags = (set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026)
+                  | set(world_2026.MODERN_2026))
     for tag in sorted((set(owned) | set(balkan) | extra_tags)):
         if tag not in tags:
             raise SystemExit(f'owner tag {tag} not defined')
@@ -786,11 +800,15 @@ def build_history(md_archive, out, states, tags, portrait_1980=None, md_repo=Non
             body = balkan[tag]
             cap = capitals.get(tag, balkan_content.CAPITALS[tag])
             text = f'capital = {balkan_content.CAPITALS.get(tag, cap)}\n' + body
-        elif tag in ('SRF', 'NUG'):
-            # the two rebel states of 2026 (Sudan and Myanmar)
-            cap = 224 if tag == 'SRF' else 499
-            text = (f'capital = {cap}\n' +
-                    base_country_body(tag, 'despotism', developed=False, md_repo=md_repo))
+        elif tag in world_2026.MODERN_2026:
+            # a modern country of 2026: Hamas, the PA, Hezbollah, South Sudan ...
+            cap, parent, ruling = world_2026.MODERN_2026[tag]
+            sts = [s for s in states.values()
+                   if s['id'] in world_2026.MODERN_ARMIES.get(tag, [])]
+            text = (f'capital = {cap}\noob = "{tag}_2026"\n' +
+                    base_country_body(tag, ruling, developed=False, md_repo=md_repo,
+                                      tech_parent=parent))
+            write_oob_2026(out, tag, states, sts)
         elif tag in world_content.SOV_SUCCESSORS:
             # a republic of the USSR: it only becomes a country after the 1991 collapse
             own = [s for s in states.values() if s['md_owner'] == tag]
@@ -832,6 +850,19 @@ def capital_province(state):
     if state['vps']:
         return max(state['vps'], key=lambda x: x[1])[0]
     return state['provinces'][0]
+
+
+def write_oob_2026(out, tag, states, sts):
+    """The army of a modern country of 2026: a few divisions in the provinces it holds."""
+    provs = []
+    for s in sts:
+        for vp, _v in s['vps']:
+            if vp not in provs:
+                provs.append(vp)
+    if not provs:
+        return
+    text = balkan_content.oob(tag, provs[:6], ('Infantry', 'Motorised'))
+    write(os.path.join(out, 'history', 'units', f'{tag}_2026.txt'), text)
 
 
 def write_oob(out, tag, cap, states, sts):
@@ -1268,7 +1299,10 @@ def build_scenarios(out, md_repo, old_mod, states, tags, names_ru, names_en, roo
             ('bc_2026', '2026.10.28.12', 'BC_2026_NAME', 'BC_2026_DESC', 'BC_2026_HISTORY', 'despotism')):
         leaders = world_content.LEADERS_1995 if key == 'bc_1995' else world_content.LEADERS_2026
         portraits = p1995 if key == 'bc_1995' else p2026
-        effect = world_content.scenario_effects(key, md_owner_of, leaders, portraits)
+        effect = world_content.scenario_effects(
+            key, md_owner_of, leaders, portraits,
+            owner_1980={s['id']: s['owner'] for s in states.values()},
+            cores_of={s['id']: s['cores'] for s in states.values()})
         focuses = ['SER_tito_legacy'] if key == 'bc_1995' else ['SER_tito_legacy', 'SER_restore_yugoslavia']
         scn.append(dict(id=key, date=date, name=name, desc=desc, history=hist,
                         ideology=ide, focuses=focuses, effect=effect))
@@ -1378,7 +1412,7 @@ def main():
     resolve_history_pictures(out, repo_root0, a.md_repo)
     missing = build_flags(a.md_repo, a.old_mod, out, set(owned) | set(balkan_content.HISTORIC_TAGS)
                           | set(world_content.SOV_SUCCESSORS) | set(world_content.FOLD_2026)
-                          | {'SRF', 'NUG'})
+                          | set(world_2026.MODERN_2026))
     if missing:
         print('flags without Millennium art:', len(missing), missing[:20])
     balkan_content.build(out, a.old_mod, states, capitals)

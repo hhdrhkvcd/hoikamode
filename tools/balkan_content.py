@@ -234,8 +234,6 @@ EXTRA_OOB = {
     'KOS_2008': oob('KOS', [9890], ('Infantry',)),
     'RKS_1991': oob('RKS', [3924, 3924, 11564], ('Infantry', 'Motorised')),
     'HZG_1992': oob('HZG', [9894, 9894], ('Infantry',)),
-    'SRF_2026': oob('SRF', [10739, 10739, 11052], ('Infantry', 'Motorised')),
-    'NUG_2026': oob('NUG', [11966, 11966, 4147], ('Infantry', 'Motorised')),
 }
 
 # --------------------------------------------------------------------------
@@ -1451,10 +1449,10 @@ def bookmark():
     for tag, ide in minors:
         L += [f'\t\t"{tag}" = {{', '\t\t\tminor = yes', f'\t\t\thistory = "{tag}_BOOKMARK_HISTORY"', f'\t\t\tideology = {ide}',
               '\t\t\tideas = { }', '\t\t\tfocuses = { }', '\t\t}']
-    L += ['\t\teffect = {', '\t\t\trandomize_weather = 19800501',
-          '\t\t\tevery_state = { limit = { is_core_of = SRF } remove_core_of = SRF }',
-          '\t\t\tevery_state = { limit = { is_core_of = NUG } remove_core_of = NUG }',
-          '\t\t}', '\t}', '}']
+    L += ['\t\teffect = {', '\t\t\trandomize_weather = 19800501']
+    for tag in sorted(world_2026.MODERN_2026):
+        L.append(f'\t\t\tevery_state = {{ limit = {{ is_core_of = {tag} }} remove_core_of = {tag} }}')
+    L += ['\t\t}', '\t}', '}']
     return '\n'.join(L) + '\n'
 
 
@@ -1472,7 +1470,7 @@ GFX = """spriteTypes = {
 
 
 def descriptor(path=None):
-    L = ['name="Балканы 1980: распад Югославии"', 'version="3.3"', 'supported_version="1.*"',
+    L = ['name="Балканы 1980: распад Югославии"', 'version="3.4"', 'supported_version="1.*"',
          'tags={', '\t"Alternative History"', '\t"Historical"', '\t"Map"', '\t"National Focuses"', '\t"Events"', '}',
          'picture="thumbnail.png"']
     for p in ['history/states', 'history/countries', 'history/units', 'history/general', 'map/strategicregions',

@@ -44,6 +44,17 @@ LEADERS_EXTRA = {
     'JAP': ('Sanae Takaichi', 'conservatism', ['takaichi'], 'JAP_TAKAICHI_DESC'),
     'CHI': ('Xi Jinping', 'leninism', ['jinping'], 'CHI_XI_DESC'),
     'SPR': ('Pedro Sánchez', 'socialism', ['sanchez'], 'SPR_SANCHEZ_DESC'),
+    'SSU': ('Salva Kiir', 'centrism', ['kiir'], 'SSU_KIIR_DESC'),
+    'TAL': ('Hibatullah Akhundzada', 'despotism', ['akhund'], 'TAL_AKHUNDZADA_DESC'),
+    'ERI': ('Isaias Afwerki', 'despotism', ['afwerki'], 'ERI_AFWERKI_DESC'),
+    'NAM': ('Nangolo Mbumba', 'centrism', ['mbumba'], 'NAM_MBUMBA_DESC'),
+    'KUR': ('Masoud Barzani', 'centrism', ['barzani'], 'KUR_BARZANI_DESC'),
+    'SML': ('Abdirahman Irro', 'centrism', ['irro'], 'SML_IRRO_DESC'),
+    'PUN': ('Abdiweli Mohamed Ali', 'centrism', ['abdiweli', 'mohamed ali'], 'PUN_ALI_DESC'),
+    'SNA': ('Ahmed Omar Jess', 'centrism', ['jess'], 'SNA_JESS_DESC'),
+    'JUB': ('Barre Hiiraale', 'centrism', ['hiiraale'], 'JUB_HIIRAALE_DESC'),
+    'SWS': ('Hassan Muhammad Nur', 'despotism', ['shatigadud'], 'SWS_NUR_DESC'),
+    'AIA': ('Hassan Turki', 'despotism', ['turki'], 'AIA_TURKI_DESC'),
 }
 
 # hand written leader descriptions (key -> (russian, english))
@@ -100,6 +111,68 @@ LEADER_DESCS = {
         'Судана. В апреле 2026 года правительство вернулось в Хартум.',
         'Abdel Fattah al-Burhan - commander of the Sudanese armed forces and president of '
         'Sudan. In April 2026 his government returned to Khartoum.'),
+    'PAL_ARAFAT_DESC': (
+        'Ясер Арафат — председатель Палестинской национальной администрации. '
+        'В 1994 году он вернулся в Газу и Западный берег по соглашению с Израилем.',
+        'Yasser Arafat - chairman of the Palestinian National Administration. In 1994 '
+        'he returned to Gaza and the West Bank under the agreement with Israel.'),
+    'HEZ_NASRALLAH_DESC': (
+        'Хасан Насралла — лидер «Хезбаллы», создавшей «зону сопротивления» на юге '
+        'Ливана. В 1995 году Израиль и «Хезболла» продолжали бои в Южном Ливане.',
+        'Hassan Nasrallah - the leader of Hezbollah, which created a "zone of resistance" '
+        'in southern Lebanon. In 1995 Israel and Hezbollah were still fighting there.'),
+    'SSU_KIIR_DESC': (
+        'Салва Киир — президент Южного Судана, один из немногих африканских лидеров, '
+        'не бросивших свою страну во время войны 2013 года.',
+        'Salva Kiir - president of South Sudan, one of the few African leaders who did '
+        'not abandon his country during the 2013 civil war.'),
+    'TAL_AKHUNDZADA_DESC': (
+        'Хибатулла Ахундзада — верховный лидер «Талибана» и духовный лидер '
+        'мухаммедского общества. Именно его войска удерживают Кабул.',
+        'Hibatullah Akhundzada - the supreme leader of the Taliban and the spiritual '
+        'leader of the Mohammedan society. It is his troops that hold Kabul.'),
+    'ERI_AFWERKI_DESC': (
+        'Исайас Афверки — президент Эритреи с 1993 года. В 2026 году его армия '
+        'продолжает осаду Ассаба.',
+        'Isaias Afwerki - president of Eritrea since 1993. In 2026 his army continues '
+        'the siege of Assab.'),
+    'NAM_MBUMBA_DESC': (
+        'Нанголо Мбумба — президент Намибии, вступивший в должность в марте 2025 года.',
+        'Nangolo Mbumba - president of Namibia, in office since March 2025.'),
+    'KUR_BARZANI_DESC': (
+        'Масуд Барзани — президент Иракского Курдистана, глава клана Барзани и '
+        'переговорщик с соседями Ирака.',
+        'Masoud Barzani - president of Iraqi Kurdistan, head of the Barzani clan and '
+        'the chief negotiator with the neighbours of Iraq.'),
+    'SML_IRRO_DESC': (
+        'Абдирахман Ирро — президент Сомалиленда с 2024 года. Сомалиленд остаётся '
+        'непризнанным государством Восточной Африки.',
+        'Abdirahman Irro - president of Somaliland since 2024. Somaliland remains an '
+        'unrecognised state of East Africa.'),
+    'PUN_ALI_DESC': (
+        'Абдивели Мохамед Али — президент Пунтленда, крупнейшего региона Сомали '
+        'по числу населения.',
+        'Abdiweli Mohamed Ali - president of Puntland, the most populous region of Somalia.'),
+    'SNA_JESS_DESC': (
+        'Ахмед Омар Джесс — лидер Союзного государства Сомали, союзника Эфиопии '
+        'в борьбе с «Аль-Шабабом».',
+        'Ahmed Omar Jess - leader of the Somali National Alliance, the ally of Ethiopia '
+        'in the fight against al-Shabaab.'),
+    'JUB_HIIRAALE_DESC': (
+        'Баре Хираале — президент Джубаланда, самой богатой и урбанизированной части '
+        'Южного Сомали.',
+        'Barre Hiiraale - president of Jubaland, the richest and most urbanised part '
+        'of southern Somalia.'),
+    'SWS_NUR_DESC': (
+        'Хасан Мухаммед Нур — лидер Юго-Западного Сомали, контролирующего порт '
+        'Бербера и побережье.',
+        'Hassan Muhammad Nur - the leader of South West Somalia, who controls the port '
+        'of Berbera and the coast.'),
+    'AIA_TURKI_DESC': (
+        'Хасан Турки — лидер «Аль-Иттихад аль-Ислами», сомалийской организации, '
+        'входившей в состав «Аль-Шабаба».',
+        'Hassan Turki - the leader of al-Ittihad al-Islami, the Somali organisation '
+        'that was part of al-Shabaab.'),
     'SRF_HEMEDTI_DESC': (
         'Мухаммед Хемедти — заместитель командира Сил быстрой поддержки и глава '
         'военного совета Дарфура. 1 июля 2026 года RSF объявили о создании '
@@ -129,12 +202,92 @@ BORDERS = [
      'Crimea, East Donetsk, South and North Luhansk, Zaporizhzhia - under Russian occupation'),
     ('SRF', [224, 614, 576, 223],
      'Darfur, Northern Darfur, Northwest Sudan, North Kordofan - the Rapid Support Forces'),
-    ('NUG', [499, 500, 502, 505, 930],
-     'Chin, Rahmanland, Rakhine, Upper Burma, North Shan - the resistance'),
+    ('NUG', [499, 500, 502, 930],
+     'Chin, Rahmanland, Rakhine, North Shan - the resistance'),
     ('ISR', [201],
      'South Lebanon - occupied by Israel since March 2026'),
     ('HEZ', [553],
      'The Bekaa valley - Hezbollah'),
+]
+
+# the modern entities that the map of 1980 folds into their mother country:
+# in 2026 they are separate countries again (Hamas, the PA, Hezbollah, South
+# Sudan, the Taliban, the Kurds, the Somaliland regions, Slovakia, Eritrea ...)
+RESTORE_MODERN = ['PAL', 'HAM', 'HEZ', 'SSU', 'TAL', 'SLO', 'ERI', 'NAM', 'KUR',
+                  'SML', 'PUN', 'SNA', 'JUB', 'SWS', 'AIA', 'HOU']
+
+# the cores of the modern countries in 2026: the release gives a country
+# exactly the states it has a core on
+MODERN_CORES = {
+    'HAM': [209],                  # Gaza
+    'PAL': [208],                  # the West Bank
+    'HEZ': [553, 201],             # the Bekaa and the occupied south of Lebanon
+    'SSU': [225, 226, 227, 923, 924, 925],
+    'TAL': [411, 1153, 1154],      # Afghanistan
+    'SLO': [119, 120],
+    'ERI': [228, 229],
+    'NAM': [282, 283],
+    'KUR': [164, 633],             # the Iraqi Kurdistan
+    'SML': [237, 937, 938],        # Somaliland
+    'PUN': [238, 239, 928],        # Puntland
+    'SNA': [593],
+    'JUB': [581],
+    'SWS': [584],
+    'AIA': [1222],
+    'HOU': [195, 1103, 1104, 951, 196, 952],   # the north of Yemen
+    'SRF': [224, 614, 576, 223],   # Darfur
+    'NUG': [499, 500, 502, 930],   # the Burmese resistance
+}
+
+# the modern countries of 2026: capital state, the country they copy the
+# technology of and their government
+MODERN_2026 = {
+    'SRF': (224, 'SUD', 'despotism'),      # the Rapid Support Forces (Darfur)
+    'NUG': (499, 'BRM', 'despotism'),      # the Burmese resistance
+    'HAM': (209, 'ISR', 'despotism'),      # Hamas (Gaza)
+    'PAL': (208, 'ISR', 'neutrality'),     # the Palestinian Authority (the West Bank)
+    'HEZ': (553, 'LEB', 'despotism'),      # Hezbollah (the Bekaa)
+    'SSU': (225, 'SUD', 'neutrality'),     # South Sudan
+    'TAL': (1152, 'AFG', 'fascism'),       # the Taliban (Afghanistan)
+    'SLO': (119, 'CZE', 'democratic'),     # Slovakia
+    'ERI': (228, 'ETH', 'neutrality'),     # Eritrea
+    'NAM': (282, 'SAF', 'democratic'),     # Namibia
+    'KUR': (164, 'IRQ', 'neutrality'),     # Kurdistan
+    'SML': (237, 'SOM', 'neutrality'),     # Somaliland
+    'PUN': (238, 'SOM', 'neutrality'),     # Puntland
+    'SNA': (1223, 'SOM', 'neutrality'),    # Somali National Alliance
+    'JUB': (581, 'SOM', 'neutrality'),     # Jubaland
+    'SWS': (584, 'SOM', 'neutrality'),     # South West Somalia
+    'AIA': (1222, 'SOM', 'neutrality'),    # al-Ittihad al-Islami
+    'HOU': (195, 'YEM', 'despotism'),      # the Houthis (the north of Yemen)
+}
+
+# where the armies of the modern countries stand in 2026
+MODERN_ARMIES = {
+    'SRF': [224, 614, 576, 223],
+    'NUG': [499, 500, 502, 930],
+    'HAM': [209],
+    'PAL': [208],
+    'HEZ': [553, 201],
+    'SSU': [225, 226, 227, 923, 924, 925],
+    'TAL': [1152, 1207, 1208, 409, 410, 412],
+    'SLO': [119, 120],
+    'ERI': [228, 229],
+    'NAM': [282, 283],
+    'KUR': [164, 633],
+    'SML': [237, 937, 938],
+    'PUN': [238, 239, 928],
+    'SNA': [1223, 1224, 593],
+    'JUB': [581],
+    'SWS': [584],
+    'AIA': [1222],
+    'HOU': [195, 1103, 1104, 951, 196, 952],
+}
+
+# the states that the governments keep after the releases above
+RESTORE_BACK = [
+    ('LEB', [202, 203]),          # Beirut and the north
+    ('ISR', [204, 205, 206, 207]),   # the Jewish plain, Galilee, the Negev, Jerusalem
 ]
 
 # states that change hands during the game (front line moves)
