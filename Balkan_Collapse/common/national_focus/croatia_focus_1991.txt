@@ -1,0 +1,131 @@
+﻿focus_tree = {
+
+    id = CRO_1991_tree
+
+    country = {
+
+        factor = 0
+
+        modifier = { add = 20 tag = CRO }
+
+    }
+
+    default = no
+
+    focus = {
+        id = CRO_independence
+        icon = GFX_goal_generic_political_reform
+        x = 4
+        y = 0
+        cost = 5
+        available = { has_country_flag = BALKANS_INDEPENDENT }
+        completion_reward = {
+            add_political_power = 60
+            add_stability = 0.05
+        }
+    }
+
+    focus = {
+        id = CRO_constitution
+        icon = GFX_goal_generic_political_reform
+        x = 4
+        y = 1
+        cost = 5
+        prerequisite = { focus = CRO_independence }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.05
+        }
+    }
+
+    focus = {
+        id = CRO_industry
+        icon = GFX_goal_generic_construct_civ_factory
+        x = 2
+        y = 2
+        cost = 5
+        prerequisite = { focus = CRO_constitution }
+        completion_reward = {
+            add_political_power = 40
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = CRO_army
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 2
+        cost = 5
+        prerequisite = { focus = CRO_constitution }
+        completion_reward = {
+            army_experience = 15
+            add_manpower = 15000
+        }
+    }
+
+    focus = {
+        id = CRO_trade
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 2
+        cost = 5
+        prerequisite = { focus = CRO_constitution }
+        completion_reward = {
+            add_political_power = 50
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = CRO_transport
+        icon = GFX_goal_generic_construct_infrastructure
+        x = 2
+        y = 3
+        cost = 5
+        prerequisite = { focus = CRO_industry }
+        completion_reward = {
+            add_political_power = 35
+            add_stability = 0.03
+        }
+    }
+
+    focus = {
+        id = CRO_security
+        icon = GFX_goal_generic_army_doctrines
+        x = 6
+        y = 3
+        cost = 5
+        prerequisite = { focus = CRO_army }
+        completion_reward = {
+            army_experience = 10
+            add_war_support = 0.03
+        }
+    }
+
+    focus = {
+        id = CRO_diplomacy
+        icon = GFX_goal_generic_improve_relations
+        x = 4
+        y = 3
+        cost = 5
+        prerequisite = { focus = CRO_trade }
+        completion_reward = {
+            add_political_power = 75
+        }
+    }
+
+    focus = {
+        id = CRO_sovereignty
+        icon = GFX_goal_generic_national_unity
+        x = 4
+        y = 4
+        cost = 5
+        prerequisite = { focus = CRO_diplomacy }
+        completion_reward = {
+            add_stability = 0.08
+            add_war_support = 0.03
+        }
+    }
+
+}

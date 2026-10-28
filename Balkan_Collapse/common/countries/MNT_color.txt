@@ -1,0 +1,4 @@
+MNT = {
+    color = rgb { 174 30 39 }
+    color_ui = rgb { 214 50 54 }
+}

@@ -1,0 +1,298 @@
+﻿add_namespace = serbia_collapse
+
+# Tito died on 4 May 1980. The federation survives for another decade.
+country_event = {
+    id = serbia_collapse.1
+    title = serbia_collapse.1.t
+    desc = serbia_collapse.1.d
+    trigger = { tag = SER date > 1980.5.3 NOT = { has_country_flag = SER_tito_dead } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = {
+        name = serbia_collapse.1.a
+        set_country_flag = SER_tito_dead
+        clr_country_flag = SER_tito_alive
+        add_stability = -0.08
+        add_political_power = -50
+        kill_country_leader = yes
+        create_country_leader = {
+            name = "Коллективное Президиум СФРЮ"
+            desc = "SER_COLLECTIVE_DESC"
+            picture = GFX_portrait_generic_communist
+            expire = "1992.4.28.12"
+            ideology = stalinism
+            traits = { }
+        }
+        set_politics = { ruling_party = communism last_election = "1980.5.4" election_frequency = 12 elections_allowed = no }
+        set_popularities = { democratic = 5 fascism = 2 communism = 82 neutrality = 11 }
+    }
+}
+
+# Slovenia's independence plebiscite: 23 December 1990.
+country_event = {
+    id = serbia_collapse.21
+    title = serbia_collapse.21.t
+    desc = serbia_collapse.21.d
+    trigger = { tag = SER date > 1990.12.22 has_country_flag = SER_tito_dead NOT = { has_country_flag = SER_slovenia_plebiscite } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.21.a set_country_flag = SER_slovenia_plebiscite add_stability = -0.02 }
+}
+
+# Croatia's independence referendum: 19 May 1991.
+country_event = {
+    id = serbia_collapse.22
+    title = serbia_collapse.22.t
+    desc = serbia_collapse.22.d
+    trigger = { tag = SER date > 1991.5.18 has_country_flag = SER_tito_dead NOT = { has_country_flag = SER_croatia_referendum } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.22.a set_country_flag = SER_croatia_referendum add_stability = -0.02 }
+}
+
+# 25 June 1991: Slovenia and Croatia declare independence.
+country_event = {
+    id = serbia_collapse.2
+    title = serbia_collapse.2.t
+    desc = serbia_collapse.2.d
+    trigger = { tag = SER date > 1991.6.24 has_country_flag = SER_tito_dead NOT = { has_country_flag = SER_first_breakup_wave } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = {
+        name = serbia_collapse.2.a
+        set_country_flag = SER_first_breakup_wave
+        add_stability = -0.12
+        add_war_support = 0.08
+        release = SLV
+        release = CRO
+        if = { limit = { exists = SLV } set_autonomy = { target = SLV autonomous_state = autonomy_free freedom_level = 1.0 } }
+        if = { limit = { exists = CRO } set_autonomy = { target = CRO autonomous_state = autonomy_free freedom_level = 1.0 } }
+        SLV = { set_country_flag = BALKANS_INDEPENDENT add_political_power = 50 add_stability = -0.05 }
+        CRO = { set_country_flag = BALKANS_INDEPENDENT add_political_power = 50 add_stability = -0.08 }
+    }
+}
+
+# 27 June 1991: the Ten-Day War begins. The Brioni agreement ends the conflict in July.
+country_event = {
+    id = serbia_collapse.3
+    title = serbia_collapse.3.t
+    desc = serbia_collapse.3.d
+    trigger = { tag = SER date > 1991.6.26 has_country_flag = SER_first_breakup_wave NOT = { has_country_flag = SER_slovenia_war_started } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.3.a set_country_flag = SER_slovenia_war_started declare_war_on = { target = SLV type = annex_everything } add_war_support = 0.05 }
+}
+country_event = {
+    id = serbia_collapse.4
+    title = serbia_collapse.4.t
+    desc = serbia_collapse.4.d
+    trigger = { tag = SER date > 1991.7.6 has_country_flag = SER_slovenia_war_started NOT = { has_country_flag = SER_slovenia_war_ended } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.4.a set_country_flag = SER_slovenia_war_ended white_peace = SLV add_stability = 0.04 }
+}
+
+# August 1991: the Croatian War escalates.
+country_event = {
+    id = serbia_collapse.6
+    title = serbia_collapse.6.t
+    desc = serbia_collapse.6.d
+    trigger = { tag = SER date > 1991.8.24 has_country_flag = SER_first_breakup_wave NOT = { has_country_flag = SER_croatia_war_started } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.6.a set_country_flag = SER_croatia_war_started declare_war_on = { target = CRO type = annex_everything } add_war_support = 0.08 add_stability = -0.05 }
+}
+
+# 8 September referendum, 25 September declaration, and 17 November constitution in Macedonia.
+country_event = {
+    id = serbia_collapse.5
+    title = serbia_collapse.5.t
+    desc = serbia_collapse.5.d
+    trigger = { tag = SER date > 1991.9.7 NOT = { has_country_flag = SER_macedonia_referendum } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.5.a set_country_flag = SER_macedonia_referendum add_stability = -0.04 add_political_power = -25 }
+}
+country_event = {
+    id = serbia_collapse.19
+    title = serbia_collapse.19.t
+    desc = serbia_collapse.19.d
+    trigger = { tag = SER date > 1991.9.24 has_country_flag = SER_macedonia_referendum NOT = { has_country_flag = SER_macedonia_independent } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = {
+        name = serbia_collapse.19.a
+        set_country_flag = SER_macedonia_independent
+        release = MAC
+        if = { limit = { exists = MAC } set_autonomy = { target = MAC autonomous_state = autonomy_free freedom_level = 1.0 } }
+        MAC = { set_country_flag = BALKANS_INDEPENDENT add_political_power = 50 add_stability = -0.05 }
+        add_stability = -0.04
+    }
+}
+country_event = {
+    id = serbia_collapse.20
+    title = serbia_collapse.20.t
+    desc = serbia_collapse.20.d
+    trigger = { tag = MAC date > 1991.11.16 has_country_flag = BALKANS_INDEPENDENT NOT = { has_country_flag = MAC_constitution } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.20.a set_country_flag = MAC_constitution add_political_power = 50 add_stability = 0.05 }
+}
+
+# 8 October: Croatia's formal separation after the three-month moratorium.
+country_event = {
+    id = serbia_collapse.17
+    title = serbia_collapse.17.t
+    desc = serbia_collapse.17.d
+    trigger = { tag = SER date > 1991.10.7 has_country_flag = SER_first_breakup_wave NOT = { has_country_flag = SER_croatia_separation_confirmed } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.17.a set_country_flag = SER_croatia_separation_confirmed CRO = { add_political_power = 50 add_war_support = 0.05 } add_stability = -0.03 }
+}
+
+# 15 January 1992: international recognition of Slovenia and Croatia.
+country_event = {
+    id = serbia_collapse.18
+    title = serbia_collapse.18.t
+    desc = serbia_collapse.18.d
+    trigger = { tag = SER date > 1992.1.14 has_country_flag = SER_first_breakup_wave NOT = { has_country_flag = SER_ec_recognition } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.18.a set_country_flag = SER_ec_recognition SLV = { add_political_power = 50 add_stability = 0.03 } CRO = { add_political_power = 50 add_stability = 0.03 } add_stability = -0.03 }
+}
+
+# 9 January 1992: Bosnian Serb representatives proclaim the Republic of the Serbian People of Bosnia and Herzegovina.
+country_event = {
+    id = serbia_collapse.8
+    title = serbia_collapse.8.t
+    desc = serbia_collapse.8.d
+    trigger = { tag = SER date > 1992.1.8 NOT = { has_country_flag = SER_srp_proclaimed } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = {
+        name = serbia_collapse.8.a
+        set_country_flag = SER_srp_proclaimed
+        release = SRP
+        if = { limit = { exists = SRP } set_autonomy = { target = SRP autonomous_state = autonomy_free freedom_level = 1.0 } }
+        SRP = { set_country_flag = SRP_proclaimed set_country_flag = BALKANS_INDEPENDENT add_political_power = 75 add_manpower = 35000 add_stability = -0.08 add_war_support = 0.12 }
+        add_stability = -0.04
+    }
+}
+
+# 28 February 1992: the Bosnian Serb republic adopts a constitution.
+country_event = {
+    id = serbia_collapse.9
+    title = serbia_collapse.9.t
+    desc = serbia_collapse.9.d
+    trigger = { tag = SRP date > 1992.2.27 has_country_flag = SRP_proclaimed NOT = { has_country_flag = SRP_constitution } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.9.a set_country_flag = SRP_constitution add_political_power = 50 add_stability = 0.05 }
+}
+
+# Bosnia and Herzegovina's referendum took place on 29 February–1 March; independence was declared on 3 March 1992.
+country_event = {
+    id = serbia_collapse.10
+    title = serbia_collapse.10.t
+    desc = serbia_collapse.10.d
+    trigger = { tag = SER date > 1992.3.2 NOT = { has_country_flag = SER_bosnia_independent } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = {
+        name = serbia_collapse.10.a
+        set_country_flag = SER_bosnia_independent
+        release = BOS
+        if = { limit = { exists = BOS } set_autonomy = { target = BOS autonomous_state = autonomy_free freedom_level = 1.0 } }
+        BOS = { set_country_flag = BALKANS_INDEPENDENT add_political_power = 50 add_manpower = 35000 add_stability = -0.08 }
+        add_stability = -0.08
+    }
+}
+
+# 6 April 1992: the Bosnian War begins. This is represented as a simplified SRP–BOS war.
+country_event = {
+    id = serbia_collapse.11
+    title = serbia_collapse.11.t
+    desc = serbia_collapse.11.d
+    trigger = { tag = SRP date > 1992.4.5 has_country_flag = SRP_proclaimed NOT = { has_country_flag = SRP_bosnia_war_started } BOS = { has_country_flag = BALKANS_INDEPENDENT } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.11.a set_country_flag = SRP_bosnia_war_started declare_war_on = { target = BOS type = annex_everything } add_war_support = 0.10 }
+}
+
+# 27 April 1992: Serbia and Montenegro form the Federal Republic of Yugoslavia. The playable tag remains SER.
+country_event = {
+    id = serbia_collapse.12
+    title = serbia_collapse.12.t
+    desc = serbia_collapse.12.d
+    trigger = { tag = SER date > 1992.4.26 has_country_flag = SER_tito_dead NOT = { has_country_flag = SER_fry_formed } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = {
+        name = serbia_collapse.12.a
+        set_country_flag = SER_fry_formed
+        kill_country_leader = yes
+        create_country_leader = { name = "Ana Brnabić" desc = "SER_LEADER_DESC" picture = GFX_portrait_generic_democratic expire = "2036.1.1.12" ideology = centrism traits = { } }
+        set_politics = { ruling_party = democratic last_election = "1992.4.27" election_frequency = 48 elections_allowed = yes }
+        set_popularities = { democratic = 45 fascism = 5 communism = 20 neutrality = 30 }
+        add_stability = -0.05
+        add_political_power = 75
+    }
+}
+
+# 12 November 1995: the Erdut Agreement is represented by a peace with Croatia.
+country_event = {
+    id = serbia_collapse.13
+    title = serbia_collapse.13.t
+    desc = serbia_collapse.13.d
+    trigger = { tag = SER date > 1995.11.11 has_country_flag = SER_croatia_war_started NOT = { has_country_flag = SER_croatia_war_ended } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.13.a set_country_flag = SER_croatia_war_ended white_peace = CRO add_stability = 0.04 }
+}
+
+# 14 December 1995: Dayton peace agreement.
+country_event = {
+    id = serbia_collapse.14
+    title = serbia_collapse.14.t
+    desc = serbia_collapse.14.d
+    trigger = { tag = SRP date > 1995.12.13 has_country_flag = SRP_bosnia_war_started NOT = { has_country_flag = SRP_dayton_signed } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = { name = serbia_collapse.14.a set_country_flag = SRP_dayton_signed white_peace = BOS add_stability = 0.08 add_war_support = -0.10 }
+}
+
+# 3 June 2006: Montenegro declares independence.
+country_event = {
+    id = serbia_collapse.15
+    title = serbia_collapse.15.t
+    desc = serbia_collapse.15.d
+    trigger = { tag = SER date > 2006.6.2 has_country_flag = SER_fry_formed NOT = { has_country_flag = SER_montenegro_independent } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = {
+        name = serbia_collapse.15.a
+        set_country_flag = SER_montenegro_independent
+        release = MNT
+        if = { limit = { exists = MNT } set_autonomy = { target = MNT autonomous_state = autonomy_free freedom_level = 1.0 } }
+        MNT = { set_country_flag = BALKANS_INDEPENDENT add_political_power = 50 add_stability = 0.03 }
+        add_stability = 0.03
+    }
+}
+
+# 17 February 2008: Kosovo declares independence; its international status remains disputed.
+country_event = {
+    id = serbia_collapse.16
+    title = serbia_collapse.16.t
+    desc = serbia_collapse.16.d
+    trigger = { tag = SER date > 2008.2.16 has_country_flag = SER_fry_formed NOT = { has_country_flag = SER_kosovo_independent } }
+    mean_time_to_happen = { days = 1 }
+    fire_only_once = yes
+    option = {
+        name = serbia_collapse.16.a
+        set_country_flag = SER_kosovo_independent
+        release = KOS
+        if = { limit = { exists = KOS } set_autonomy = { target = KOS autonomous_state = autonomy_free freedom_level = 1.0 } }
+        KOS = { set_country_flag = BALKANS_INDEPENDENT add_political_power = 50 add_stability = -0.08 }
+        add_stability = -0.05
+    }
+}

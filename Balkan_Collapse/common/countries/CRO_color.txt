@@ -1,0 +1,4 @@
+CRO = {
+    color = rgb { 205 38 50 }
+    color_ui = rgb { 230 62 70 }
+}
