@@ -24,10 +24,10 @@ try {
     $settings = Get-Content -LiteralPath $load -Raw -Encoding UTF8 | ConvertFrom-Json
     Assert-Test (@($settings.enabled_mods).Count -eq 1 -and $settings.enabled_mods[0] -eq 'mod/Balkan_Collapse.mod') 'Wrong active mods'
     Assert-Test ($settings.disabled_dlcs[0] -eq 'dlc/test.dlc' -and $settings.custom_setting -eq 'preserve me') 'DLC/custom settings were lost'
-    Assert-Test ((Get-ChildItem -LiteralPath (Join-Path $target 'history\states') -Filter '*.txt' -File).Count -eq 1493) 'Missing states'
+    Assert-Test ((Get-ChildItem -LiteralPath (Join-Path $target 'history\states') -Filter '*.txt' -File).Count -eq 1483) 'Missing states'
     Assert-Test (Test-Path -LiteralPath (Join-Path $target 'map\provinces.bmp')) 'Map was not expanded'
     Assert-Test (Test-Path -LiteralPath (Join-Path $target 'gfx/flags/A24.tga')) 'Compatibility flags were not expanded'
-    Assert-Test (@(Select-String -LiteralPath (Join-Path $target 'map/buildings.txt') -Pattern ';naval_base_spawn;').Count -eq 2496) 'Native port markers missing'
+    Assert-Test (@(Select-String -LiteralPath (Join-Path $target 'map/buildings.txt') -Pattern ';naval_base_spawn;').Count -eq 2485) 'Native port markers missing'
     [IO.File]::WriteAllText((Join-Path $target 'stale.marker'), 'old version', $utf8)
     Invoke-Check 'START_BALKAN.ps1' 0 @('-NoLaunch','-Yes')
     Assert-Test (!(Test-Path -LiteralPath (Join-Path $target 'stale.marker'))) 'Old files survived a clean replacement'

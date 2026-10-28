@@ -1,6 +1,6 @@
 {
   "observed_engine": "1.19.4",
-  "note": "Only internal tag identifiers extracted from missing-file diagnostics; no user logs or personal data.",
+  "note": "Only internal tag identifiers extracted from missing-file diagnostics; no user logs or personal data. SCO is included because 1.19.4 logs 'Error loading flag for country SCO : Ideology neutrality' on country-select when neither the base game nor this mod supplies any SCO flag.",
   "fallback_tags": [
     "A24",
     "A74",
@@ -283,6 +283,7 @@
     "SAO",
     "SAS",
     "SAT",
+    "SCO",
     "SEY",
     "SHA",
     "SHB",

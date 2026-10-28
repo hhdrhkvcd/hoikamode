@@ -20,7 +20,16 @@ from copy import deepcopy
 from pathlib import Path
 
 from clausewitz import Block, Entry, quote, read, write
-from map_geometry import ProvinceRaster, prepare_buildings, repair_unitstacks
+from map_geometry import (
+    MIN_PROVINCE_PIXELS,
+    ProvinceRaster,
+    degenerate_provinces,
+    merge_targets,
+    paint_provinces,
+    prepare_buildings,
+    province_areas,
+    repair_unitstacks,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 MOD = ROOT / "Balkan_Collapse"
@@ -189,7 +198,18 @@ def import_map(source: Path):
         )
         if r and r[0].isdigit()
     }
-    raster = ProvinceRaster((source / "map/provinces.bmp").read_bytes(), definitions)
+    bitmap = (source / "map/provinces.bmp").read_bytes()
+    raster = ProvinceRaster(bitmap, definitions)
+    # Sub-pixel map artefacts crash the engine's province-graphics maths; merge
+    # them into their neighbours before anything else is derived from the map.
+    raster0 = raster
+    degenerate = degenerate_provinces(raster)
+    merged = merge_targets(raster, degenerate)
+    if degenerate:
+        bitmap = paint_provinces(bitmap, merged, definitions)
+        for province in degenerate:
+            del definitions[province]
+        raster = ProvinceRaster(bitmap, definitions)
     coastal_changes = []
     for province, row in definitions.items():
         if province and row[4] == "land":
@@ -236,8 +256,18 @@ def import_map(source: Path):
     removed = defaultdict(int)
     state_names = {"english": {}, "russian": {}}
     converted = {}
+    retired_states = []
     for state_id, (file, original) in sorted(states.items()):
-        provinces = list(map(int, original.block("provinces").atoms()))
+        provinces = [
+            p
+            for p in map(int, original.block("provinces").atoms())
+            if p in definitions
+        ]
+        if not provinces:
+            # Every province of this state was a sub-pixel map artefact.
+            removed["states_without_provinces"] += 1
+            retired_states.append(state_id)
+            continue
         h = original.block("history")
         owner = h.scalar("owner")
         if owner is None:
@@ -343,6 +373,8 @@ def import_map(source: Path):
     country_hist = MOD / "history/countries"
     unit_dir = MOD / "history/units"
     unit_dir.mkdir(parents=True, exist_ok=True)
+    for old in unit_dir.glob("BC_WORLD_*.txt"):
+        old.unlink()
     for old in country_hist.glob("*- BC World.txt"):
         old.unlink()
     for tag, (name, raw_history) in sorted(tags.items()):
@@ -466,7 +498,12 @@ def import_map(source: Path):
                     for p in state.block("provinces").atoms()
                 }
                 placements, ports, placement_repairs = prepare_buildings(
-                    text(f), set(BUILDINGS), raster, province_states
+                    text(f),
+                    set(BUILDINGS),
+                    raster,
+                    province_states,
+                    before=raster0,
+                    removed=degenerate,
                 )
                 (map_dir / f.name).write_text(placements, encoding="utf-8")
             elif f.name == "definition.csv":
@@ -505,6 +542,37 @@ def import_map(source: Path):
                     in ["ambient_wind_entity", "ambient_water_entity"]
                 ]
                 write(map_dir / f.name, ambient)
+            elif f.name in {"railways.txt", "supply_nodes.txt"}:
+                kept, dropped = [], 0
+                for line in text(f).splitlines():
+                    if not line.strip():
+                        continue
+                    row = line.split()
+                    # First two columns are railway/supply metadata, not provinces.
+                    body = row[2:] if f.name == "railways.txt" else row[1:]
+                    trimmed = [t for t in body if not t.isdigit() or int(t) in definitions]
+                    dropped += len(body) - len(trimmed)
+                    if len(trimmed) >= 2:
+                        kept.append(" ".join(row[: len(row) - len(body)] + trimmed))
+                removed[f"{f.stem}_province_references"] += dropped
+                (map_dir / f.name).write_text("\n".join(kept) + "\n", encoding="utf-8")
+            elif f.name == "adjacencies.csv":
+                lines = text(f).splitlines()
+                dropped = 0
+                kept_lines = []
+                for index, line in enumerate(lines):
+                    if index == 0 or not line.strip():
+                        kept_lines.append(line)
+                        continue
+                    row = line.split(";")
+                    if int(row[0]) in definitions and int(row[1]) in definitions:
+                        kept_lines.append(line)
+                    else:
+                        dropped += 1
+                removed["adjacency_rows"] += dropped
+                (map_dir / f.name).write_text(
+                    "\n".join(r.rstrip() for r in kept_lines) + "\n", encoding="utf-8"
+                )
             elif f.name == "cities.txt":
                 cities = read(f, legacy=True)
                 from clausewitz import walk
@@ -530,6 +598,13 @@ def import_map(source: Path):
             continue  # Empty, intentionally retired regions from the source map.
         region = parsed.block("strategic_region")
         region_id = int(region.scalar("id"))
+        listed = region.block("provinces")
+        kept = [p for p in listed.atoms() if int(p) in definitions]
+        if len(kept) != len(listed.atoms()):
+            if not kept:
+                removed["regions_without_provinces"] += 1
+                continue
+            listed.items[:] = kept
         write(region_dir / f"{region_id}-BC.txt", parsed)
         region_count += 1
         name = re.sub(r"^\d+\s*-\s*", "", f.stem).strip()
@@ -556,7 +631,7 @@ def import_map(source: Path):
     binary_files.sort()
     payload = assets / "millennium_map.zip"
     repaired_stacks, stack_repairs = repair_unitstacks(
-        text(source / "map/unitstacks.txt"), raster
+        text(source / "map/unitstacks.txt"), raster, drop=set(degenerate)
     )
     payload_hashes = {}
     with zipfile.ZipFile(
@@ -567,9 +642,11 @@ def import_map(source: Path):
             info = zipfile.ZipInfo(name, date_time=(2026, 10, 28, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
-            content = (
-                repaired_stacks if file.name == "unitstacks.txt" else file.read_bytes()
-            )
+            content = file.read_bytes()
+            if file.name == "unitstacks.txt":
+                content = repaired_stacks
+            elif file.name == "provinces.bmp":
+                content = bitmap
             payload_hashes[name] = hashlib.sha256(content).hexdigest()
             archive.writestr(
                 info,
@@ -584,6 +661,20 @@ def import_map(source: Path):
         "payload": payload.relative_to(ROOT).as_posix(),
         "payload_sha256": checksum(payload),
         "payload_files": payload_hashes,
+        "degenerate_provinces": {
+            "minimum_pixels": MIN_PROVINCE_PIXELS,
+            "merged": dict(sorted(merged.items())),
+            "areas": {
+                str(p): area
+                for p, area in sorted(province_areas(raster0).items())
+                if p in merged
+            },
+            "note": (
+                "Provinces drawn with 1-7 pixels collapse in the engine's "
+                "downsampled province masks and crash it with "
+                "C0000094 INT_DIVIDE_BY_ZERO in the province-graphics chain."
+            ),
+        },
         "geometry": {
             "building_positions_sha256": checksum(map_dir / "buildings.txt"),
             "ports": ports,
@@ -592,7 +683,8 @@ def import_map(source: Path):
             "repaired_unitstacks": stack_repairs,
             "coordinate_system": "x = bitmap column; z = height - 1 - bitmap row (integer sampling)",
         },
-        "states": len(states),
+        "states": len(converted),
+        "retired_states": retired_states,
         "strategic_regions": region_count,
         "registered_tags": len(tags),
         "union_states": UNION,

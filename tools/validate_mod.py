@@ -201,8 +201,11 @@ def validate_source(*, deep_images=False):
             (MOD / "common" / path).is_file(),
             f"{tag}: country definition {path} missing",
         )
+    map_info = json.loads((ROOT / "assets/MAP_SOURCE.json").read_text("utf-8"))
+    retired = set(map_info.get("retired_states", []))
+    expected = set(range(1, map_info["states"] + len(retired) + 1)) - retired
     require(
-        len(states) == 1493 and set(states) == set(range(1, 1494)),
+        len(states) == map_info["states"] and set(states) == expected,
         "Incomplete map state set",
     )
     province_states = {}
@@ -751,7 +754,7 @@ def validate_package(path):
                     and n.endswith(".txt")
                 ]
             )
-            == 1493,
+            == 1483,
             "Incomplete packaged states",
         )
         require(

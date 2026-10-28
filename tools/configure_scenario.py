@@ -272,7 +272,10 @@ graphical_culture_2d = eastern_european_2d""",
     trigger = (
         "BC_owns_all_yugoslavia = {\n"
         + "".join(f"    owns_state = {s}\n    controls_state = {s}\n" for s in UNION)
-        + "}"
+        + "}\n"
+        # The event timeline uses this stay-alive guard; keep it in the single
+        # generator so re-running the scenario step cannot drop it.
+        + "BC_timeline_active = { SER = { NOT = { has_country_flag = BC_federation_restored } } }\n"
     )
     put("common/scripted_triggers/bc_scenario_triggers.txt", trigger)
     put(

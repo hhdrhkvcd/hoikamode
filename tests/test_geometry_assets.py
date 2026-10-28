@@ -9,7 +9,16 @@ import zipfile
 import pytest
 from clausewitz import read, unquote, walk
 from flag_assets import validate_payload, validate_tga
-from map_geometry import ProvinceRaster, prepare_buildings, repair_unitstacks
+from map_geometry import (
+    MIN_PROVINCE_PIXELS,
+    ProvinceRaster,
+    degenerate_provinces,
+    merge_targets,
+    paint_provinces,
+    prepare_buildings,
+    province_areas,
+    repair_unitstacks,
+)
 from PIL import Image
 from validate_mod import MOD, ROOT
 
@@ -72,6 +81,8 @@ def test_floating_harbor_uses_land_target_and_its_current_state(tiny_raster):
         "floating_harbor_state_repairs": 1,
         "removed_inland_floating_harbors": 1,
         "removed_duplicate_floating_harbors": 1,
+        "removed_degenerate_province_markers": 0,
+        "removed_retired_state_rows": 0,
     }
 
 
@@ -95,20 +106,21 @@ def test_full_map_has_native_markers_and_no_terminal_empty_record():
     content = (MOD / "map/buildings.txt").read_bytes()
     assert not content.endswith(b"\n")
     kinds = [line.split(";")[1] for line in content.decode().splitlines()]
-    assert kinds.count("naval_base_spawn") == 2496
-    assert kinds.count("supply_node") == 11724
-    assert kinds.count("special_project_facility_spawn") == 11724
-    assert kinds.count("nuclear_reactor_spawn") == 1493
-    assert kinds.count("rocket_site_spawn") == 1493
-    assert len(metadata["geometry"]["repaired_unitstacks"]) == 10
-    assert len(metadata["geometry"]["ports"]) == 2496
+    assert kinds.count("naval_base_spawn") == 2485
+    assert kinds.count("supply_node") == 11712
+    assert kinds.count("special_project_facility_spawn") == 11712
+    assert kinds.count("nuclear_reactor_spawn") == 1483
+    assert kinds.count("rocket_site_spawn") == 1483
+    # Stacks that used to need repositioning sat on provinces merged away below.
+    assert metadata["geometry"]["repaired_unitstacks"] == []
+    assert len(metadata["geometry"]["ports"]) == 2485
     state = read(MOD / "history/states/169-BC.txt").block("state")
     assert state.block("history").block("buildings").get("dockyard") is None
 
 
 def test_compatibility_payload_fixes_missing_flags_and_indexed_csa_overlay():
     manifest = validate_payload()
-    assert len(manifest["payload_files"]) == 5328
+    assert len(manifest["payload_files"]) == 5343
     with zipfile.ZipFile(ROOT / "assets/compatibility_flags.zip") as archive:
         for name in [
             "gfx/flags/A24.tga",
@@ -152,3 +164,60 @@ def test_base_character_prototypes_remain_but_old_national_ai_does_not():
     } <= replace_paths
     for path in (MOD / "history/countries").glob("*.txt"):
         assert not any(e.key == "recruit_character" for e in walk(read(path)))
+
+
+def tiny_province_bitmap():
+    """6x3 BMP: province 2 is a three-pixel artefact on the bottom edge."""
+    image = Image.new("RGB", (6, 3))
+    row = [(200, 0, 0), (0, 0, 200), (0, 0, 200), (200, 0, 0), (200, 0, 0), (200, 0, 0)]
+    image.putdata(row * 3)
+    buffer = __import__("io").BytesIO()
+    image.save(buffer, format="BMP")
+    definitions = {
+        1: ["1", "200", "0", "0", "land", "true", "plains", "1"],
+        2: ["2", "0", "0", "200", "sea", "false", "ocean", "0"],
+    }
+    return buffer.getvalue(), definitions
+
+
+def test_sub_pixel_provinces_are_merged_into_a_neighbour():
+    bitmap, definitions = tiny_province_bitmap()
+    raster = ProvinceRaster(bitmap, definitions)
+    assert province_areas(raster) == {1: 12, 2: 6}
+    assert degenerate_provinces(raster) == [2]
+    assert degenerate_provinces(raster, limit=4) == []
+    merged = merge_targets(raster, [2])
+    assert merged == {2: 1}
+    painted = paint_provinces(bitmap, merged, definitions)
+    assert len(painted) == len(bitmap)
+    remaining = ProvinceRaster(painted, {1: definitions[1]})
+    assert province_areas(remaining) == {1: 18}
+    assert degenerate_provinces(remaining) == []
+
+
+def test_unitstack_rows_on_merged_provinces_are_dropped(tiny_raster):
+    content, repairs = repair_unitstacks(
+        "3;0;1.5;12.3;1.5;0;1\n3;1;1.6;12.3;1.5;0;1", tiny_raster, drop={3}
+    )
+    assert content == b"\n"
+    assert repairs == []
+
+
+def test_packaged_map_has_no_province_below_the_engine_minimum():
+    metadata = json.loads((ROOT / "assets/MAP_SOURCE.json").read_text("utf-8"))
+    merged = metadata["degenerate_provinces"]["merged"]
+    with zipfile.ZipFile(ROOT / "assets/millennium_map.zip") as archive:
+        bitmap = archive.read("map/provinces.bmp")
+    import csv
+
+    definitions = {
+        int(r[0]): r
+        for r in csv.reader(
+            (MOD / "map/definition.csv").read_text().splitlines(), delimiter=";"
+        )
+        if r and r[0].isdigit()
+    }
+    assert not set(merged) & set(definitions)
+    raster = ProvinceRaster(bitmap, definitions)
+    assert degenerate_provinces(raster) == []
+    assert min(province_areas(raster).values()) >= MIN_PROVINCE_PIXELS

@@ -14,7 +14,7 @@ from validate_mod import (
 
 def test_entire_mod_and_map_payload():
     report = validate_source(deep_images=True)
-    assert report["states"] == 1493
+    assert report["states"] == 1483
     assert report["national_focuses"] == 400
     assert report["engine_launch_tested"] is False
 

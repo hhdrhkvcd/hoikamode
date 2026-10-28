@@ -45,6 +45,8 @@ class ProvinceRaster:
             land[p] = bool(p) and row[4] == "land"
             sea[p] = row[4] == "sea"
         ids = self.ids
+        self.land_ids = {p for p, flag in enumerate(land) if flag and p}
+        self.sea_ids = {p for p, flag in enumerate(sea) if flag}
         self.shore_pairs = set()
         neighbors = [
             (ids[:, :-1], ids[:, 1:]),
@@ -82,14 +84,17 @@ class ProvinceRaster:
         return float(xs[i]) + 0.5, self.height - float(ys[i]) - 0.5
 
 
-def prepare_buildings(text, allowed, raster, province_states):
+def prepare_buildings(text, allowed, raster, province_states, before=None, removed=()):
     lines, ports = [], []
     floating_seen = set()
     repairs = {
         "floating_harbor_state_repairs": 0,
         "removed_inland_floating_harbors": 0,
         "removed_duplicate_floating_harbors": 0,
+        "removed_degenerate_province_markers": 0,
+        "removed_retired_state_rows": 0,
     }
+    valid_states = {int(s) for s in province_states.values()}
     for original in text.splitlines():
         if not original.strip():
             continue
@@ -99,6 +104,10 @@ def prepare_buildings(text, allowed, raster, province_states):
         if row[1] not in allowed | SPAWN_TYPES:
             continue
         state, kind, x, y, z, rotation, target = row
+        if kind != "floating_harbor" and int(state) not in valid_states:
+            # Placements belonging to states retired with the map artefacts.
+            repairs["removed_retired_state_rows"] += 1
+            continue
         if kind == "floating_harbor":
             province = int(target)
             if province not in raster.coastal:
@@ -117,6 +126,17 @@ def prepare_buildings(text, allowed, raster, province_states):
             numbers[0], numbers[2]
         ):
             raise ValueError(f"Invalid building placement: {original}")
+        if kind in SPAWN_TYPES:
+            # Positions are only remapped for provinces that still exist: the
+            # pre-merge raster tells a stale marker apart from a real neighbour.
+            source_raster = before or raster
+            placed = source_raster.province_at(numbers[0], numbers[2])
+            if placed in set(removed) or (
+                kind in SEA_TARGET_TYPES
+                and (placed not in province_states or placed not in raster.land_ids)
+            ):
+                repairs["removed_degenerate_province_markers"] += 1
+                continue
         if kind == "naval_base_spawn":
             p = raster.province_at(numbers[0], numbers[2])
             if (
@@ -137,8 +157,13 @@ def prepare_buildings(text, allowed, raster, province_states):
     return "\n".join(lines), ports, repairs
 
 
-def repair_unitstacks(text, raster):
-    rows = [line.split(";") for line in text.splitlines() if line.strip()]
+def repair_unitstacks(text, raster, drop=()):
+    drop = set(drop)
+    rows = [
+        row
+        for row in (line.split(";") for line in text.splitlines() if line.strip())
+        if int(row[0]) not in drop
+    ]
     anchors = {}
     for row in rows:
         if len(row) != 7:
@@ -162,3 +187,110 @@ def repair_unitstacks(text, raster):
             row[2:5] = [f"{v:.2f}" for v in (x, y, z)]
             repaired.append([p, slot])
     return ("\n".join(";".join(row) for row in rows) + "\n").encode("utf-8"), repaired
+
+
+# The engine derives province centres, label anchors and building meshes from
+# the raster. A province drawn with a handful of pixels collapses to zero
+# extent in the downsampled masks it uses at menu/country-select zoom and the
+# game then divides by that zero area -- crash C0000094 (INT_DIVIDE_BY_ZERO)
+# in the province-graphics chain, seconds after "Startup time".
+MIN_PROVINCE_PIXELS = 8
+
+
+def province_areas(raster):
+    """Pixel count per province id in the supplied provinces bitmap."""
+    np = raster.np
+    values, counts = np.unique(raster.ids, return_counts=True)
+    return {int(v): int(c) for v, c in zip(values, counts)}
+
+
+def degenerate_provinces(raster, limit=MIN_PROVINCE_PIXELS):
+    """Map artefacts smaller than `limit` pixels, in stable id order."""
+    return sorted(
+        p for p, area in province_areas(raster).items() if 0 < area < limit
+    )
+
+
+def merge_targets(raster, provinces):
+    """Merge every degenerate province into its most common 4-neighbour.
+
+    Untouched pixels keep their exact colour, so the rest of the map stays
+    byte-identical; only the artefact itself is repainted.
+    """
+    np = raster.np
+    ids = raster.ids
+    height, width = ids.shape
+    targets = sorted(set(provinces))
+    tally = {p: {} for p in targets}
+    for province in targets:
+        ys, xs = np.nonzero(ids == province)
+        for dy, dx in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+            ny, nx = ys + dy, xs + dx
+            keep = (ny >= 0) & (ny < height) & (nx >= 0) & (nx < width)
+            for value in ids[ny[keep], nx[keep]].tolist():
+                if value != province:
+                    tally[province][value] = tally[province].get(value, 0) + 1
+    merged = {}
+    for province, counts in tally.items():
+        if not counts:
+            raise ValueError(f"Province {province} touches no other province")
+        merged[province] = min(counts, key=lambda p: (-counts[p], p))
+    return merged
+
+
+def paint_provinces(bitmap, replacements, definitions):
+    """Rewrite the merge pixels in place inside the original BMP bytes."""
+    if not replacements:
+        return bitmap
+    np = import_numpy()
+    bytearray_buffer = bytearray(bitmap)
+    if bytearray_buffer[:2] != b"BM":
+        raise ValueError("Provinces image must be a BMP file")
+    offset = int.from_bytes(bytearray_buffer[10:14], "little")
+    header_size = int.from_bytes(bytearray_buffer[14:18], "little")
+    width = int.from_bytes(bytearray_buffer[18:22], "little", signed=True)
+    height = int.from_bytes(bytearray_buffer[22:26], "little", signed=True)
+    bits = int.from_bytes(bytearray_buffer[28:30], "little")
+    compression = int.from_bytes(bytearray_buffer[30:34], "little")
+    if header_size < 40 or bits != 24 or compression != 0 or width <= 0 or not height:
+        raise ValueError("Provinces image must be an uncompressed 24-bpp BMP")
+    rows = abs(height)
+    stride = (width * 3 + 3) & ~3
+    pixels = np.frombuffer(bytearray_buffer, dtype=np.uint8,
+                           count=stride * rows, offset=offset)
+    colours = {}
+    for province, target in replacements.items():
+        row = definitions[target]
+        colours[province] = np.array(
+            [int(row[3]), int(row[2]), int(row[1])], dtype=np.uint8
+        )
+    image = raster_colours(bitmap)
+    pixel_offsets = np.arange(3)
+    for province, colour in colours.items():
+        source = definitions[province]
+        mask = (
+            (image[:, :, 0] == int(source[1]))
+            & (image[:, :, 1] == int(source[2]))
+            & (image[:, :, 2] == int(source[3]))
+        )
+        ys, xs = np.nonzero(mask)
+        if not len(xs):
+            raise ValueError(f"No pixels found for province {province}")
+        row_index = (rows - 1 - ys) if height > 0 else ys
+        target_offsets = row_index * stride + xs * 3
+        pixels[target_offsets[:, None] + pixel_offsets[None, :]] = colour[None, :]
+    return bytes(bytearray_buffer)
+
+
+def raster_colours(bitmap):
+    """RGB array of a provinces bitmap, top-down like the game's rows."""
+    np = import_numpy()
+    from PIL import Image
+
+    return np.asarray(Image.open(BytesIO(bitmap)).convert("RGB"))
+
+
+def import_numpy():
+    import numpy
+
+    return numpy

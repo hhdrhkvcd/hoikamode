@@ -35,7 +35,7 @@ try {
     # Parse BEFORE modifying the installed mod. Malformed JSON is never overwritten.
     $settings = Read-BalkanSettings $paths.LoadFile
     if ($GamePath) { $null = Find-BalkanGame $GamePath }
-    Write-Host 'Balkan Collapse 2.0.4 — современная карта, 1980 / 2008' -ForegroundColor Cyan
+    Write-Host 'Balkan Collapse 2.0.5 — современная карта, 1980 / 2008' -ForegroundColor Cyan
     Write-Host "Данные игры: $($paths.Data)"
     Write-Host 'Будет включён ТОЛЬКО Balkan Collapse. DLC сохраняются. Полный Millennium Dawn включать одновременно нельзя.'
     Write-Host 'Старая версия мода и список модов будут сохранены. Сохранения, настройки и файлы игры не удаляются.'
@@ -92,7 +92,7 @@ try {
         if (!(Test-Path -LiteralPath (Join-Path $stagedMod $required) -PathType Leaf)) { throw "Неполная сборка: $required" }
     }
     $stateFiles = @(Get-ChildItem -LiteralPath (Join-Path $stagedMod 'history\states') -Filter '*.txt' -File)
-    if ($stateFiles.Count -ne 1493) { throw "Ожидалось 1493 области карты, найдено $($stateFiles.Count). Установка отменена." }
+    if ($stateFiles.Count -ne 1483) { throw "Ожидалось 1483 области карты, найдено $($stateFiles.Count). Установка отменена." }
     $oldModBackup = Join-Path $paths.Backups "Balkan_Collapse-$stamp"
     $oldDescriptorBackup = Join-Path $paths.Backups "Balkan_Collapse-$stamp.mod"
     $oldLoadExists = Test-Path -LiteralPath $paths.LoadFile -PathType Leaf
@@ -104,7 +104,7 @@ try {
     Write-BalkanJson $stagedLoad $settings
     $null = Read-BalkanSettings $stagedLoad
     Write-BalkanJson (Join-Path $paths.Backups "transaction-$stamp.json") ([pscustomobject]@{
-        version = '2.0.4'; previous_load_existed = $oldLoadExists
+        version = '2.0.5'; previous_load_existed = $oldLoadExists
         previous_descriptor_existed = $oldDescriptorExists; target = $targetMod
     })
     # Transaction: only now replace an existing install, after all staging checks succeeded.
@@ -120,7 +120,7 @@ try {
     $loadTouched = $true
     Copy-Item -LiteralPath $stagedLoad -Destination $paths.LoadFile -Force
     $transactionStarted = $false
-    Write-Host 'Мод 2.0.4 установлен. Доступны сценарии 1980 и 2008.' -ForegroundColor Green
+    Write-Host 'Мод 2.0.5 установлен. Доступны сценарии 1980 и 2008.' -ForegroundColor Green
     Write-Host "Резервные копии: $($paths.Backups)"
     Write-Host 'Используй НОВУЮ игру: сохранения прежней карты несовместимы.'
 } catch {

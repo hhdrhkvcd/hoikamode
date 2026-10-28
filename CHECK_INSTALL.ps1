@@ -21,7 +21,7 @@ try {
     }
     $version = ([regex]::Match((Get-Content -LiteralPath $descriptor -Raw -Encoding UTF8), 'version\s*=\s*"([^"]+)"')).Groups[1].Value
     Write-Host "Версия установленного мода: $version"
-    if ($version -ne '2.0.4') { $problems.Add("Ожидалась версия 2.0.4, найдена '$version'.") }
+    if ($version -ne '2.0.5') { $problems.Add("Ожидалась версия 2.0.5, найдена '$version'.") }
 
     $early = Join-Path $installed 'common\defines\00_balkan_collapse.lua'
     if (Test-Path -LiteralPath $early) { $problems.Add('Осталcя устаревший common\defines\00_balkan_collapse.lua.') }
@@ -32,10 +32,17 @@ try {
         $problems.Add('Нет map\buildings.txt — карта не распакована.')
     } else {
         $ports = @(Select-String -LiteralPath $placement -Pattern ';naval_base_spawn;').Count
-        Write-Host "Точек портов в установленной карте: $ports (нужно 2496)"
-        if ($ports -ne 2496) { $problems.Add("Точек портов $ports вместо 2496 — это старая карта 2.0.2 и ниже.") }
+        Write-Host "Точек портов в установленной карте: $ports (нужно 2485)"
+        if ($ports -ne 2485) { $problems.Add("Точек портов $ports вместо 2485 — это старая карта 2.0.2 и ниже.") }
         $bytes = [IO.File]::ReadAllBytes($placement)
         if ($bytes.Length -gt 0 -and $bytes[$bytes.Length - 1] -eq 10) { $problems.Add('В buildings.txt осталась пустая конечная запись.') }
+    }
+
+    $definition = Join-Path $installed 'map\definition.csv'
+    if (Test-Path -LiteralPath $definition -PathType Leaf) {
+        $provinces = @((Get-Content -LiteralPath $definition -Encoding UTF8) | Where-Object { $_ -match '^\d+;' }).Count
+        Write-Host "Провинций в definition.csv: $provinces (нужно 14980)"
+        if ($provinces -ne 14980) { $problems.Add("Провинций $provinces вместо 14980 — установлена старая карта без исправления микропровинций.") }
     }
 
     foreach ($mapFile in @('map\provinces.bmp','map\unitstacks.txt','map\definition.csv')) {
@@ -67,7 +74,7 @@ try {
     } else { $problems.Add('Рядом с BAT нет assets\FLAGS_SOURCE.json.') }
 
     $stateCount = @(Get-ChildItem -LiteralPath (Join-Path $installed 'history\states') -Filter '*.txt' -File -ErrorAction SilentlyContinue).Count
-    if ($stateCount -ne 1493) { $problems.Add("Областей $stateCount вместо 1493.") }
+    if ($stateCount -ne 1483) { $problems.Add("Областей $stateCount вместо 1483.") }
 
     if (Test-Path -LiteralPath $paths.LoadFile -PathType Leaf) {
         try {

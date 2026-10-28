@@ -40,5 +40,4 @@ BC_owns_all_yugoslavia = {
     owns_state = 1306
     controls_state = 1306
 }
-
 BC_timeline_active = { SER = { NOT = { has_country_flag = BC_federation_restored } } }

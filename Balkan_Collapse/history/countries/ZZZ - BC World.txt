@@ -1,5 +1,5 @@
 # Simplified background country; not imported modern-mod scripts.
-capital = 1444
+capital = 1
 set_research_slots = 3
 set_stability = 0.6
 set_war_support = 0.2
@@ -32,4 +32,3 @@ create_country_leader = {
     expire = "2036.1.1.12"
     traits = { }
 }
-oob = "BC_WORLD_ZZZ"
