@@ -144,7 +144,11 @@ def prepare():
     ]:
         sprite("GFX_idea_" + key, f"gfx/interface/goals/bc_{tile}.dds")
     for name, file in [
-        ("GFX_frontend_bg", "gfx/interface/illustrations/bc_main_menu_background.dds"),
+        # Keep the source panorama available without replacing a native UI sprite.
+        (
+            "GFX_BC_MAIN_MENU_PANORAMA",
+            "gfx/interface/illustrations/bc_main_menu_background.dds",
+        ),
         (
             "GFX_BC_SERBIA_BACKGROUND",
             "gfx/interface/illustrations/bc_serbia_background.dds",
@@ -193,7 +197,7 @@ def prepare():
                 flag.resize(size, Image.Resampling.LANCZOS).save(
                     directory / f"{cosmetic}{suffix}.tga", compression=None
                 )
-    # Preserve the requested first/second loading screens. Menu stays the supplied panorama.
+    # Preserve the supplied loading screens and panorama asset. Leave native menu UI alone.
     # load_1 = Tito / Serbia 1980; load_2 = Serbia; the game chooses loading images randomly.
     manifest = {
         "method": "Crops, resizing, DDS encoding and flag geometry only. No generated or downloaded photographs.",

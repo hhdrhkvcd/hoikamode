@@ -74,10 +74,10 @@ def generate():
         "map/supplyareas",
         "events",
     ]
-    descriptor = """name="Балканы 1980: распад и воссоединение"
-version="2.0.0"
+    descriptor = f"""name="Балканы 1980: распад и воссоединение"
+version="{DATA["version"]}"
 picture="thumbnail.png"
-tags={ "Alternative History" "Events" "Gameplay" "National Focuses" }
+tags={{ "Alternative History" "Events" "Gameplay" "National Focuses" }}
 """
     descriptor += "".join(f'replace_path="{p}"\n' for p in replacements)
     # No unverified supported_version and no dependency on the full Millennium Dawn mod.

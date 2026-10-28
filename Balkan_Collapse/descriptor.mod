@@ -1,5 +1,5 @@
 name="Балканы 1980: распад и воссоединение"
-version="2.0.0"
+version="2.0.1"
 picture="thumbnail.png"
 tags={ "Alternative History" "Events" "Gameplay" "National Focuses" }
 replace_path="common/bookmarks"

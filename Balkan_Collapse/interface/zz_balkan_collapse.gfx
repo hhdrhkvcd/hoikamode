@@ -204,7 +204,7 @@ spriteTypes = {
         texturefile = "gfx/interface/goals/bc_economy.dds"
     }
     spriteType = {
-        name = "GFX_frontend_bg"
+        name = "GFX_BC_MAIN_MENU_PANORAMA"
         texturefile = "gfx/interface/illustrations/bc_main_menu_background.dds"
     }
     spriteType = {

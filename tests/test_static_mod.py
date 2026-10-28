@@ -1,8 +1,15 @@
 import hashlib
 import json
 
-from clausewitz import Block, read, walk
-from validate_mod import MOD, ROOT, validate_source
+import pytest
+from clausewitz import Block, parse, read, walk
+from validate_mod import (
+    MOD,
+    ROOT,
+    ValidationError,
+    validate_source,
+    validate_sprite_namespace,
+)
 
 
 def test_entire_mod_and_map_payload():
@@ -10,6 +17,17 @@ def test_entire_mod_and_map_payload():
     assert report["states"] == 1493
     assert report["national_focuses"] == 400
     assert report["engine_launch_tested"] is False
+
+
+@pytest.mark.parametrize("kind", ["spriteType", "corneredTileSpriteType"])
+def test_vanilla_frontend_sprite_overrides_are_rejected(kind):
+    # Cover both the original cornered-tile override and its 2.0.0 spriteType regression.
+    doc = parse(
+        f'spriteTypes = {{ {kind} = {{ name = "GFX_frontend_bg" '
+        'texturefile = "gfx/interface/illustrations/bc_main_menu_background.dds" } }'
+    )
+    with pytest.raises(ValidationError, match="never replace vanilla UI sprites"):
+        validate_sprite_namespace(doc, "unsafe_frontend.gfx")
 
 
 def test_no_unconditional_mass_annexation_in_focus_rewards():

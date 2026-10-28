@@ -72,6 +72,20 @@ def require(condition, message):
         raise ValidationError(message)
 
 
+def validate_sprite_namespace(doc, origin="<interface>"):
+    """Do not shadow native UI widgets with a different sprite implementation."""
+    prefixes = ("GFX_BC_", "GFX_decision_BC_", "GFX_idea_BC_")
+    for group in doc.values("spriteTypes"):
+        for entry in group.entries():
+            if isinstance(entry.value, Block):
+                name = entry.value.scalar("name")
+                require(
+                    name and name.startswith(prefixes),
+                    f"{origin}: unsafe interface sprite {name}; use the BC namespace, "
+                    "never replace vanilla UI sprites",
+                )
+
+
 def load_localisation():
     result = {}
     for lang in ["english", "russian"]:
@@ -311,6 +325,7 @@ def validate_source(*, deep_images=False):
     sprites = {}
     for name, doc in parsed.items():
         if name.startswith("interface/"):
+            validate_sprite_namespace(doc, name)
             for group in doc.values("spriteTypes"):
                 for sprite in group.values("spriteType"):
                     key = sprite.scalar("name")
