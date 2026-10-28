@@ -154,6 +154,7 @@ FOLD_2026 = {
     'CHE': 'SOV',                              # Chechnya
     'ABK': 'GEO', 'SOO': 'GEO',                # Abkhazia, South Ossetia
     'PMR': 'MLV',                              # Transnistria
+    'NKR': 'AZE',                              # Nagorno-Karabakh (under Azerbaijan since 2023)
 }
 
 # --------------------------------------------------------------------------
@@ -464,10 +465,17 @@ def scenario_effects(scn, md_owner_of, leaders, portraits):
         L.append(_leader_block(tag, leaders[tag], portraits))
     if scn == 'bc_1995':
         L.append('SER = { remove_ideas = BC_tito_cult add_ideas = BC_war_footing BC_ethnic_tensions '
-                 'set_stability = 0.35 set_war_support = 0.65 }')
+                 'set_stability = 0.35 set_war_support = 0.65 '
+                 'set_politics = { ruling_party = neutrality last_election = "1994.12.1" election_frequency = 48 '
+                 'elections_allowed = yes } '
+                 'set_popularities = { democratic = 25 fascism = 20 communism = 25 neutrality = 30 } }')
         L.append('KOS = { add_ideas = BC_ethnic_tensions }')
+        L.append('RSK = { set_stability = 0.3 set_war_support = 0.6 }')
     if scn == 'bc_2026':
-        L.append('SER = { ' + BAL_2026_IDEAS + ' set_stability = 0.55 set_war_support = 0.25 }')
+        L.append('SER = { ' + BAL_2026_IDEAS + ' set_stability = 0.55 set_war_support = 0.25 '
+                 'set_politics = { ruling_party = neutrality last_election = "2024.1.1" election_frequency = 48 '
+                 'elections_allowed = yes } '
+                 'set_popularities = { democratic = 35 fascism = 10 communism = 15 neutrality = 40 } }')
         L.append('CRO = { set_stability = 0.6 }')
         L.append('SLV = { set_stability = 0.65 }')
         L.append('BOS = { set_stability = 0.45 }')
