@@ -85,9 +85,12 @@ tags={{ "Alternative History" "Events" "Gameplay" "National Focuses" }}
     (ROOT / "Balkan_Collapse.mod").write_text(
         descriptor + 'path="mod/Balkan_Collapse"\n', encoding="utf-8"
     )
+    # Vanilla creates NDefines in its 00_* files. An earlier-sorting override
+    # aborts Lua initialization and leaves unrelated engine defines unset.
+    (MOD / "common/defines/00_balkan_collapse.lua").unlink(missing_ok=True)
     put(
-        "common/defines/00_balkan_collapse.lua",
-        """-- Override individual values; never replace a complete NDefines table.
+        "common/defines/zz_balkan_collapse.lua",
+        """-- Load after vanilla 00_* defines. Never create or replace NDefines tables.
 NDefines.NGame.START_DATE = "1980.5.1.12"
 NDefines.NGame.END_DATE = "2036.1.1.1"
 NDefines.NDiplomacy.TENSION_TIME_SCALE_START_DATE = "1980.5.1.12"
@@ -225,10 +228,10 @@ graphical_culture_2d = eastern_european_2d""",
         lines = [
             f"BC_release_{tag} = {{",
             "    if = {",
-            f"        limit = {{ NOT = {{ exists = {tag} }} }}",
+            f"        limit = {{ NOT = {{ country_exists = {tag} }} }}",
             f"        release = {tag}",
             "    }",
-            f"    if = {{ limit = {{ exists = {tag} }}",
+            f"    if = {{ limit = {{ country_exists = {tag} }}",
             f"        {tag} = {{",
             "            set_country_flag = BALKANS_INDEPENDENT",
             f"            BC_initialize_{tag}_army = yes",
@@ -251,7 +254,7 @@ graphical_culture_2d = eastern_european_2d""",
     )
     effects.append(
         "BC_dayton_settlement = {\n"
-        "    if = { limit = { exists = BOS exists = SRP }\n"
+        "    if = { limit = { country_exists = BOS country_exists = SRP }\n"
         "        if = { limit = { SRP = { has_war_with = BOS } } SRP = { white_peace = BOS } }\n"
         "        if = { limit = { 850 = { is_owned_by = SRP } } BOS = { transfer_state = 850 } }\n"
         "        if = { limit = { SRP = { is_subject = no } } BOS = { puppet = SRP } }\n"

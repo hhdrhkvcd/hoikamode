@@ -83,6 +83,14 @@ def test_windows_scripts_keep_utf8_bom_and_do_not_delete_game_or_settings():
         "$transactionStarted = $true"
     )
     assert "if ($oldModMoved)" in installer
+    assert (
+        "$obsoleteDefine = Join-Path $stagedMod 'common\\defines\\00_balkan_collapse.lua'"
+        in installer
+    )
+    assert installer.index(
+        "Remove-Item -LiteralPath $obsoleteDefine"
+    ) < installer.index("$transactionStarted = $true")
+    assert "'common\\defines\\zz_balkan_collapse.lua'" in installer
     assert "$settings.enabled_mods = @('mod/Balkan_Collapse.mod')" in installer
     assert (
         "steam://rungameid" not in installer

@@ -32,6 +32,25 @@ try {
     $backups = Join-Path $data 'Balkan_Collapse_backups'
     Assert-Test (@(Get-ChildItem -LiteralPath $backups -Filter 'stale.marker' -Recurse -File).Count -eq 1) 'Old version was not backed up'
 
+    # Simulate extracting 2.0.2 over old sources, without changing the real repository.
+    $overlay = Join-Path $work 'source-overlay'
+    New-Item -ItemType Directory -Path $overlay -Force | Out-Null
+    foreach ($name in @('Balkan_Collapse','Balkan_Collapse.mod','START_BALKAN.ps1','scripts')) {
+        Copy-Item -LiteralPath (Join-Path $repo $name) -Destination $overlay -Recurse
+    }
+    $overlayAssets = Join-Path $overlay 'assets'
+    New-Item -ItemType Directory -Path $overlayAssets | Out-Null
+    foreach ($name in @('millennium_map.zip','MAP_SOURCE.json')) {
+        Copy-Item -LiteralPath (Join-Path $repo "assets\$name") -Destination $overlayAssets
+    }
+    $legacy = Join-Path $overlay 'Balkan_Collapse\common\defines\00_balkan_collapse.lua'
+    [IO.File]::WriteAllText($legacy, 'NDefines.NGame.START_DATE = "1936.1.1.12"', $utf8)
+    & $shell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $overlay 'START_BALKAN.ps1') -DocumentsPath $docs -NoLaunch -Yes | Out-Host
+    Assert-Test ($LASTEXITCODE -eq 0) 'Overlay-source install failed'
+    Assert-Test (Test-Path -LiteralPath $legacy) 'Installer modified the source folder'
+    Assert-Test (!(Test-Path -LiteralPath (Join-Path $target 'common\defines\00_balkan_collapse.lua'))) 'Obsolete early Lua override survived staging'
+    Assert-Test (Test-Path -LiteralPath (Join-Path $target 'common\defines\zz_balkan_collapse.lua')) 'Late Lua override missing'
+
     $goodLoad = Get-Content -LiteralPath $load -Raw -Encoding UTF8
     $goodDescriptor = (Get-FileHash -LiteralPath $descriptor -Algorithm SHA256).Hash
     [IO.File]::WriteAllText($load, '{ broken json', $utf8)

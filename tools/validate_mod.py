@@ -86,6 +86,22 @@ def validate_sprite_namespace(doc, origin="<interface>"):
                 )
 
 
+def validate_country_existence_triggers(doc, tags, origin="<script>"):
+    for entry in walk(doc):
+        if entry.key == "exists":
+            require(
+                isinstance(entry.value, str) and unquote(entry.value) in {"yes", "no"},
+                f"{origin}: exists expects yes/no; use country_exists for a country tag",
+            )
+        elif entry.key == "country_exists":
+            require(
+                isinstance(entry.value, str)
+                and unquote(entry.value)
+                in set(tags) | {"ROOT", "FROM", "PREV", "THIS", "OVERLORD"},
+                f"{origin}: unknown country_exists target {entry.value}",
+            )
+
+
 def load_localisation():
     result = {}
     for lang in ["english", "russian"]:
@@ -173,6 +189,8 @@ def validate_source(*, deep_images=False):
     tags_doc = parsed["common/country_tags/00_balkan_world.txt"]
     tags = {e.key: unquote(e.value) for e in tags_doc.entries()}
     require(len(tags) == len(tags_doc.entries()), "Duplicate country registration")
+    for name, doc in parsed.items():
+        validate_country_existence_triggers(doc, tags, name)
     for tag, path in tags.items():
         require(re.fullmatch(r"[A-Z0-9]{3}", tag), f"Invalid country tag {tag}")
         require(
@@ -406,17 +424,37 @@ def validate_source(*, deep_images=False):
             if e.key in tags:
                 for f in e.value.block("focuses").atoms():
                     require(f in focus_ids, f"Bookmark points to missing focus {f}")
-    defines = (MOD / "common/defines/00_balkan_collapse.lua").read_text("utf-8")
+    require(
+        not (MOD / "common/defines.lua").exists(),
+        "Do not shadow vanilla common/defines.lua",
+    )
+    define_files = sorted((MOD / "common/defines").glob("*.lua"))
+    require(
+        [p.name for p in define_files] == ["zz_balkan_collapse.lua"],
+        "Load the Balkan override after vanilla defines; remove obsolete 00_balkan_collapse.lua",
+    )
+    defines = define_files[0].read_text("utf-8")
     require(
         'NDefines.NGame.START_DATE = "1980.5.1.12"' in defines,
         "Start date override is ineffective",
     )
     require(
-        not re.search(r"^\s*N(?:Game|Diplomacy)\s*=\s*\{", defines, re.MULTILINE),
-        "Replaced a whole defines table",
+        not re.search(
+            r"^\s*(?:NDefines(?:\.[A-Za-z_]\w*)?|NGame|NDiplomacy)\s*=",
+            defines,
+            re.MULTILINE,
+        ),
+        "Never create or replace a whole defines table; preserve vanilla initialization",
     )
     inner = read(MOD / "descriptor.mod")
     outer = read(ROOT / "Balkan_Collapse.mod")
+    for descriptor in [inner, outer]:
+        require(
+            not {"common", "common/defines"}.intersection(
+                unquote(value) for value in descriptor.values("replace_path")
+            ),
+            "The descriptor must preserve the vanilla defines bootstrap",
+        )
     require(outer.scalar("path") == "mod/Balkan_Collapse", "Wrong launcher path")
     require(
         inner.scalar("version") == outer.scalar("version") == config["version"],

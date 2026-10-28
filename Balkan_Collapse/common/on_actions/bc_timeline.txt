@@ -11,8 +11,8 @@ on_actions = {
                 if = {
                     limit = {
                         date > 1995.12.13
-                        exists = BOS
-                        exists = SRP
+                        country_exists = BOS
+                        country_exists = SRP
                     }
                     SER = {
                         BC_dayton_settlement = yes

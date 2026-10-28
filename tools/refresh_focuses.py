@@ -111,12 +111,12 @@ def refresh():
                     "SER_federal_treaty": "set_rule = { can_create_factions = yes } if = { limit = { is_in_faction = no } create_faction = BC_BALKAN_FEDERATION } add_political_power = 50",
                     "SER_reunify_peacefully": "set_country_flag = BC_federal_negotiations\n"
                     + "\n".join(
-                        f"if = {{ limit = {{ exists = {t} NOT = {{ has_war_with = {t} }} {t} = {{ is_subject = no has_war = no }} }} {t} = {{ country_event = {{ id = bc_federation.1 days = 1 }} }} }}"
+                        f"if = {{ limit = {{ country_exists = {t} NOT = {{ has_war_with = {t} }} {t} = {{ is_subject = no has_war = no }} }} {t} = {{ country_event = {{ id = bc_federation.1 days = 1 }} }} }}"
                         for t in COUNTRIES
                         if t != "SER"
                     ),
                     "SER_balkan_campaign": "\n".join(
-                        f"if = {{ limit = {{ exists = {t} NOT = {{ has_war_with = {t} }} {t} = {{ is_subject = no }} }} create_wargoal = {{ type = annex_everything target = {t} }} }}"
+                        f"if = {{ limit = {{ country_exists = {t} NOT = {{ has_war_with = {t} }} {t} = {{ is_subject = no }} }} create_wargoal = {{ type = annex_everything target = {t} }} }}"
                         for t in COUNTRIES
                         if t != "SER"
                     )

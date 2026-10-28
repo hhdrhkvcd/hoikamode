@@ -92,7 +92,7 @@ def refresh():
                 option.remove("declare_war_on")
                 option.items.extend(
                     block(
-                        f"if = {{ limit = {{ exists = {target} NOT = {{ has_war_with = {target} }} {target} = {{ is_subject = no }} }} declare_war_on = {{ target = {target} type = annex_everything }} }}"
+                        f"if = {{ limit = {{ country_exists = {target} NOT = {{ has_war_with = {target} }} {target} = {{ is_subject = no }} }} declare_war_on = {{ target = {target} type = annex_everything }} }}"
                     ).items
                 )
         elif event_id in ["serbia_collapse.4", "serbia_collapse.13"]:
@@ -101,7 +101,7 @@ def refresh():
                 option.remove("white_peace")
                 option.items.extend(
                     block(
-                        f"if = {{ limit = {{ exists = {target} has_war_with = {target} }} white_peace = {target} }}"
+                        f"if = {{ limit = {{ country_exists = {target} has_war_with = {target} }} white_peace = {target} }}"
                     ).items
                 )
         if event_id == "serbia_collapse.2":
@@ -132,7 +132,7 @@ def refresh():
     startup = block("""if = {
         limit = { NOT = { has_global_flag = BC_startup_complete } }
         set_global_flag = BC_startup_complete
-        if = { limit = { date > 1995.12.13 exists = BOS exists = SRP } SER = { BC_dayton_settlement = yes } }
+        if = { limit = { date > 1995.12.13 country_exists = BOS country_exists = SRP } SER = { BC_dayton_settlement = yes } }
     }""")
     on_actions.add("on_startup", Block([Entry("effect", startup)]))
     for tag, entries in sorted(hooks.items()):
@@ -153,10 +153,10 @@ country_event = {
         name = bc_federation.1.a
         ai_chance = { factor = 70 modifier = { factor = 3 has_country_flag = BC_open_to_federation } }
         if = {
-            limit = { exists = FROM has_war = no FROM = { has_war = no } }
+            limit = { country_exists = FROM has_war = no FROM = { has_war = no } }
             # A subject entity follows its constitutional parent only when that parent consents.
             if = {
-                limit = { tag = BOS exists = SRP SRP = { is_subject_of = ROOT } }
+                limit = { tag = BOS country_exists = SRP SRP = { is_subject_of = ROOT } }
                 FROM = { annex_country = { target = SRP transfer_troops = yes } }
             }
             FROM = { annex_country = { target = ROOT transfer_troops = yes } }
@@ -166,7 +166,7 @@ country_event = {
         name = bc_federation.1.b
         ai_chance = { factor = 30 }
         add_stability = 0.02
-        if = { limit = { exists = FROM } FROM = { country_event = { id = bc_federation.2 days = 1 } } }
+        if = { limit = { country_exists = FROM } FROM = { country_event = { id = bc_federation.2 days = 1 } } }
     }
 }
 country_event = {
@@ -198,7 +198,7 @@ country_event = {
             f"        icon = BC_{tag.lower()}",
             "        cost = 50",
             "        days_re_enable = 180",
-            f"        visible = {{ has_country_flag = BC_federal_negotiations exists = {tag} {tag} = {{ is_subject = no }} }}",
+            f"        visible = {{ has_country_flag = BC_federal_negotiations country_exists = {tag} {tag} = {{ is_subject = no }} }}",
             f"        available = {{ has_war = no {tag} = {{ has_war = no }} }}",
             f"        complete_effect = {{ {tag} = {{ country_event = {{ id = bc_federation.1 days = 1 }} }} }}",
             "        ai_will_do = { factor = 1 }",
@@ -211,7 +211,7 @@ country_event = {
             f"    BC_campaign_{tag} = {{",
             "        icon = BC_army",
             "        cost = 50",
-            f"        visible = {{ has_completed_focus = SER_balkan_campaign exists = {tag} {tag} = {{ is_subject = no }} NOT = {{ has_war_with = {tag} }} }}",
+            f"        visible = {{ has_completed_focus = SER_balkan_campaign country_exists = {tag} {tag} = {{ is_subject = no }} NOT = {{ has_war_with = {tag} }} }}",
             "        available = { has_war = no }",
             f"        complete_effect = {{ declare_war_on = {{ target = {tag} type = annex_everything }} }}",
             "        ai_will_do = { factor = 1 }",

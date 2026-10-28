@@ -1,7 +1,10 @@
-БАЛКАНЫ: РАСПАД И ВОССОЕДИНЕНИЕ — 2.0.1
+БАЛКАНЫ: РАСПАД И ВОССОЕДИНЕНИЕ — 2.0.2
+
+ИСПРАВЛЕНИЕ 2.0.2
+Исправлены ошибки из присланного лога 1.19.4: ранний Lua-файл (NDefines = nil) и exists = TAG вместо country_exists = TAG. Новую сборку устанавливай через BAT: он не перенесёт устаревший 00_balkan_collapse.lua в игру. Подтверждения запуска новой сборки здесь нет.
 
 БЫСТРАЯ УСТАНОВКА
-1. Скачай новый Balkan_Collapse_1980.zip. Распакуй ВЕСЬ архив в отдельную папку.
+1. Скачай новый Balkan_Collapse_1980.zip. Распакуй ВЕСЬ архив в новую пустую папку.
 2. Закрой HOI4 и Paradox Launcher.
 3. Запусти START_BALKAN.bat, подтверди Y.
 4. Начни НОВУЮ игру: 1980 — Югославия Тито, 2008 — страны после распада.
@@ -20,7 +23,7 @@ COLLECT_BALKAN_LOGS.bat — собрать error.log, setup.log и другие 
 Установщик не удаляет настройки, сохранения и файлы игры. Прежний мод и dlc_load.json сохраняются в Documents/Paradox Interactive/Hearts of Iron IV/Balkan_Collapse_backups. Проверка сборки и чтение JSON выполняются до замены прежнего мода. При сбое замены предусмотрен откат.
 
 УСТАНОВКА ВРУЧНУЮ
-Из готового установочного ZIP скопируй папку Balkan_Collapse и Balkan_Collapse.mod в Documents/Paradox Interactive/Hearts of Iron IV/mod/. Включи только этот мод.
+Предпочтительнее BAT. При ручной установке сначала сохрани старую папку мода отдельно; не объединяй старые и новые файлы. Из готового установочного ZIP скопируй новую папку Balkan_Collapse и Balkan_Collapse.mod в Documents/Paradox Interactive/Hearts of Iron IV/mod/. Включи только этот мод.
 Если используешь исходники GitHub, сначала распакуй assets/millennium_map.zip ВНУТРЬ папки Balkan_Collapse: должен появиться Balkan_Collapse/map/provinces.bmp. Либо используй BAT — он сделает это сам. Не копируй history/countries из исходного RAR: они зависят от чужих технологий и скриптов.
 
 СЦЕНАРИЙ

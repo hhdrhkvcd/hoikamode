@@ -25,10 +25,10 @@ BC_initialize_CRO_army = {
 
 BC_release_CRO = {
     if = {
-        limit = { NOT = { exists = CRO } }
+        limit = { NOT = { country_exists = CRO } }
         release = CRO
     }
-    if = { limit = { exists = CRO }
+    if = { limit = { country_exists = CRO }
         CRO = {
             set_country_flag = BALKANS_INDEPENDENT
             BC_initialize_CRO_army = yes
@@ -52,10 +52,10 @@ BC_initialize_SLV_army = {
 
 BC_release_SLV = {
     if = {
-        limit = { NOT = { exists = SLV } }
+        limit = { NOT = { country_exists = SLV } }
         release = SLV
     }
-    if = { limit = { exists = SLV }
+    if = { limit = { country_exists = SLV }
         SLV = {
             set_country_flag = BALKANS_INDEPENDENT
             BC_initialize_SLV_army = yes
@@ -76,10 +76,10 @@ BC_initialize_BOS_army = {
 
 BC_release_BOS = {
     if = {
-        limit = { NOT = { exists = BOS } }
+        limit = { NOT = { country_exists = BOS } }
         release = BOS
     }
-    if = { limit = { exists = BOS }
+    if = { limit = { country_exists = BOS }
         BOS = {
             set_country_flag = BALKANS_INDEPENDENT
             BC_initialize_BOS_army = yes
@@ -103,10 +103,10 @@ BC_initialize_SRP_army = {
 
 BC_release_SRP = {
     if = {
-        limit = { NOT = { exists = SRP } }
+        limit = { NOT = { country_exists = SRP } }
         release = SRP
     }
-    if = { limit = { exists = SRP }
+    if = { limit = { country_exists = SRP }
         SRP = {
             set_country_flag = BALKANS_INDEPENDENT
             BC_initialize_SRP_army = yes
@@ -128,10 +128,10 @@ BC_initialize_MNT_army = {
 
 BC_release_MNT = {
     if = {
-        limit = { NOT = { exists = MNT } }
+        limit = { NOT = { country_exists = MNT } }
         release = MNT
     }
-    if = { limit = { exists = MNT }
+    if = { limit = { country_exists = MNT }
         MNT = {
             set_country_flag = BALKANS_INDEPENDENT
             BC_initialize_MNT_army = yes
@@ -151,10 +151,10 @@ BC_initialize_MAC_army = {
 
 BC_release_MAC = {
     if = {
-        limit = { NOT = { exists = MAC } }
+        limit = { NOT = { country_exists = MAC } }
         release = MAC
     }
-    if = { limit = { exists = MAC }
+    if = { limit = { country_exists = MAC }
         MAC = {
             set_country_flag = BALKANS_INDEPENDENT
             BC_initialize_MAC_army = yes
@@ -174,10 +174,10 @@ BC_initialize_KOS_army = {
 
 BC_release_KOS = {
     if = {
-        limit = { NOT = { exists = KOS } }
+        limit = { NOT = { country_exists = KOS } }
         release = KOS
     }
-    if = { limit = { exists = KOS }
+    if = { limit = { country_exists = KOS }
         KOS = {
             set_country_flag = BALKANS_INDEPENDENT
             BC_initialize_KOS_army = yes
@@ -216,7 +216,7 @@ BC_restore_federation = {
 }
 
 BC_dayton_settlement = {
-    if = { limit = { exists = BOS exists = SRP }
+    if = { limit = { country_exists = BOS country_exists = SRP }
         if = { limit = { SRP = { has_war_with = BOS } } SRP = { white_peace = BOS } }
         if = { limit = { 850 = { is_owned_by = SRP } } BOS = { transfer_state = 850 } }
         if = { limit = { SRP = { is_subject = no } } BOS = { puppet = SRP } }

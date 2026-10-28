@@ -411,7 +411,7 @@ focus_tree = {
         completion_reward = {
             if = {
                 limit = {
-                    exists = CRO
+                    country_exists = CRO
                     NOT = {
                         has_war_with = CRO
                     }
@@ -426,7 +426,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = SLV
+                    country_exists = SLV
                     NOT = {
                         has_war_with = SLV
                     }
@@ -441,7 +441,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = BOS
+                    country_exists = BOS
                     NOT = {
                         has_war_with = BOS
                     }
@@ -456,7 +456,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = SRP
+                    country_exists = SRP
                     NOT = {
                         has_war_with = SRP
                     }
@@ -471,7 +471,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = MNT
+                    country_exists = MNT
                     NOT = {
                         has_war_with = MNT
                     }
@@ -486,7 +486,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = MAC
+                    country_exists = MAC
                     NOT = {
                         has_war_with = MAC
                     }
@@ -501,7 +501,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = KOS
+                    country_exists = KOS
                     NOT = {
                         has_war_with = KOS
                     }
@@ -558,7 +558,7 @@ focus_tree = {
             set_country_flag = BC_federal_negotiations
             if = {
                 limit = {
-                    exists = CRO
+                    country_exists = CRO
                     NOT = {
                         has_war_with = CRO
                     }
@@ -576,7 +576,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = SLV
+                    country_exists = SLV
                     NOT = {
                         has_war_with = SLV
                     }
@@ -594,7 +594,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = BOS
+                    country_exists = BOS
                     NOT = {
                         has_war_with = BOS
                     }
@@ -612,7 +612,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = SRP
+                    country_exists = SRP
                     NOT = {
                         has_war_with = SRP
                     }
@@ -630,7 +630,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = MNT
+                    country_exists = MNT
                     NOT = {
                         has_war_with = MNT
                     }
@@ -648,7 +648,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = MAC
+                    country_exists = MAC
                     NOT = {
                         has_war_with = MAC
                     }
@@ -666,7 +666,7 @@ focus_tree = {
             }
             if = {
                 limit = {
-                    exists = KOS
+                    country_exists = KOS
                     NOT = {
                         has_war_with = KOS
                     }

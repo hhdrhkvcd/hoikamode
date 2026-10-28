@@ -33,7 +33,7 @@ try {
     # Parse BEFORE modifying the installed mod. Malformed JSON is never overwritten.
     $settings = Read-BalkanSettings $paths.LoadFile
     if ($GamePath) { $null = Find-BalkanGame $GamePath }
-    Write-Host 'Balkan Collapse 2.0.1 — современная карта, 1980 / 2008' -ForegroundColor Cyan
+    Write-Host 'Balkan Collapse 2.0.2 — современная карта, 1980 / 2008' -ForegroundColor Cyan
     Write-Host "Данные игры: $($paths.Data)"
     Write-Host 'Будет включён ТОЛЬКО Balkan Collapse. DLC сохраняются. Полный Millennium Dawn включать одновременно нельзя.'
     Write-Host 'Старая версия мода и список модов будут сохранены. Сохранения, настройки и файлы игры не удаляются.'
@@ -47,6 +47,13 @@ try {
     New-Item -ItemType Directory -Path $stage | Out-Null
     $stagedMod = Join-Path $stage 'Balkan_Collapse'
     Copy-Item -LiteralPath $sourceMod -Destination $stagedMod -Recurse
+    # A ZIP extracted over an old source folder can retain this fatal early override.
+    # Remove only our known obsolete file from the staging copy, never from the source/game.
+    $obsoleteDefine = Join-Path $stagedMod 'common\defines\00_balkan_collapse.lua'
+    if (Test-Path -LiteralPath $obsoleteDefine -PathType Leaf) {
+        Remove-Item -LiteralPath $obsoleteDefine -Force
+        Write-Warning 'Убрана устаревшая ранняя Lua-настройка из устанавливаемой копии.'
+    }
     if (!$sourceHasMap) {
         if (!(Test-Path -LiteralPath $manifest -PathType Leaf)) { throw 'Нет assets\MAP_SOURCE.json для проверки архива карты.' }
         $mapInfo = Get-Content -LiteralPath $manifest -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -55,7 +62,7 @@ try {
         Write-Host 'Распаковываю карту из GitHub...' -ForegroundColor Cyan
         Expand-Archive -LiteralPath $payload -DestinationPath $stagedMod -Force
     }
-    foreach ($required in @('map\provinces.bmp','map\definition.csv','map\rivers.bmp','map\heightmap.bmp','map\terrain_morecities.bmp','map\trees.bmp','map\supply_nodes.txt','history\states\107-BC.txt','descriptor.mod')) {
+    foreach ($required in @('common\defines\zz_balkan_collapse.lua','map\provinces.bmp','map\definition.csv','map\rivers.bmp','map\heightmap.bmp','map\terrain_morecities.bmp','map\trees.bmp','map\supply_nodes.txt','history\states\107-BC.txt','descriptor.mod')) {
         if (!(Test-Path -LiteralPath (Join-Path $stagedMod $required) -PathType Leaf)) { throw "Неполная сборка: $required" }
     }
     $stateFiles = @(Get-ChildItem -LiteralPath (Join-Path $stagedMod 'history\states') -Filter '*.txt' -File)
@@ -71,7 +78,7 @@ try {
     Write-BalkanJson $stagedLoad $settings
     $null = Read-BalkanSettings $stagedLoad
     Write-BalkanJson (Join-Path $paths.Backups "transaction-$stamp.json") ([pscustomobject]@{
-        version = '2.0.1'; previous_load_existed = $oldLoadExists
+        version = '2.0.2'; previous_load_existed = $oldLoadExists
         previous_descriptor_existed = $oldDescriptorExists; target = $targetMod
     })
     # Transaction: only now replace an existing install, after all staging checks succeeded.
@@ -87,7 +94,7 @@ try {
     $loadTouched = $true
     Copy-Item -LiteralPath $stagedLoad -Destination $paths.LoadFile -Force
     $transactionStarted = $false
-    Write-Host 'Мод 2.0.1 установлен. Доступны сценарии 1980 и 2008.' -ForegroundColor Green
+    Write-Host 'Мод 2.0.2 установлен. Доступны сценарии 1980 и 2008.' -ForegroundColor Green
     Write-Host "Резервные копии: $($paths.Backups)"
     Write-Host 'Используй НОВУЮ игру: сохранения прежней карты несовместимы.'
 } catch {

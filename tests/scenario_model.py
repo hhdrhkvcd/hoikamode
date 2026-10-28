@@ -116,8 +116,13 @@ class Model:
                 }[e.op]
             elif key in ["tag", "original_tag"]:
                 answer = scope == self.resolve(value, root, from_tag)
-            elif key == "exists":
+            elif key == "country_exists":
                 answer = self.exists(self.resolve(value, root, from_tag))
+            elif key == "exists":
+                assert value in ["yes", "no"], (
+                    "exists takes yes/no; use country_exists for a tag"
+                )
+                answer = self.exists(scope) == (value == "yes")
             elif key == "has_country_flag":
                 answer = value in self.countries[scope]["flags"]
             elif key == "has_global_flag":

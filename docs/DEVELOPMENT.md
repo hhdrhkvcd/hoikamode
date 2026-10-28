@@ -37,7 +37,7 @@ The validator checks state/province uniqueness and coverage, province colours, s
 
 The event model checks Tito's succession, historical releases, a consistent late start, one-time queues, armies, peace/subject relationships, refusal/acceptance of unification and stopping forced secessions after restoration. It intentionally ignores economic calculations, combat and many game effects. Passing it is not proof that HOI4 loads.
 
-`tests/Test-Installer.ps1` is a Windows-only runtime test using isolated temporary Documents directories and `-NoLaunch`. It never installs into the user's real Documents or starts HOI4. It exercises installation, backup, malformed JSON handling, rollback, vanilla mode and log collection. On this Linux development machine it is skipped; it can be run on Windows or in Windows CI. Syntax-only PowerShell parsing is separate and does run here.
+`tests/Test-Installer.ps1` is a Windows-only runtime test using isolated temporary Documents directories and `-NoLaunch`. It never installs into the user's real Documents or starts HOI4. It exercises installation, backup, malformed JSON handling, rollback, vanilla mode and log collection. On this Linux development machine it is skipped; it can be run on Windows or in Windows CI. Syntax-only PowerShell parsing is separate and does run here. Lua 5.1 checks use Lupa and a synthetic bootstrap, not proprietary game files: they reproduce the early-load nil error and verify that the late override preserves base tables. These are configuration tests, not an engine launch.
 
 ## Reimport the supplied source map
 
@@ -66,3 +66,7 @@ The importer deliberately does not copy the source country's OOB, character, ide
 ## Manual engine test
 
 Follow [TESTING_RU.md](TESTING_RU.md), on a fresh game and with no other mods enabled. Record the actual game version/DLC and collect fresh logs before claiming engine compatibility. The descriptor deliberately does not advertise an untested `supported_version`.
+
+## Bootstrap compatibility
+
+Keep the scenario overrides in `common/defines/zz_balkan_collapse.lua`, after vanilla bootstrap files. Never add `NDefines = {}` or replace a complete namespace to suppress a nil error. Use `country_exists = TAG` for country references; `exists = yes/no` is a different scoped trigger. The validator rejects the former broken syntax and the obsolete early Lua file. See [the redacted 1.19.4 diagnosis](DIAGNOSIS_1_19_RU.md).

@@ -121,7 +121,7 @@ country_event = {
         add_war_support = 0.05
         if = {
             limit = {
-                exists = SLV
+                country_exists = SLV
                 NOT = {
                     has_war_with = SLV
                 }
@@ -158,7 +158,7 @@ country_event = {
         add_stability = 0.04
         if = {
             limit = {
-                exists = SLV
+                country_exists = SLV
                 has_war_with = SLV
             }
             white_peace = SLV
@@ -188,7 +188,7 @@ country_event = {
         add_stability = -0.05
         if = {
             limit = {
-                exists = CRO
+                country_exists = CRO
                 NOT = {
                     has_war_with = CRO
                 }
@@ -438,7 +438,7 @@ country_event = {
         add_war_support = 0.10
         if = {
             limit = {
-                exists = BOS
+                country_exists = BOS
                 NOT = {
                     has_war_with = BOS
                 }
@@ -499,7 +499,7 @@ country_event = {
         add_stability = 0.04
         if = {
             limit = {
-                exists = CRO
+                country_exists = CRO
                 has_war_with = CRO
             }
             white_peace = CRO
