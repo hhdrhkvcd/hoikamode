@@ -1,2 +1,0 @@
-# hoikamode
-123
